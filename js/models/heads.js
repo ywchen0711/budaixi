@@ -465,7 +465,7 @@ export function addHead(head, spec, look, mesh) {
     const inner = new THREE.MeshBasicMaterial({ color: '#3a0c10', transparent: true, depthWrite: false, opacity: 0.95 });
     const m = new THREE.Mesh(new THREE.CircleGeometry(1, 20), inner); m.position.set(0, 0.14 + my, mz); m.scale.set(mw, 0.0001, 1); m.renderOrder = 2; head.add(m);
     const teeth = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.35), new THREE.MeshBasicMaterial({ color: '#f4eee6', transparent: true, depthWrite: false })); teeth.position.set(0, 0.62, 0.0005); m.add(teeth);
-    look.mouth = (k) => { const o = Math.max(0, Math.min(1, k)); m.visible = o > 0.03; m.scale.set(mw * (1 - 0.25 * o), 0.0001 + 0.0068 * o, 1); }; }
+    look.mouth = (k) => { const o = Math.max(0, Math.min(1, k)); m.visible = o > 0.03; m.scale.set(mw * (1.1 - 0.2 * o), 0.0001 + 0.0095 * o, 1); }; }
   if (p.eyes !== 'glass') return;
   // glass eyes in their sockets, an upper and a lower lid over each, the upper one lined dark at its edge
   const eyeM = new THREE.MeshPhysicalMaterial({ map: irisTex(F), roughness: 0.15, clearcoat: 1, clearcoatRoughness: 0.03 });
