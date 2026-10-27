@@ -3,8 +3,10 @@
 //           pillars, a plaque over the opening, red curtains that part (set.curtain = [t0, t1]); gone after set.stageUntil
 //   bamboo  a bamboo forest round a moonlit clearing at the origin, a path along x, stone lanterns, mist
 //   cliff   a mountain top at x = 300: a plateau of rock over a sea of clouds, an old pine, peaks far off, the moon
+//   hall, lotus, temple, abyss (js/sets2.js) at x = 600, 900, 1200, 1500; and rain (set.rain)
 import * as THREE from '../lib/three.module.min.js';
-import { TOON } from './toon.js?v=1';
+import { TOON } from './toon.js?v=12';
+import { SETS2, SKY2 } from './sets2.js?v=12';
 const mat = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
 
 export const FOG = '#1a2234';
@@ -16,6 +18,7 @@ export const SKY = {
   bigmoon: { sun: [0.9, 0.2, 0.1], top: '#060714', mid: '#1a1a3a', hor: '#5a4a5a', low: '#141420', glow: '#c8a060', disc: '#ffe8b0', cloud: '#2a2236', stars: 0.8, sunCol: '#ffe0b0', sunI: 2.2, hemiSky: '#5a5a8a', hemiGround: '#181418', hemiI: 1.1, rimI: 0.7, fog: '#2a2a40', windows: 1.2, lamps: 1 },
   dawn: { sun: [-0.85, 0.18, 0.3], top: '#24345a', mid: '#6a6a8a', hor: '#f0a878', low: '#3a3440', glow: '#ffb070', disc: '#fff0c8', cloud: '#8a6a78', stars: 0, sunCol: '#ffd0a0', sunI: 2.4, hemiSky: '#a8b0d0', hemiGround: '#40383a', hemiI: 1.6, rimI: 0.4, fog: '#8a8098', windows: 0.3, lamps: 0.2 },
 };
+Object.assign(SKY, SKY2); // dusk, day, storm, the demon realm's
 const _c1 = new THREE.Color(), _c2 = new THREE.Color();
 export function skyAt(keys, t) {
   keys = keys || [[0, 'moon']];
@@ -177,6 +180,7 @@ function stage(scene, o) {
 
 export function buildSet(scene, set = {}) {
   const S = sky(scene); scene.userData.sky = S.dome; scene.userData.skyU = S.U;
-  const parts = (set.kinds || ['bamboo']).map((k) => ({ stage, bamboo, cliff }[k]?.(scene, set) || {}));
+  const parts = (set.kinds || ['bamboo']).map((k) => ({ stage, bamboo, cliff, ...SETS2 }[k]?.(scene, set) || {}));
+  if (set.rain) parts.push(SETS2.rain(scene, set));
   return { update: (t, sk) => { for (const p of parts) p.update?.(t, sk); } };
 }

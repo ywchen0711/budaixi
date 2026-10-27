@@ -8,8 +8,8 @@
 // Cue kinds: shot, missile, explosion, hit, ground, clash, flares, loose, fire, arc, sparks, smoke, flash, shake,
 // and sound-only kinds (whoosh, snd), which the director ignores.
 import * as THREE from '../../lib/three.module.min.js';
-import { missileModel } from '../models/weapons.js?v=1';
-import { H, S, imp } from './util.js?v=1';
+import { missileModel } from '../models/weapons.js?v=12';
+import { H, S, imp } from './util.js?v=12';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const FIXED = new Set(['explosion', 'hit', 'ground', 'clash', 'flares', 'sparks', 'fire', 'column', 'pod', 'qiburst', 'leaves', 'bamboo']);
@@ -83,12 +83,14 @@ export function createDirector({ scene, fx, rt, views }) {
     leaves(t, t0, p, k * 0.8, seed + 50);
   }
   // leaves: thrown up and out, then drifting down, turning
-  function leaves(t, t0, p, k, seed) {
+  function leaves(t, t0, p, k, seed, col) {
+    const C = col ? new THREE.Color(col) : null;
     const dt = t - t0; if (dt < 0 || dt > 6) return;
     for (let i = 0; i < 45 * k; i++) {
       const life = 3 + 2.5 * H(i, seed), a = dt / life; if (a >= 1) continue; const th = H(i, seed + 1) * 6.28, sp = (1.5 + 3 * H(i, seed + 2)) * k, dr = (1 - Math.exp(-dt * 2.2)) / 2.2;
       const y = p.y * 0.3 + (2 + 3 * H(i, seed + 3)) * k * dr - 0.25 * dt, g = 0.25 + 0.25 * H(i, seed + 4);
-      fx.smoke.put(p.x + Math.cos(th) * sp * dr + Math.sin(t * 2 + i) * 0.2 * a, Math.max(0.03, y), p.z + Math.sin(th) * sp * dr, 0.018 + 0.016 * Math.abs(Math.sin(t * 6 + i)), g * 0.55, g * 0.8 + 0.08, g * 0.35, Math.min(0.9, (1 - a) * 2));
+      const sz = 0.018 + 0.016 * Math.abs(Math.sin(t * 6 + i)), X = p.x + Math.cos(th) * sp * dr + Math.sin(t * 2 + i) * 0.2 * a, Z = p.z + Math.sin(th) * sp * dr, op = Math.min(0.9, (1 - a) * 2);
+      if (C) fx.glow.put(X, Math.max(0.03, y), Z, sz * 1.6, C.r, C.g, C.b, op * 0.8); else fx.smoke.put(X, Math.max(0.03, y), Z, sz, g * 0.55, g * 0.8 + 0.08, g * 0.35, op);
     }
   }
   const bamboos = []; let bi = 0;
@@ -198,7 +200,7 @@ export function createDirector({ scene, fx, rt, views }) {
           break;
         }
         case 'qiburst': if (c.atW) burst(t, c.t, c.atW, c.k ?? 1, new THREE.Color(c.col || '#ffffff'), 670 + Math.round(c.t * 10)); break;
-        case 'leaves': if (c.atW) leaves(t, c.t, c.atW, c.k ?? 1, 680 + Math.round(c.t * 10)); break;
+        case 'leaves': if (c.atW) leaves(t, c.t, c.atW, c.k ?? 1, 680 + Math.round(c.t * 10), c.col); break;
         // a length of bamboo cut through, falling and tumbling
         case 'bamboo': {
           if (dt < 0 || dt > 30 || !c.atW) break;

@@ -1,0 +1,4654 @@
+{
+ "ep": "s3",
+ "LEN": 587.039,
+ "filmLen": 605.2704285714291,
+ "warp": [
+  [
+   168.264,
+   168.324,
+   0.2,
+   "stop"
+  ],
+  [
+   168.814,
+   168.874,
+   0.2,
+   "stop"
+  ],
+  [
+   169.364,
+   169.424,
+   0.2,
+   "stop"
+  ],
+  [
+   170.264,
+   170.324,
+   0.2,
+   "stop"
+  ],
+  [
+   170.814,
+   170.874,
+   0.2,
+   "stop"
+  ],
+  [
+   171.364,
+   171.424,
+   0.2,
+   "stop"
+  ],
+  [
+   172.414,
+   172.714,
+   0.25
+  ],
+  [
+   174.764,
+   174.824,
+   0.2,
+   "stop"
+  ],
+  [
+   176.714,
+   177.014,
+   0.25
+  ],
+  [
+   178.964,
+   179.024,
+   0.2,
+   "stop"
+  ],
+  [
+   179.514,
+   179.574,
+   0.2,
+   "stop"
+  ],
+  [
+   180.064,
+   180.124,
+   0.2,
+   "stop"
+  ],
+  [
+   182.964,
+   183.024,
+   0.2,
+   "stop"
+  ],
+  [
+   183.514,
+   183.574,
+   0.2,
+   "stop"
+  ],
+  [
+   184.064,
+   184.124,
+   0.2,
+   "stop"
+  ],
+  [
+   184.964,
+   185.024,
+   0.2,
+   "stop"
+  ],
+  [
+   185.514,
+   185.574,
+   0.2,
+   "stop"
+  ],
+  [
+   186.064,
+   186.124,
+   0.2,
+   "stop"
+  ],
+  [
+   187.514,
+   187.574,
+   0.2,
+   "stop"
+  ],
+  [
+   188.014,
+   188.074,
+   0.2,
+   "stop"
+  ],
+  [
+   189.414,
+   189.474,
+   0.2,
+   "stop"
+  ],
+  [
+   189.914,
+   189.974,
+   0.2,
+   "stop"
+  ],
+  [
+   190.764,
+   190.824,
+   0.2,
+   "stop"
+  ],
+  [
+   191.314,
+   191.374,
+   0.2,
+   "stop"
+  ],
+  [
+   191.864,
+   191.924,
+   0.2,
+   "stop"
+  ],
+  [
+   202.403,
+   202.463,
+   0.2,
+   "stop"
+  ],
+  [
+   202.953,
+   203.013,
+   0.2,
+   "stop"
+  ],
+  [
+   203.503,
+   203.563,
+   0.2,
+   "stop"
+  ],
+  [
+   204.403,
+   204.463,
+   0.2,
+   "stop"
+  ],
+  [
+   204.953,
+   205.013,
+   0.2,
+   "stop"
+  ],
+  [
+   205.503,
+   205.563,
+   0.2,
+   "stop"
+  ],
+  [
+   206.553,
+   206.853,
+   0.25
+  ],
+  [
+   208.803,
+   208.863,
+   0.2,
+   "stop"
+  ],
+  [
+   209.353,
+   209.413,
+   0.2,
+   "stop"
+  ],
+  [
+   209.903,
+   209.963,
+   0.2,
+   "stop"
+  ],
+  [
+   219.047,
+   219.847,
+   0.28
+  ],
+  [
+   225.467,
+   226.267,
+   0.28
+  ],
+  [
+   235.868,
+   236.668,
+   0.28
+  ],
+  [
+   239.418,
+   239.478,
+   0.2,
+   "stop"
+  ],
+  [
+   239.968,
+   240.028,
+   0.2,
+   "stop"
+  ],
+  [
+   240.518,
+   240.578,
+   0.2,
+   "stop"
+  ],
+  [
+   242.518,
+   242.578,
+   0.2,
+   "stop"
+  ],
+  [
+   244.518,
+   244.578,
+   0.2,
+   "stop"
+  ],
+  [
+   245.518,
+   245.578,
+   0.2,
+   "stop"
+  ],
+  [
+   248.418,
+   248.478,
+   0.2,
+   "stop"
+  ]
+ ],
+ "scenes": [
+  [
+   4.5,
+   47.934,
+   "lotus"
+  ],
+  [
+   47.934,
+   282.97,
+   "temple"
+  ],
+  [
+   282.97,
+   338.624,
+   "temple"
+  ],
+  [
+   338.624,
+   390.782,
+   "temple"
+  ],
+  [
+   390.782,
+   501.003,
+   "temple"
+  ],
+  [
+   501.003,
+   587.039,
+   "abyss"
+  ]
+ ],
+ "rain": null,
+ "lines": {
+  "zh": [
+   [
+    8.9,
+    13.95,
+    "narrator",
+    "蓮心小築的清晨。一封戰帖，比太陽來得還早。"
+   ],
+   [
+    14.17,
+    19.486,
+    "qian",
+    "洛先生，魏無憂托我送來的，說是十年之約，今日了斷。"
+   ],
+   [
+    19.686,
+    25.431,
+    "luo",
+    "他托你送？他該知道，你的嘴，比信封還要漏風。"
+   ],
+   [
+    25.631,
+    29.539,
+    "qian",
+    "嘿嘿，所以整個江湖，現在都知道了。"
+   ],
+   [
+    29.739,
+    34.934,
+    "luo",
+    "那就好。這場決鬥，本來就是要給人看的。"
+   ],
+   [
+    35.134,
+    36.934,
+    "qian",
+    "……給誰看？"
+   ],
+   [
+    37.134,
+    44.254,
+    "luo",
+    "給那些，想看我們互相殘殺的人。孤鴻，萬佛峰下，你在暗處。"
+   ],
+   [
+    52.334,
+    57.134,
+    "narrator",
+    "萬佛峰下。魏無憂等這一天，已經等了十年。"
+   ],
+   [
+    57.354,
+    60.726,
+    "wei",
+    "洛無塵！你約我在這裡，人呢？"
+   ],
+   [
+    64.356,
+    67.198,
+    "luo",
+    "一蓮開時天下靜，"
+   ],
+   [
+    67.448,
+    70.798,
+    "luo",
+    "半笑之間局已成。"
+   ],
+   [
+    71.318,
+    75.963,
+    "luo",
+    "魏兄，十年不見，你的刀，還是這麼急。"
+   ],
+   [
+    76.163,
+    82.895,
+    "wei",
+    "少廢話。十年前那一戰，你讓了我三招。今天，我要你一招都不讓！"
+   ],
+   [
+    83.095,
+    87.74,
+    "luo",
+    "無塵沒有讓你。那一戰，是無塵輸了。"
+   ],
+   [
+    87.94,
+    94.192,
+    "wei",
+    "你輸了，我卻從來沒覺得我贏過！這就是我最恨你的地方！"
+   ],
+   [
+    94.392,
+    98.762,
+    "luo",
+    "那今天，就讓魏兄，好好地贏一次。"
+   ],
+   [
+    100.162,
+    101.962,
+    "wei",
+    "……誰在笑？"
+   ],
+   [
+    104.992,
+    108.596,
+    "yinyang",
+    "白日看人笑，黑夜看人哭；"
+   ],
+   [
+    108.846,
+    112.45,
+    "yinyang",
+    "天下最樂事，看你們互相毒。"
+   ],
+   [
+    112.97,
+    117.34,
+    "luo",
+    "陰陽郎君。閣下也是來看熱鬧的？"
+   ],
+   [
+    117.54,
+    123.084,
+    "yinyang",
+    "看熱鬧？不不不。本郎君是來，請兩位看一場更熱鬧的。"
+   ],
+   [
+    123.284,
+    125.084,
+    "yinyang",
+    "帶上來！"
+   ],
+   [
+    128.784,
+    131.034,
+    "yan",
+    "洛先生！別管我！"
+   ],
+   [
+    131.234,
+    134.126,
+    "wei",
+    "燕飛霜？你抓她做什麼！"
+   ],
+   [
+    134.326,
+    138.95,
+    "yinyang",
+    "她呀，是門票。你們兩個，打一場給本郎君看。"
+   ],
+   [
+    139.15,
+    143.084,
+    "yinyang",
+    "打得好看，我就放了她。打得不好看……"
+   ],
+   [
+    143.284,
+    147.448,
+    "yinyang",
+    "那就只好，讓她陪本郎君，看下一場了。"
+   ],
+   [
+    147.648,
+    150.368,
+    "luo",
+    "若是無塵不打呢？"
+   ],
+   [
+    150.568,
+    158.642,
+    "yinyang",
+    "那她現在就死。哈哈哈！天下最好看的，就是正人君子，為了救人，不得不互相殘殺！"
+   ],
+   [
+    158.842,
+    161.014,
+    "wei",
+    "……洛無塵，你說呢？"
+   ],
+   [
+    161.214,
+    165.584,
+    "luo",
+    "魏兄等了十年。那就，不必再等了。"
+   ],
+   [
+    194.384,
+    196.478,
+    "yinyang",
+    "好！好！再狠一點！"
+   ],
+   [
+    196.678,
+    199.123,
+    "luo",
+    "（三招之後，往左。）"
+   ],
+   [
+    199.323,
+    201.123,
+    "wei",
+    "（……哼。）"
+   ],
+   [
+    212.423,
+    215.667,
+    "yinyang",
+    "怎麼停了？本郎君還沒看夠！"
+   ],
+   [
+    217.447,
+    218.947,
+    "wei",
+    "狂龍斷天！"
+   ],
+   [
+    222.497,
+    224.917,
+    "luo",
+    "蓮華劍氣・三千界！"
+   ],
+   [
+    227.937,
+    232.561,
+    "yinyang",
+    "哈……哈哈！演的？你們兩個，竟然是演給我看的！"
+   ],
+   [
+    233.741,
+    235.318,
+    "yinyang",
+    "陰陽逆亂！"
+   ],
+   [
+    256.438,
+    262.212,
+    "yinyang",
+    "……連人都被搶走了。洛無塵，你從一開始，就沒打算陪我玩。"
+   ],
+   [
+    262.412,
+    268.982,
+    "luo",
+    "郎君的遊戲，無塵陪過了。只是規矩，要由下棋的人定。"
+   ],
+   [
+    269.182,
+    273.806,
+    "yinyang",
+    "哈哈哈！有意思，這個江湖，越來越有意思了！"
+   ],
+   [
+    274.006,
+    279.09,
+    "yinyang",
+    "下一次，本郎君會找一個，連你都算不到的遊戲。"
+   ],
+   [
+    286.09,
+    289.997,
+    "wei",
+    "你剛才那一劍，是真的想殺我。"
+   ],
+   [
+    290.197,
+    293.851,
+    "luo",
+    "不真，騙不了他。"
+   ],
+   [
+    294.051,
+    296.463,
+    "wei",
+    "要是我沒躲開呢？"
+   ],
+   [
+    296.663,
+    300.208,
+    "luo",
+    "魏兄會躲開的。無塵算過。"
+   ],
+   [
+    300.408,
+    304.98,
+    "wei",
+    "……你什麼都算。連我會怎麼躲，你都算好了。"
+   ],
+   [
+    305.18,
+    310.232,
+    "wei",
+    "洛無塵，我討厭你，就是因為你什麼都算得到。"
+   ],
+   [
+    310.432,
+    315.352,
+    "luo",
+    "那魏兄可知道，無塵算不到的是什麼？"
+   ],
+   [
+    315.552,
+    317.352,
+    "wei",
+    "是什麼？"
+   ],
+   [
+    317.552,
+    321.097,
+    "luo",
+    "是人心。每一次，都是人心。"
+   ],
+   [
+    321.297,
+    325.149,
+    "wei",
+    "……下次，我們真的打。不演戲，不算計。"
+   ],
+   [
+    325.349,
+    327.149,
+    "luo",
+    "好。"
+   ],
+   [
+    330.349,
+    337.744,
+    "luo",
+    "（陰陽郎君只愛看戲……可今天這場戲，又是誰，在台下看著我們？）"
+   ],
+   [
+    341.244,
+    346.098,
+    "yinyang",
+    "出來吧。站在樹後面看了一整場戲，腿不酸嗎？"
+   ],
+   [
+    348.398,
+    350.568,
+    "jingwang",
+    "郎君好眼力。"
+   ],
+   [
+    350.768,
+    355.184,
+    "yinyang",
+    "千面鏡王。你那張借來的臉，戴得累不累？"
+   ],
+   [
+    355.384,
+    360.854,
+    "jingwang",
+    "郎君說笑了。本王今日，戴的是自己的面具。"
+   ],
+   [
+    361.054,
+    366.484,
+    "yinyang",
+    "是嗎？那龍淵閣上，喝下那杯酒的，又是誰的臉？"
+   ],
+   [
+    367.684,
+    370.679,
+    "jingwang",
+    "……郎君知道得太多了。"
+   ],
+   [
+    370.879,
+    374.353,
+    "yinyang",
+    "別緊張。本郎君不會說出去的。"
+   ],
+   [
+    374.553,
+    381.707,
+    "yinyang",
+    "說出去，戲就不好看了。我要看著你們，一個一個，把自己騙死。哈哈哈哈！"
+   ],
+   [
+    383.307,
+    388.502,
+    "jingwang",
+    "（這個瘋子……總有一天，本王要戴上你的臉。）"
+   ],
+   [
+    393.402,
+    396.034,
+    "ling",
+    "他有沒有傷到妳？"
+   ],
+   [
+    396.234,
+    400.984,
+    "yan",
+    "沒有。他一路上都在笑，笑得我渾身發冷。"
+   ],
+   [
+    401.184,
+    410.184,
+    "yan",
+    "他還說了一句奇怪的話。他說：「妳知道嗎？妳身上的劍譜，是有人故意讓妳帶出來的。」"
+   ],
+   [
+    410.384,
+    412.184,
+    "ling",
+    "故意？"
+   ],
+   [
+    412.384,
+    419.884,
+    "yan",
+    "我師父死的那一夜，是誰把消息透露給血蓮的？我一直以為是巧合。"
+   ],
+   [
+    420.084,
+    423.511,
+    "ling",
+    "江湖上，沒有那麼多巧合。"
+   ],
+   [
+    426.611,
+    429.947,
+    "qian",
+    "兩位，有一個消息，免費送你們！"
+   ],
+   [
+    430.147,
+    433.839,
+    "ling",
+    "你錢不二，也有免費的消息？"
+   ],
+   [
+    434.039,
+    438.255,
+    "qian",
+    "因為這個消息，我賣不出去——沒有人敢買！"
+   ],
+   [
+    438.455,
+    445.531,
+    "qian",
+    "有人在太虛峰下，看見了血蓮的旗子。還有……一個本來應該已經死了的人。"
+   ],
+   [
+    445.731,
+    447.531,
+    "yan",
+    "……夜無極？"
+   ],
+   [
+    453.031,
+    459.876,
+    "luo",
+    "燕姑娘，妳師父遇害的那一夜，血蓮來得太準了，是不是？"
+   ],
+   [
+    460.076,
+    462.576,
+    "yan",
+    "洛先生也這麼想？"
+   ],
+   [
+    462.776,
+    470.446,
+    "luo",
+    "那一夜透露消息的人，和在大會上換掉慧明的人，是同一個人。"
+   ],
+   [
+    470.646,
+    481.616,
+    "luo",
+    "他要劍譜離開妳師父的手，又要它離開妳的手。他一直在等，等它走到一個……他拿得到的地方。"
+   ],
+   [
+    481.816,
+    483.616,
+    "ling",
+    "哪裡？"
+   ],
+   [
+    483.816,
+    486.536,
+    "luo",
+    "三教的封印之下。"
+   ],
+   [
+    486.736,
+    493.078,
+    "ling",
+    "夜無極若真的回來了，第一個要找的，是太虛峰。我去。"
+   ],
+   [
+    493.278,
+    500.123,
+    "luo",
+    "凌少俠，萬事小心。這一次的夜無極……也許已經不是人了。"
+   ],
+   [
+    505.403,
+    510.703,
+    "narrator",
+    "武林之下，是另一個世界。那裡沒有日月，只有火。"
+   ],
+   [
+    510.923,
+    512.723,
+    "youming",
+    "夜無極。"
+   ],
+   [
+    512.923,
+    518.863,
+    "youming",
+    "你墜下雲海的時候，是本帝，接住了你的魂。"
+   ],
+   [
+    519.063,
+    522.903,
+    "youming",
+    "現在，本帝給你，第二條命。"
+   ],
+   [
+    525.933,
+    529.283,
+    "ye",
+    "血蓮再開萬骨枯，"
+   ],
+   [
+    529.533,
+    532.376,
+    "ye",
+    "九幽歸來我為屠。"
+   ],
+   [
+    532.896,
+    538.269,
+    "ye",
+    "帝君。本尊這條命，從今以後，就是帝君的。"
+   ],
+   [
+    538.469,
+    545.309,
+    "youming",
+    "去吧。去太虛峰。讓那些人知道，幽冥的影子，回來了。"
+   ],
+   [
+    545.509,
+    550.597,
+    "ye",
+    "帝君，那殷九霄與千面鏡王，真的可信？"
+   ],
+   [
+    550.797,
+    558.237,
+    "youming",
+    "殷九霄以為，他在利用鏡王。鏡王以為，他在利用殷九霄。"
+   ],
+   [
+    558.437,
+    566.477,
+    "youming",
+    "他們都不知道，他們只是在替本帝，把兩卷天機策，送到一處。"
+   ],
+   [
+    566.677,
+    568.63,
+    "ye",
+    "帝君英明。"
+   ],
+   [
+    568.83,
+    576.198,
+    "ye",
+    "凌雲霄……這一次，本尊要你親眼看著，你所守護的，一一毀滅。"
+   ],
+   [
+    576.478,
+    580.439,
+    "narrator",
+    "魔影重臨，太虛峰上，風雲將變。"
+   ]
+  ],
+  "en": [
+   [
+    8.9,
+    13.95,
+    "narrator",
+    "Morning at the Lotus Heart Retreat. A challenge arrived before the sun did."
+   ],
+   [
+    14.17,
+    19.486,
+    "qian",
+    "Master Luo, Wei Wuyou asked me to bring this. He says: the ten-year promise, settled today."
+   ],
+   [
+    19.686,
+    25.431,
+    "luo",
+    "He sent you? He ought to know your mouth leaks worse than any envelope."
+   ],
+   [
+    25.631,
+    29.539,
+    "qian",
+    "Hee hee — which is why the whole world knows about it now."
+   ],
+   [
+    29.739,
+    34.934,
+    "luo",
+    "Good. This duel was always meant to be watched."
+   ],
+   [
+    35.134,
+    36.934,
+    "qian",
+    "...Watched by whom?"
+   ],
+   [
+    37.134,
+    44.254,
+    "luo",
+    "By those who want to see us kill each other. Gu Hong — below the Peak, keep to the shadows."
+   ],
+   [
+    52.334,
+    57.134,
+    "narrator",
+    "Below the Peak of Ten Thousand Buddhas. Wei Wuyou has waited ten years for this day."
+   ],
+   [
+    57.354,
+    60.726,
+    "wei",
+    "Luo Wuchen! You named this place — where are you?"
+   ],
+   [
+    64.356,
+    67.198,
+    "luo",
+    "When the lotus opens, all under heaven is still;"
+   ],
+   [
+    67.448,
+    70.798,
+    "luo",
+    "between half a smile and the next, the game is won."
+   ],
+   [
+    71.318,
+    75.963,
+    "luo",
+    "Brother Wei. Ten years, and your blade is as impatient as ever."
+   ],
+   [
+    76.163,
+    82.895,
+    "wei",
+    "Enough talk. Ten years ago you gave me three moves. Today you give me none!"
+   ],
+   [
+    83.095,
+    87.74,
+    "luo",
+    "Wuchen gave you nothing. That fight — Wuchen lost."
+   ],
+   [
+    87.94,
+    94.192,
+    "wei",
+    "You lost — and I never once felt I had won! That is what I hate about you most!"
+   ],
+   [
+    94.392,
+    98.762,
+    "luo",
+    "Then today, let Brother Wei win properly, once."
+   ],
+   [
+    100.162,
+    101.962,
+    "wei",
+    "...Who’s laughing?"
+   ],
+   [
+    104.992,
+    108.596,
+    "yinyang",
+    "By day I watch men laugh, by night I watch them weep;"
+   ],
+   [
+    108.846,
+    112.45,
+    "yinyang",
+    "the sweetest thing under heaven is to watch you poison each other."
+   ],
+   [
+    112.97,
+    117.34,
+    "luo",
+    "The Yin-Yang Gentleman. Have you come for the show as well?"
+   ],
+   [
+    117.54,
+    123.084,
+    "yinyang",
+    "For the show? No, no, no. I have come to give you two a better one."
+   ],
+   [
+    123.284,
+    125.084,
+    "yinyang",
+    "Bring her!"
+   ],
+   [
+    128.784,
+    131.034,
+    "yan",
+    "Master Luo! Don’t mind me!"
+   ],
+   [
+    131.234,
+    134.126,
+    "wei",
+    "Yan Feishuang? What do you want with her?"
+   ],
+   [
+    134.326,
+    138.95,
+    "yinyang",
+    "She? She is the price of a ticket. You two — fight for me."
+   ],
+   [
+    139.15,
+    143.084,
+    "yinyang",
+    "Fight well, and I let her go. Fight badly..."
+   ],
+   [
+    143.284,
+    147.448,
+    "yinyang",
+    "then she will have to keep me company for the next show."
+   ],
+   [
+    147.648,
+    150.368,
+    "luo",
+    "And if Wuchen will not fight?"
+   ],
+   [
+    150.568,
+    158.642,
+    "yinyang",
+    "Then she dies now. Ha ha ha! There is nothing so fine to watch as good men forced to kill each other to save a life!"
+   ],
+   [
+    158.842,
+    161.014,
+    "wei",
+    "...Luo Wuchen. What do you say?"
+   ],
+   [
+    161.214,
+    165.584,
+    "luo",
+    "Brother Wei has waited ten years. He need wait no longer."
+   ],
+   [
+    194.384,
+    196.478,
+    "yinyang",
+    "Good! Good! Harder!"
+   ],
+   [
+    196.678,
+    199.123,
+    "luo",
+    "(After three moves — go left.)"
+   ],
+   [
+    199.323,
+    201.123,
+    "wei",
+    "(...Hmph.)"
+   ],
+   [
+    212.423,
+    215.667,
+    "yinyang",
+    "Why have you stopped? I haven’t seen nearly enough!"
+   ],
+   [
+    217.447,
+    218.947,
+    "wei",
+    "Mad Dragon Severs Heaven!"
+   ],
+   [
+    222.497,
+    224.917,
+    "luo",
+    "Lotus Sword Light: Three Thousand Worlds!"
+   ],
+   [
+    227.937,
+    232.561,
+    "yinyang",
+    "Ha... ha ha! An act? The two of you were acting for me!"
+   ],
+   [
+    233.741,
+    235.318,
+    "yinyang",
+    "Yin and Yang in Chaos!"
+   ],
+   [
+    256.438,
+    262.212,
+    "yinyang",
+    "...You’ve even taken her back. Luo Wuchen — you never meant to play my game at all."
+   ],
+   [
+    262.412,
+    268.982,
+    "luo",
+    "Wuchen has played your game, sir. Only the rules are set by the one who moves the pieces."
+   ],
+   [
+    269.182,
+    273.806,
+    "yinyang",
+    "Ha ha ha! How amusing — this world grows more amusing every day!"
+   ],
+   [
+    274.006,
+    279.09,
+    "yinyang",
+    "Next time I will find a game even you cannot see coming."
+   ],
+   [
+    286.09,
+    289.997,
+    "wei",
+    "That cut of yours just now — you truly meant to kill me."
+   ],
+   [
+    290.197,
+    293.851,
+    "luo",
+    "If it had not been true, it would not have fooled him."
+   ],
+   [
+    294.051,
+    296.463,
+    "wei",
+    "And if I had not dodged it?"
+   ],
+   [
+    296.663,
+    300.208,
+    "luo",
+    "Brother Wei would dodge it. Wuchen had worked it out."
+   ],
+   [
+    300.408,
+    304.98,
+    "wei",
+    "...You work everything out. Even how I would dodge — you had it worked out."
+   ],
+   [
+    305.18,
+    310.232,
+    "wei",
+    "Luo Wuchen, I hate you precisely because you can foresee everything."
+   ],
+   [
+    310.432,
+    315.352,
+    "luo",
+    "Then does Brother Wei know what it is that Wuchen cannot foresee?"
+   ],
+   [
+    315.552,
+    317.352,
+    "wei",
+    "What?"
+   ],
+   [
+    317.552,
+    321.097,
+    "luo",
+    "Men’s hearts. Every time, it is men’s hearts."
+   ],
+   [
+    321.297,
+    325.149,
+    "wei",
+    "...Next time, we fight for real. No acting. No scheming."
+   ],
+   [
+    325.349,
+    327.149,
+    "luo",
+    "Agreed."
+   ],
+   [
+    330.349,
+    337.744,
+    "luo",
+    "(The Gentleman only loves a show... but today’s show — who else was in the audience, watching us?)"
+   ],
+   [
+    341.244,
+    346.098,
+    "yinyang",
+    "Come out. You watched the whole show from behind that tree — aren’t your legs tired?"
+   ],
+   [
+    348.398,
+    350.568,
+    "jingwang",
+    "The Gentleman has sharp eyes."
+   ],
+   [
+    350.768,
+    355.184,
+    "yinyang",
+    "The Mirror King. That borrowed face of yours — doesn’t it get tiring to wear?"
+   ],
+   [
+    355.384,
+    360.854,
+    "jingwang",
+    "You jest, sir. Today this king wears his own mask."
+   ],
+   [
+    361.054,
+    366.484,
+    "yinyang",
+    "Is that so? Then on the night of the council — whose face was it that drank that cup?"
+   ],
+   [
+    367.684,
+    370.679,
+    "jingwang",
+    "...The Gentleman knows too much."
+   ],
+   [
+    370.879,
+    374.353,
+    "yinyang",
+    "Relax. I shan’t tell a soul."
+   ],
+   [
+    374.553,
+    381.707,
+    "yinyang",
+    "If I told, the show would be spoiled. I want to watch every one of you lie yourselves to death. Ha ha ha ha!"
+   ],
+   [
+    383.307,
+    388.502,
+    "jingwang",
+    "(That madman... one day this king will wear your face.)"
+   ],
+   [
+    393.402,
+    396.034,
+    "ling",
+    "Did he hurt you?"
+   ],
+   [
+    396.234,
+    400.984,
+    "yan",
+    "No. He laughed the whole way. It made my skin crawl."
+   ],
+   [
+    401.184,
+    410.184,
+    "yan",
+    "And he said something strange. He said: “Do you know? Someone meant for you to carry that manual out.”"
+   ],
+   [
+    410.384,
+    412.184,
+    "ling",
+    "Meant to?"
+   ],
+   [
+    412.384,
+    419.884,
+    "yan",
+    "The night my master died — who told the Blood Lotus where we were? I always thought it was chance."
+   ],
+   [
+    420.084,
+    423.511,
+    "ling",
+    "In this world, there are not so many chances."
+   ],
+   [
+    426.611,
+    429.947,
+    "qian",
+    "You two — a piece of news, free of charge!"
+   ],
+   [
+    430.147,
+    433.839,
+    "ling",
+    "Qian Bu’er gives away news for free?"
+   ],
+   [
+    434.039,
+    438.255,
+    "qian",
+    "Because nobody will buy this one — they’re all too scared!"
+   ],
+   [
+    438.455,
+    445.531,
+    "qian",
+    "Someone saw the banner of the Blood Lotus below Void Peak. And... a man who ought to be dead."
+   ],
+   [
+    445.731,
+    447.531,
+    "yan",
+    "...Ye Wuji?"
+   ],
+   [
+    453.031,
+    459.876,
+    "luo",
+    "Miss Yan — the night your master was killed, the Blood Lotus came far too surely, didn’t they?"
+   ],
+   [
+    460.076,
+    462.576,
+    "yan",
+    "You think so too, Master Luo?"
+   ],
+   [
+    462.776,
+    470.446,
+    "luo",
+    "Whoever gave you away that night is the same one who took Huiming’s place at the council."
+   ],
+   [
+    470.646,
+    481.616,
+    "luo",
+    "He wanted the manual out of your master’s hands, and then out of yours. He has been waiting all this while for it to arrive somewhere... where he can reach it."
+   ],
+   [
+    481.816,
+    483.616,
+    "ling",
+    "Where?"
+   ],
+   [
+    483.816,
+    486.536,
+    "luo",
+    "Beneath the seals of the Three Teachings."
+   ],
+   [
+    486.736,
+    493.078,
+    "ling",
+    "If Ye Wuji truly is back, the first place he will go is Void Peak. I’ll go."
+   ],
+   [
+    493.278,
+    500.123,
+    "luo",
+    "Young Master Ling, take every care. The Ye Wuji who comes this time... may no longer be a man."
+   ],
+   [
+    505.403,
+    510.703,
+    "narrator",
+    "Beneath the martial world lies another. There is no sun there, no moon — only fire."
+   ],
+   [
+    510.923,
+    512.723,
+    "youming",
+    "Ye Wuji."
+   ],
+   [
+    512.923,
+    518.863,
+    "youming",
+    "When you fell into the sea of clouds, it was I who caught your soul."
+   ],
+   [
+    519.063,
+    522.903,
+    "youming",
+    "And now I give you a second life."
+   ],
+   [
+    525.933,
+    529.283,
+    "ye",
+    "The blood lotus opens again, and ten thousand bones run dry;"
+   ],
+   [
+    529.533,
+    532.376,
+    "ye",
+    "back from the Nine Netherworlds, I am the slaughter."
+   ],
+   [
+    532.896,
+    538.269,
+    "ye",
+    "My Emperor. From this day, this life of mine is yours."
+   ],
+   [
+    538.469,
+    545.309,
+    "youming",
+    "Go. Go to Void Peak. Let them know the shadow of the Netherworld has returned."
+   ],
+   [
+    545.509,
+    550.597,
+    "ye",
+    "My Emperor — Yin Jiuxiao and the Mirror King: can they truly be trusted?"
+   ],
+   [
+    550.797,
+    558.237,
+    "youming",
+    "Yin Jiuxiao believes he is using the Mirror King. The Mirror King believes he is using Yin Jiuxiao."
+   ],
+   [
+    558.437,
+    566.477,
+    "youming",
+    "Neither knows that both of them are only carrying the two halves of the Stratagem to one place — for me."
+   ],
+   [
+    566.677,
+    568.63,
+    "ye",
+    "My Emperor is wise."
+   ],
+   [
+    568.83,
+    576.198,
+    "ye",
+    "Ling Yunxiao... this time I will make you watch everything you protect destroyed, one by one."
+   ],
+   [
+    576.478,
+    580.439,
+    "narrator",
+    "The demon’s shadow returns, and on Void Peak the winds are about to turn."
+   ]
+  ]
+ },
+ "voices": {
+  "ling": {
+   "zh": [
+    "zh-CN-YunxiNeural",
+    -4,
+    -6
+   ],
+   "en": [
+    "en-US-AndrewNeural",
+    -4,
+    -6
+   ],
+   "fx": "stage"
+  },
+  "yan": {
+   "zh": [
+    "zh-TW-HsiaoChenNeural",
+    0,
+    0
+   ],
+   "en": [
+    "en-US-AvaNeural",
+    0,
+    0
+   ],
+   "fx": "stage"
+  },
+  "ye": {
+   "zh": [
+    "zh-CN-YunyangNeural",
+    -30,
+    -14
+   ],
+   "en": [
+    "en-GB-RyanNeural",
+    -16,
+    -12
+   ],
+   "fx": "stage"
+  },
+  "envoy": {
+   "zh": [
+    "zh-CN-YunjianNeural",
+    -6,
+    6
+   ],
+   "en": [
+    "en-US-EricNeural",
+    -6,
+    6
+   ],
+   "fx": "stage"
+  },
+  "wanderer": {
+   "zh": [
+    "zh-CN-YunxiNeural",
+    -8,
+    -4
+   ],
+   "en": [
+    "en-US-AndrewNeural",
+    -8,
+    -4
+   ],
+   "fx": "stage"
+  },
+  "lady": {
+   "zh": [
+    "zh-TW-HsiaoChenNeural",
+    -2,
+    -6
+   ],
+   "en": [
+    "en-US-AvaNeural",
+    -2,
+    -6
+   ],
+   "fx": "stage"
+  },
+  "luo": {
+   "zh": [
+    "zh-CN-YunxiNeural",
+    -2,
+    -10
+   ],
+   "en": [
+    "en-US-BrianNeural",
+    -2,
+    -8
+   ],
+   "fx": "stage"
+  },
+  "wuya": {
+   "zh": [
+    "zh-CN-YunyangNeural",
+    -24,
+    -16
+   ],
+   "en": [
+    "en-GB-ThomasNeural",
+    -14,
+    -14
+   ],
+   "fx": "stage"
+  },
+  "wei": {
+   "zh": [
+    "zh-CN-YunjianNeural",
+    2,
+    4
+   ],
+   "en": [
+    "en-US-GuyNeural",
+    0,
+    2
+   ],
+   "fx": "stage"
+  },
+  "qian": {
+   "zh": [
+    "zh-CN-YunxiaNeural",
+    0,
+    12
+   ],
+   "en": [
+    "en-US-RogerNeural",
+    6,
+    10
+   ],
+   "fx": "stage"
+  },
+  "yin": {
+   "zh": [
+    "zh-CN-YunxiNeural",
+    8,
+    -6
+   ],
+   "en": [
+    "en-GB-RyanNeural",
+    2,
+    -4
+   ],
+   "fx": "stage"
+  },
+  "baihe": {
+   "zh": [
+    "zh-CN-YunyangNeural",
+    6,
+    -4
+   ],
+   "en": [
+    "en-AU-WilliamNeural",
+    0,
+    -4
+   ],
+   "fx": "stage"
+  },
+  "jingwang": {
+   "zh": [
+    "zh-CN-YunjianNeural",
+    -28,
+    -10
+   ],
+   "en": [
+    "en-US-ChristopherNeural",
+    -20,
+    -10
+   ],
+   "fx": "stage"
+  },
+  "huiming": {
+   "zh": [
+    "zh-CN-YunxiaNeural",
+    -6,
+    -4
+   ],
+   "en": [
+    "en-US-EricNeural",
+    4,
+    -2
+   ],
+   "fx": "stage"
+  },
+  "yinyang": {
+   "zh": [
+    "zh-CN-YunjianNeural",
+    14,
+    8
+   ],
+   "en": [
+    "en-US-SteffanNeural",
+    8,
+    6
+   ],
+   "fx": "stage"
+  },
+  "youming": {
+   "zh": [
+    "zh-CN-YunyangNeural",
+    -45,
+    -20
+   ],
+   "en": [
+    "en-GB-RyanNeural",
+    -30,
+    -18
+   ],
+   "fx": "stage"
+  },
+  "yue": {
+   "zh": [
+    "zh-CN-XiaoyiNeural",
+    -4,
+    -6
+   ],
+   "en": [
+    "en-US-EmmaNeural",
+    -2,
+    -6
+   ],
+   "fx": "stage"
+  },
+  "elder": {
+   "zh": [
+    "zh-CN-YunyangNeural",
+    2,
+    -8
+   ],
+   "en": [
+    "en-US-GuyNeural",
+    -6,
+    -8
+   ],
+   "fx": "stage"
+  },
+  "narrator": {
+   "zh": [
+    "zh-CN-YunjianNeural",
+    -16,
+    -10
+   ],
+   "en": [
+    "en-US-ChristopherNeural",
+    -10,
+    -10
+   ],
+   "fx": "narrator"
+  }
+ },
+ "cues": [
+  {
+   "t": 45.834,
+   "kind": "leap",
+   "by": "guhong",
+   "k": 1.5
+  },
+  {
+   "t": 45.934,
+   "kind": "whoosh",
+   "by": "guhong",
+   "k": 0.7
+  },
+  {
+   "t": 63.206,
+   "kind": "qiup",
+   "by": "luo",
+   "t1": 67.206,
+   "k": 0.7
+  },
+  {
+   "t": 63.206,
+   "kind": "qiburst",
+   "k": 0.9
+  },
+  {
+   "t": 102.342,
+   "kind": "leap",
+   "by": "yinyang",
+   "k": 0.8
+  },
+  {
+   "t": 102.492,
+   "kind": "whoosh",
+   "by": "yinyang",
+   "k": 0.7
+  },
+  {
+   "t": 103.842,
+   "kind": "land",
+   "by": "yinyang",
+   "k": 1.1
+  },
+  {
+   "t": 103.842,
+   "kind": "qiup",
+   "by": "yinyang",
+   "t1": 107.842,
+   "k": 0.7
+  },
+  {
+   "t": 103.842,
+   "kind": "qiburst",
+   "k": 1.2
+  },
+  {
+   "t": 125.864,
+   "kind": "qiburst",
+   "k": 1.4
+  },
+  {
+   "t": 125.864,
+   "kind": "flash",
+   "k": 0.5
+  },
+  {
+   "t": 125.964,
+   "kind": "qiup",
+   "by": "yan",
+   "t1": 126.964,
+   "k": 0.7
+  },
+  {
+   "t": 125.964,
+   "kind": "qiburst",
+   "k": 0.9
+  },
+  {
+   "t": 168.104,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 168.264,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 168.654,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 168.814,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 169.204,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 169.364,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 170.104,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 170.264,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 170.654,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 170.814,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 171.204,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 171.364,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 172.324,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.56
+  },
+  {
+   "t": 172.484,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.56
+  },
+  {
+   "t": 174.604,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 174.654,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 174.764,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 174.814,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 174.864,
+   "kind": "sparks",
+   "t1": 175.764,
+   "k": 0.5
+  },
+  {
+   "t": 176.624,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.56
+  },
+  {
+   "t": 176.784,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.56
+  },
+  {
+   "t": 178.804,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 178.964,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 179.354,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 179.514,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 179.904,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 180.064,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 182.804,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 182.964,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 183.354,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 183.514,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 183.904,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 184.064,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 184.804,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 184.964,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 185.354,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 185.514,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 185.904,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 186.064,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 186.914,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 0.8
+  },
+  {
+   "t": 187.354,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 187.514,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 187.854,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 188.014,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 188.814,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 0.8
+  },
+  {
+   "t": 189.254,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 189.414,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 189.754,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 189.914,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 190.604,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 190.764,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 191.154,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 191.314,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.2
+  },
+  {
+   "t": 191.704,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 191.864,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.2
+  },
+  {
+   "t": 192.664,
+   "kind": "leap",
+   "by": "luo",
+   "k": 0.77
+  },
+  {
+   "t": 192.664,
+   "kind": "leap",
+   "by": "wei",
+   "k": 0.77
+  },
+  {
+   "t": 193.464,
+   "kind": "land",
+   "by": "luo",
+   "k": 0.8
+  },
+  {
+   "t": 193.464,
+   "kind": "land",
+   "by": "wei",
+   "k": 0.8
+  },
+  {
+   "t": 202.243,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.3
+  },
+  {
+   "t": 202.403,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.3
+  },
+  {
+   "t": 202.793,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.3
+  },
+  {
+   "t": 202.953,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.3
+  },
+  {
+   "t": 203.343,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.3
+  },
+  {
+   "t": 203.503,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.3
+  },
+  {
+   "t": 204.243,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.3
+  },
+  {
+   "t": 204.403,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.3
+  },
+  {
+   "t": 204.793,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.3
+  },
+  {
+   "t": 204.953,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.3
+  },
+  {
+   "t": 205.343,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.3
+  },
+  {
+   "t": 205.503,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.3
+  },
+  {
+   "t": 206.463,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.69
+  },
+  {
+   "t": 206.623,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.69
+  },
+  {
+   "t": 208.643,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.3
+  },
+  {
+   "t": 208.803,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.3
+  },
+  {
+   "t": 209.193,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.3
+  },
+  {
+   "t": 209.353,
+   "kind": "clash",
+   "by": "wei",
+   "k": 1.3
+  },
+  {
+   "t": 209.743,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.3
+  },
+  {
+   "t": 209.903,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.3
+  },
+  {
+   "t": 210.703,
+   "kind": "leap",
+   "by": "luo",
+   "k": 0.77
+  },
+  {
+   "t": 210.703,
+   "kind": "leap",
+   "by": "wei",
+   "k": 0.77
+  },
+  {
+   "t": 211.503,
+   "kind": "land",
+   "by": "luo",
+   "k": 0.8
+  },
+  {
+   "t": 211.503,
+   "kind": "land",
+   "by": "wei",
+   "k": 0.8
+  },
+  {
+   "t": 216.347,
+   "kind": "qiup",
+   "by": "wei",
+   "t1": 219.347,
+   "k": 1.3
+  },
+  {
+   "t": 218.787,
+   "kind": "whoosh",
+   "by": "wei",
+   "k": 1.4
+  },
+  {
+   "t": 218.947,
+   "kind": "wave",
+   "by": "wei",
+   "t1": 219.397,
+   "k": 1.4
+  },
+  {
+   "t": 218.997,
+   "kind": "wave",
+   "by": "yinyang",
+   "t1": 219.397,
+   "k": 1.26
+  },
+  {
+   "t": 219.397,
+   "kind": "qiburst",
+   "k": 1.8
+  },
+  {
+   "t": 219.397,
+   "kind": "flash",
+   "k": 0.5
+  },
+  {
+   "t": 219.397,
+   "kind": "shake",
+   "k": 0.14
+  },
+  {
+   "t": 221.397,
+   "kind": "qiup",
+   "by": "luo",
+   "t1": 224.397,
+   "k": 1.3
+  },
+  {
+   "t": 224.917,
+   "kind": "wave",
+   "by": "luo",
+   "t1": 225.417,
+   "k": 0.98
+  },
+  {
+   "t": 225.037,
+   "kind": "wave",
+   "by": "luo",
+   "t1": 225.537,
+   "k": 0.98
+  },
+  {
+   "t": 225.157,
+   "kind": "wave",
+   "by": "luo",
+   "t1": 225.657,
+   "k": 0.98
+  },
+  {
+   "t": 225.217,
+   "kind": "qiup",
+   "by": "yinyang",
+   "t1": 227.017,
+   "k": 1.1
+  },
+  {
+   "t": 225.277,
+   "kind": "wave",
+   "by": "luo",
+   "t1": 225.777,
+   "k": 0.98
+  },
+  {
+   "t": 225.397,
+   "kind": "wave",
+   "by": "luo",
+   "t1": 225.897,
+   "k": 0.98
+  },
+  {
+   "t": 225.817,
+   "kind": "qiburst",
+   "k": 1.8
+  },
+  {
+   "t": 225.817,
+   "kind": "flash",
+   "k": 0.5
+  },
+  {
+   "t": 225.817,
+   "kind": "shake",
+   "k": 0.14
+  },
+  {
+   "t": 232.641,
+   "kind": "qiup",
+   "by": "yinyang",
+   "t1": 235.641,
+   "k": 1.3
+  },
+  {
+   "t": 235.318,
+   "kind": "wave",
+   "by": "yinyang",
+   "t1": 235.818,
+   "k": 0.98
+  },
+  {
+   "t": 235.438,
+   "kind": "wave",
+   "by": "yinyang",
+   "t1": 235.938,
+   "k": 0.98
+  },
+  {
+   "t": 235.558,
+   "kind": "wave",
+   "by": "yinyang",
+   "t1": 236.058,
+   "k": 0.98
+  },
+  {
+   "t": 235.618,
+   "kind": "qiup",
+   "by": "wei",
+   "t1": 237.418,
+   "k": 1.1
+  },
+  {
+   "t": 235.678,
+   "kind": "wave",
+   "by": "yinyang",
+   "t1": 236.178,
+   "k": 0.98
+  },
+  {
+   "t": 235.798,
+   "kind": "wave",
+   "by": "yinyang",
+   "t1": 236.298,
+   "k": 0.98
+  },
+  {
+   "t": 236.218,
+   "kind": "qiburst",
+   "k": 1.8
+  },
+  {
+   "t": 236.218,
+   "kind": "flash",
+   "k": 0.5
+  },
+  {
+   "t": 236.218,
+   "kind": "shake",
+   "k": 0.14
+  },
+  {
+   "t": 239.258,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 239.418,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 239.808,
+   "kind": "whoosh",
+   "by": "yinyang",
+   "k": 1.1
+  },
+  {
+   "t": 239.968,
+   "kind": "clash",
+   "by": "yinyang",
+   "k": 1.1
+  },
+  {
+   "t": 240.358,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 240.518,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 241.318,
+   "kind": "leap",
+   "by": "luo",
+   "k": 1.07
+  },
+  {
+   "t": 241.418,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 0.7
+  },
+  {
+   "t": 242.068,
+   "kind": "whoosh",
+   "by": "yinyang",
+   "k": 0.8
+  },
+  {
+   "t": 242.358,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 242.368,
+   "kind": "land",
+   "by": "luo",
+   "k": 0.7
+  },
+  {
+   "t": 242.518,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 243.318,
+   "kind": "leap",
+   "by": "luo",
+   "k": 1.07
+  },
+  {
+   "t": 243.418,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 0.7
+  },
+  {
+   "t": 244.068,
+   "kind": "whoosh",
+   "by": "yinyang",
+   "k": 0.8
+  },
+  {
+   "t": 244.358,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 244.368,
+   "kind": "land",
+   "by": "luo",
+   "k": 0.7
+  },
+  {
+   "t": 244.518,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 245.358,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 245.408,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 245.518,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 245.568,
+   "kind": "clash",
+   "by": "luo",
+   "k": 1.1
+  },
+  {
+   "t": 245.618,
+   "kind": "sparks",
+   "t1": 246.518,
+   "k": 0.5
+  },
+  {
+   "t": 247.218,
+   "kind": "leap",
+   "by": "yinyang",
+   "k": 1.07
+  },
+  {
+   "t": 247.318,
+   "kind": "whoosh",
+   "by": "yinyang",
+   "k": 0.7
+  },
+  {
+   "t": 247.968,
+   "kind": "whoosh",
+   "by": "luo",
+   "k": 0.8
+  },
+  {
+   "t": 248.258,
+   "kind": "whoosh",
+   "by": "yinyang",
+   "k": 1.1
+  },
+  {
+   "t": 248.268,
+   "kind": "land",
+   "by": "yinyang",
+   "k": 0.7
+  },
+  {
+   "t": 248.418,
+   "kind": "clash",
+   "by": "yinyang",
+   "k": 1.1
+  },
+  {
+   "t": 249.218,
+   "kind": "leap",
+   "by": "luo",
+   "k": 0.77
+  },
+  {
+   "t": 249.218,
+   "kind": "leap",
+   "by": "yinyang",
+   "k": 0.77
+  },
+  {
+   "t": 250.018,
+   "kind": "land",
+   "by": "luo",
+   "k": 0.8
+  },
+  {
+   "t": 250.018,
+   "kind": "land",
+   "by": "yinyang",
+   "k": 0.8
+  },
+  {
+   "t": 251.218,
+   "kind": "leap",
+   "by": "guhong",
+   "k": 1.22
+  },
+  {
+   "t": 251.368,
+   "kind": "whoosh",
+   "by": "guhong",
+   "k": 0.7
+  },
+  {
+   "t": 252.418,
+   "kind": "land",
+   "by": "guhong",
+   "k": 0.9
+  },
+  {
+   "t": 252.418,
+   "kind": "qiup",
+   "by": "guhong",
+   "t1": 254.418,
+   "k": 0.7
+  },
+  {
+   "t": 252.418,
+   "kind": "qiburst",
+   "k": 0.9
+  },
+  {
+   "t": 254.718,
+   "kind": "hit",
+   "k": 0.3
+  },
+  {
+   "t": 255.018,
+   "kind": "leap",
+   "by": "yan",
+   "k": 1.5
+  },
+  {
+   "t": 255.118,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 0.7
+  },
+  {
+   "t": 279.77,
+   "kind": "qiburst",
+   "k": 0.9
+  },
+  {
+   "t": 280.87,
+   "kind": "leap",
+   "by": "guhong",
+   "k": 1.5
+  },
+  {
+   "t": 280.97,
+   "kind": "whoosh",
+   "by": "guhong",
+   "k": 0.7
+  },
+  {
+   "t": 346.878,
+   "kind": "qiburst",
+   "k": 1.4
+  },
+  {
+   "t": 346.878,
+   "kind": "flash",
+   "k": 0.5
+  },
+  {
+   "t": 346.978,
+   "kind": "qiup",
+   "by": "jingwang",
+   "t1": 348.978,
+   "k": 0.7
+  },
+  {
+   "t": 346.978,
+   "kind": "qiburst",
+   "k": 0.9
+  },
+  {
+   "t": 382.387,
+   "kind": "qiburst",
+   "k": 0.9
+  },
+  {
+   "t": 389.182,
+   "kind": "qiburst",
+   "k": 0.9
+  },
+  {
+   "t": 423.991,
+   "kind": "leap",
+   "by": "qian",
+   "k": 1.22
+  },
+  {
+   "t": 424.141,
+   "kind": "whoosh",
+   "by": "qian",
+   "k": 0.7
+  },
+  {
+   "t": 425.191,
+   "kind": "land",
+   "by": "qian",
+   "k": 0.9
+  },
+  {
+   "t": 425.191,
+   "kind": "qiup",
+   "by": "qian",
+   "t1": 426.191,
+   "k": 0.7
+  },
+  {
+   "t": 425.191,
+   "kind": "qiburst",
+   "k": 0.9
+  },
+  {
+   "t": 447.911,
+   "kind": "leap",
+   "by": "qian",
+   "k": 1.5
+  },
+  {
+   "t": 448.011,
+   "kind": "whoosh",
+   "by": "qian",
+   "k": 0.7
+  },
+  {
+   "t": 451.611,
+   "kind": "qiup",
+   "by": "luo",
+   "t1": 453.611,
+   "k": 0.7
+  },
+  {
+   "t": 451.611,
+   "kind": "qiburst",
+   "k": 0.9
+  },
+  {
+   "t": 522.983,
+   "kind": "qiburst",
+   "k": 2
+  },
+  {
+   "t": 522.983,
+   "kind": "flash",
+   "k": 0.6
+  },
+  {
+   "t": 524.683,
+   "kind": "qiburst",
+   "k": 1.4
+  },
+  {
+   "t": 524.683,
+   "kind": "flash",
+   "k": 0.5
+  },
+  {
+   "t": 524.783,
+   "kind": "qiup",
+   "by": "ye",
+   "t1": 528.783,
+   "k": 0.7
+  },
+  {
+   "t": 524.783,
+   "kind": "qiburst",
+   "k": 1.6
+  }
+ ],
+ "steps": [],
+ "jets": [],
+ "rods": [],
+ "helis": [],
+ "music": [
+  {
+   "luogu": "kaitai",
+   "t": 0.3,
+   "t1": 4
+  },
+  {
+   "luogu": "hit",
+   "t": 4,
+   "g": 1.2
+  },
+  {
+   "pad": "VC",
+   "n": "G2",
+   "t": 4.5,
+   "d": 12,
+   "g": 0.18
+  },
+  {
+   "zheng": "G",
+   "t": 5,
+   "t1": 47.434,
+   "g": 0.42
+  },
+  {
+   "pad": "VC",
+   "n": "G2",
+   "t": 16.5,
+   "d": 12,
+   "g": 0.18
+  },
+  {
+   "pad": "VC",
+   "n": "G2",
+   "t": 28.5,
+   "d": 12,
+   "g": 0.18
+  },
+  {
+   "pad": "VC",
+   "n": "G2",
+   "t": 40.5,
+   "d": 7.434,
+   "g": 0.18
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 47.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 47.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "hit": "roll",
+   "t": 53.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 55.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 55.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 63.206,
+   "g": 1.2
+  },
+  {
+   "hit": "gong",
+   "t": 63.206,
+   "g": 0.7
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 63.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 63.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "line": "OC",
+   "g": 0.42,
+   "notes": [
+    [
+     "G4",
+     64.206,
+     0.578
+    ],
+    [
+     "A4",
+     64.814,
+     0.578
+    ],
+    [
+     "D5",
+     65.422,
+     1.156
+    ],
+    [
+     "E5",
+     66.639,
+     0.578
+    ],
+    [
+     "D5",
+     67.248,
+     0.578
+    ],
+    [
+     "B4",
+     67.856,
+     0.578
+    ],
+    [
+     "A4",
+     68.464,
+     0.578
+    ],
+    [
+     "G4",
+     69.073,
+     1.734
+    ]
+   ]
+  },
+  {
+   "hit": "roll",
+   "t": 69.934,
+   "g": 0.3
+  },
+  {
+   "luogu": "hit",
+   "t": 70.898,
+   "g": 0.9
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 71.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 71.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 79.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 79.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "hit": "roll",
+   "t": 85.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 87.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 87.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 95.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 95.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "hit": "roll",
+   "t": 101.934,
+   "g": 0.3
+  },
+  {
+   "luogu": "hit",
+   "t": 103.842,
+   "g": 1.2
+  },
+  {
+   "hit": "gong",
+   "t": 103.842,
+   "g": 0.7
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 103.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 103.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "line": "RC",
+   "g": 0.42,
+   "notes": [
+    [
+     "B5",
+     104.842,
+     0.563
+    ],
+    [
+     "F5",
+     105.435,
+     0.563
+    ],
+    [
+     "B5",
+     106.028,
+     0.563
+    ],
+    [
+     "E5",
+     106.621,
+     1.127
+    ],
+    [
+     "F5",
+     107.806,
+     0.563
+    ],
+    [
+     "C6",
+     108.399,
+     1.69
+    ],
+    [
+     "B5",
+     110.178,
+     2.253
+    ]
+   ]
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 111.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 111.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 112.55,
+   "g": 0.9
+  },
+  {
+   "hit": "roll",
+   "t": 117.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 119.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 119.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 125.964,
+   "g": 1.2
+  },
+  {
+   "line": "RC",
+   "g": 0.36,
+   "notes": [
+    [
+     "D5",
+     125.964,
+     0.57
+    ],
+    [
+     "F5",
+     126.564,
+     0.57
+    ],
+    [
+     "G5",
+     127.164,
+     0.57
+    ],
+    [
+     "A5",
+     127.764,
+     1.14
+    ],
+    [
+     "G5",
+     128.964,
+     0.57
+    ],
+    [
+     "F5",
+     129.564,
+     0.57
+    ],
+    [
+     "D5",
+     130.164,
+     1.71
+    ]
+   ]
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 127.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 127.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "hit": "roll",
+   "t": 133.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 135.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 135.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "hit": "roll",
+   "t": 141.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 143.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 143.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 151.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 151.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "hit": "roll",
+   "t": 157.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 159.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 159.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "fight",
+   "t": 167.064,
+   "t1": 193.064
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 167.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 167.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 169.364,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 171.364,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 172.484,
+   "g": 1.3
+  },
+  {
+   "hit": "roll",
+   "t": 173.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 175.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 175.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 176.784,
+   "g": 1.3
+  },
+  {
+   "luogu": "hit",
+   "t": 180.064,
+   "g": 0.7
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 183.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 183.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 184.064,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 186.064,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 191.864,
+   "g": 0.7
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 191.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 191.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 193.464,
+   "g": 1.2
+  },
+  {
+   "hit": "roll",
+   "t": 197.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 199.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 199.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "fight",
+   "t": 201.203,
+   "t1": 211.203
+  },
+  {
+   "luogu": "hit",
+   "t": 203.503,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 205.503,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 206.623,
+   "g": 1.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 207.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 207.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 209.903,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 211.503,
+   "g": 1.2
+  },
+  {
+   "hit": "roll",
+   "t": 213.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 215.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 215.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "pad": "VNt",
+   "n": "D5",
+   "t": 216.347,
+   "d": 2.8,
+   "g": 0.3
+  },
+  {
+   "hit": "roll",
+   "t": 216.747,
+   "g": 0.45
+  },
+  {
+   "luogu": "hit",
+   "t": 219.397,
+   "g": 1.6
+  },
+  {
+   "hit": "gong",
+   "t": 219.397,
+   "g": 0.8
+  },
+  {
+   "pad": "VNt",
+   "n": "D5",
+   "t": 221.397,
+   "d": 2.8,
+   "g": 0.3
+  },
+  {
+   "hit": "roll",
+   "t": 221.797,
+   "g": 0.45
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 223.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 223.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 225.817,
+   "g": 1.6
+  },
+  {
+   "hit": "gong",
+   "t": 225.817,
+   "g": 0.8
+  },
+  {
+   "hit": "roll",
+   "t": 229.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 231.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 231.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "pad": "VNt",
+   "n": "D5",
+   "t": 232.641,
+   "d": 2.8,
+   "g": 0.3
+  },
+  {
+   "hit": "roll",
+   "t": 233.041,
+   "g": 0.45
+  },
+  {
+   "luogu": "hit",
+   "t": 236.218,
+   "g": 1.6
+  },
+  {
+   "hit": "gong",
+   "t": 236.218,
+   "g": 0.8
+  },
+  {
+   "luogu": "fight",
+   "t": 238.218,
+   "t1": 250.218
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 239.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 239.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 240.518,
+   "g": 0.7
+  },
+  {
+   "hit": "roll",
+   "t": 245.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 247.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 247.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "luogu": "hit",
+   "t": 250.018,
+   "g": 1.2
+  },
+  {
+   "luogu": "hit",
+   "t": 252.418,
+   "g": 1.2
+  },
+  {
+   "line": "RC",
+   "g": 0.36,
+   "notes": [
+    [
+     "E5",
+     252.418,
+     1.036
+    ],
+    [
+     "B4",
+     253.509,
+     0.518
+    ],
+    [
+     "D5",
+     254.054,
+     1.555
+    ],
+    [
+     "E5",
+     255.69,
+     0.518
+    ],
+    [
+     "G5",
+     256.236,
+     0.518
+    ],
+    [
+     "E5",
+     256.781,
+     1.555
+    ]
+   ]
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 255.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 255.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "hit": "roll",
+   "t": 261.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 263.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 263.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 271.934,
+   "d": 8,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 271.934,
+   "d": 8,
+   "g": 0.28
+  },
+  {
+   "hit": "roll",
+   "t": 277.934,
+   "g": 0.3
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 279.934,
+   "d": 3.036,
+   "g": 0.3
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 279.934,
+   "d": 3.036,
+   "g": 0.28
+  },
+  {
+   "pad": "VC",
+   "n": "D2",
+   "t": 282.97,
+   "d": 12,
+   "g": 0.18
+  },
+  {
+   "zheng": "Dm",
+   "t": 283.47,
+   "t1": 338.124,
+   "g": 0.42
+  },
+  {
+   "pad": "VC",
+   "n": "D2",
+   "t": 294.97,
+   "d": 12,
+   "g": 0.18
+  },
+  {
+   "pad": "VC",
+   "n": "D2",
+   "t": 306.97,
+   "d": 12,
+   "g": 0.18
+  },
+  {
+   "pad": "VC",
+   "n": "D2",
+   "t": 318.97,
+   "d": 12,
+   "g": 0.18
+  },
+  {
+   "pad": "VC",
+   "n": "D2",
+   "t": 330.97,
+   "d": 7.655,
+   "g": 0.18
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 338.624,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 339.624,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 342.624,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "luogu": "hit",
+   "t": 346.978,
+   "g": 1.2
+  },
+  {
+   "line": "PS",
+   "g": 0.36,
+   "notes": [
+    [
+     "E4",
+     346.978,
+     0.95
+    ],
+    [
+     "Eb4",
+     347.978,
+     0.95
+    ],
+    [
+     "D4",
+     348.978,
+     0.95
+    ],
+    [
+     "C#4",
+     349.978,
+     0.95
+    ],
+    [
+     "C4",
+     350.978,
+     1.9
+    ]
+   ]
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 348.624,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 349.624,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 352.624,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 358.624,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 359.624,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 362.624,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 368.624,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 369.624,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 372.624,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 378.624,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 379.624,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 382.624,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 388.624,
+   "d": 2.158,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 389.624,
+   "d": 1.158,
+   "g": 0.18
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 390.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 390.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "line": "PS",
+   "g": 0.26,
+   "notes": [
+    [
+     "A4",
+     391.782,
+     2.8
+    ],
+    [
+     "G4",
+     394.982,
+     2.8
+    ],
+    [
+     "F4",
+     398.182,
+     2.8
+    ],
+    [
+     "E4",
+     401.382,
+     2.8
+    ],
+    [
+     "D4",
+     404.582,
+     2.8
+    ],
+    [
+     "F4",
+     407.782,
+     2.8
+    ],
+    [
+     "E4",
+     410.982,
+     2.8
+    ],
+    [
+     "D4",
+     414.182,
+     2.8
+    ],
+    [
+     "A4",
+     417.382,
+     2.8
+    ],
+    [
+     "G4",
+     420.582,
+     2.8
+    ],
+    [
+     "F4",
+     423.782,
+     2.8
+    ],
+    [
+     "E4",
+     426.982,
+     2.8
+    ],
+    [
+     "D4",
+     430.182,
+     2.8
+    ],
+    [
+     "F4",
+     433.382,
+     2.8
+    ],
+    [
+     "E4",
+     436.582,
+     2.8
+    ],
+    [
+     "D4",
+     439.782,
+     2.8
+    ],
+    [
+     "A4",
+     442.982,
+     2.8
+    ],
+    [
+     "G4",
+     446.182,
+     2.8
+    ],
+    [
+     "F4",
+     449.382,
+     2.8
+    ],
+    [
+     "E4",
+     452.582,
+     2.8
+    ],
+    [
+     "D4",
+     455.782,
+     2.8
+    ],
+    [
+     "F4",
+     458.982,
+     2.8
+    ],
+    [
+     "E4",
+     462.182,
+     2.8
+    ],
+    [
+     "D4",
+     465.382,
+     2.8
+    ],
+    [
+     "A4",
+     468.582,
+     2.8
+    ],
+    [
+     "G4",
+     471.782,
+     2.8
+    ],
+    [
+     "F4",
+     474.982,
+     2.8
+    ],
+    [
+     "E4",
+     478.182,
+     2.8
+    ],
+    [
+     "D4",
+     481.382,
+     2.8
+    ],
+    [
+     "F4",
+     484.582,
+     2.8
+    ],
+    [
+     "E4",
+     487.782,
+     2.8
+    ],
+    [
+     "D4",
+     490.982,
+     2.8
+    ],
+    [
+     "A4",
+     494.182,
+     2.8
+    ],
+    [
+     "G4",
+     497.382,
+     2.8
+    ]
+   ]
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 392.624,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 400.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 400.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 410.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 410.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 420.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 420.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "luogu": "hit",
+   "t": 425.191,
+   "g": 1.2
+  },
+  {
+   "line": "RC",
+   "g": 0.36,
+   "notes": [
+    [
+     "G5",
+     425.191,
+     0.57
+    ],
+    [
+     "E5",
+     425.791,
+     0.57
+    ],
+    [
+     "G5",
+     426.391,
+     0.57
+    ],
+    [
+     "A5",
+     426.991,
+     0.57
+    ],
+    [
+     "G5",
+     427.591,
+     0.57
+    ],
+    [
+     "E5",
+     428.191,
+     0.57
+    ],
+    [
+     "D5",
+     428.791,
+     1.14
+    ],
+    [
+     "C5",
+     429.991,
+     1.14
+    ]
+   ]
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 430.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 430.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 440.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 440.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 450.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 450.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "luogu": "hit",
+   "t": 451.611,
+   "g": 1.2
+  },
+  {
+   "line": "OC",
+   "g": 0.36,
+   "notes": [
+    [
+     "G4",
+     451.611,
+     0.518
+    ],
+    [
+     "A4",
+     452.157,
+     0.518
+    ],
+    [
+     "D5",
+     452.702,
+     1.036
+    ],
+    [
+     "E5",
+     453.793,
+     0.518
+    ],
+    [
+     "D5",
+     454.339,
+     0.518
+    ],
+    [
+     "B4",
+     454.884,
+     0.518
+    ],
+    [
+     "A4",
+     455.429,
+     0.518
+    ],
+    [
+     "G4",
+     455.975,
+     1.555
+    ]
+   ]
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 460.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 460.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 470.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 470.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 480.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 480.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 490.782,
+   "d": 10,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "A2",
+   "t": 490.782,
+   "d": 10,
+   "g": 0.18
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 501.003,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 502.003,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 505.003,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 511.003,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 512.003,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 515.003,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 521.003,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 522.003,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "luogu": "hit",
+   "t": 522.983,
+   "g": 1.6
+  },
+  {
+   "luogu": "hit",
+   "t": 524.783,
+   "g": 1.2
+  },
+  {
+   "hit": "gong",
+   "t": 524.783,
+   "g": 0.7
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 525.003,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "line": "PS",
+   "g": 0.42,
+   "notes": [
+    [
+     "D4",
+     525.783,
+     1.325
+    ],
+    [
+     "F4",
+     527.178,
+     0.795
+    ],
+    [
+     "Eb4",
+     528.014,
+     1.06
+    ],
+    [
+     "D4",
+     529.129,
+     1.325
+    ],
+    [
+     "C4",
+     530.524,
+     0.795
+    ],
+    [
+     "D4",
+     531.36,
+     1.06
+    ]
+   ]
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 531.003,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 532.003,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "luogu": "hit",
+   "t": 532.476,
+   "g": 0.9
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 535.003,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 541.003,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 542.003,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 545.003,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 551.003,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 552.003,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 555.003,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 561.003,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 562.003,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 565.003,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 571.003,
+   "d": 10,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 572.003,
+   "d": 9,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 575.003,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 581.003,
+   "d": 5.036,
+   "g": 0.35
+  },
+  {
+   "luogu": "kaitai",
+   "t": 581.039,
+   "t1": 585.439
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 582.003,
+   "d": 4.036,
+   "g": 0.18
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 585.003,
+   "d": 3,
+   "g": 0.16
+  },
+  {
+   "luogu": "hit",
+   "t": 585.439,
+   "g": 1.3
+  },
+  {
+   "hit": "gong",
+   "t": 585.439,
+   "g": 0.7
+  }
+ ]
+}

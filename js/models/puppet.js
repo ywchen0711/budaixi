@@ -6,8 +6,8 @@
 // spec (js/cast/characters.js): skin, face {brow, eye, lip, paint, mark}, hair {color, len, white}, crown {type, color,
 // gem}, robe {base, pattern, ink, trim, inner, sleeve}, cape, ribbons, weapons {R, L}, scale
 import * as THREE from '../../lib/three.module.min.js';
-import { TOON } from '../toon.js?v=1';
-import { headLook, addHead, lockAt } from './heads.js?v=9';
+import { TOON } from '../toon.js?v=12';
+import { headLook, addHead, lockAt } from './heads.js?v=12';
 
 const toon = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
 function canvasTex(w, h, paint) {
@@ -36,6 +36,8 @@ function silkTex(R, seed) {
     else if (R.pattern === 'weave') { // rough hemp: slubbed threads both ways, mottled
       for (let k = 0; k < 900; k++) { g.fillStyle = `rgba(${r() < 0.5 ? '255,255,255' : '0,0,0'},${0.04 + r() * 0.08})`; const x = r() * W, y = r() * H; if (r() < 0.5) g.fillRect(x, y, 6 + r() * 30, 1 + r() * 1.5); else g.fillRect(x, y, 1 + r() * 1.5, 6 + r() * 30); }
       for (let k = 0; k < 30; k++) { g.fillStyle = `rgba(0,0,0,${0.03 + r() * 0.05})`; g.beginPath(); g.ellipse(r() * W, r() * H, 10 + r() * 30, 6 + r() * 20, r() * 3, 0, Math.PI * 2); g.fill(); }
+    } else if (R.pattern === 'split') { // half one colour, half another: down the front and the back
+      g.fillStyle = R.ink || '#141414'; g.fillRect(W / 2, 0, W / 2, H);
     } else if (R.pattern === 'plain') { // plain white silk: long soft folds
       for (let k = 0; k < 14; k++) { const x = r() * W, gr = g.createLinearGradient(x - 12, 0, x + 12, 0); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(0.5, `rgba(120,120,140,${0.05 + r() * 0.06})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - 12, 0, 24, H); }
     }
@@ -67,6 +69,13 @@ function weapon(type, M, side) {
     add(new THREE.BoxGeometry(0.09, 0.05, 0.08), toon({ color: '#2a1418' }), 0, -0.02, 0.0);
     for (let k = -1; k <= 1; k++) { const b = add(new THREE.ConeGeometry(0.012, 0.28, 5), toon({ color: '#a8202c', emissive: '#300408' }), k * 0.03, -0.14, 0.05, Math.PI + 0.25, 0, 0); void b; }
     tip.position.set(0, -0.28, 0.12);
+  } else if (type === 'whisk') { // a horsetail whisk: a jade handle, a long fall of white hair
+    add(new THREE.CylinderGeometry(0.012, 0.014, 0.26, 8), toon({ color: '#c8e0c0' }), 0, 0, 0.02, Math.PI / 2);
+    add(new THREE.SphereGeometry(0.02, 8, 6), gold, 0, 0, 0.16);
+    const hairM = toon({ color: '#f4f4ee', side: THREE.DoubleSide });
+    let p = new THREE.Group(); p.position.set(0, 0, 0.17); g.add(p);
+    for (let k = 0; k < 4; k++) { const q = new THREE.Group(); q.position.set(0, 0, k ? 0.09 : 0); p.add(q); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.03 - k * 0.004, 0.024 - k * 0.004, 0.09, 8, 1, true), hairM); m.rotation.x = Math.PI / 2; m.position.z = 0.045; q.add(m); tassels.push(q); p = q; }
+    tip.position.set(0, 0, 0.5);
   } else if (type === 'fan') {
     const fan = new THREE.Mesh(new THREE.CircleGeometry(0.26, 18, 0, Math.PI * 0.75), toon({ color: '#f4ecd8', side: THREE.DoubleSide, map: canvasTex(128, 128, (c) => { c.fillStyle = '#f4ecd8'; c.fillRect(0, 0, 128, 128); c.strokeStyle = '#2a2018'; c.lineWidth = 2; c.beginPath(); c.moveTo(20, 100); c.quadraticCurveTo(60, 40, 110, 30); c.stroke(); c.fillStyle = '#b02020'; c.fillRect(90, 80, 10, 10); }) }));
     fan.rotation.set(0, -Math.PI / 2, Math.PI * 0.12); g.add(fan); tip.position.set(0, 0.15, 0.2);
@@ -135,6 +144,21 @@ export function buildPuppet(spec) {
   } else if (C.type === 'halfup') { // the top hair tied back in a small knot with a ribbon, the rest falling loose
     mesh(crown, new THREE.SphereGeometry(0.03, 14, 10), M.hair, 0, -0.07, -0.075);
     for (const s of [-1, 1]) mesh(crown, new THREE.PlaneGeometry(0.02, 0.12), toon({ color: C.color || '#f2f0ec', side: THREE.DoubleSide }), s * 0.018, -0.13, -0.1, 0.2, 0, s * 0.15);
+  } else if (C.type === 'cap') { // a small round cap with a brim
+    mesh(crown, new THREE.CylinderGeometry(0.08, 0.095, 0.07, 14), toon({ color: C.color || '#3a2a1a' }), 0, -0.03, 0.03);
+    mesh(crown, new THREE.CylinderGeometry(0.13, 0.13, 0.012, 16), toon({ color: C.color || '#3a2a1a' }), 0, -0.065, 0.03);
+  } else if (C.type === 'bun') { // a Taoist's knot of hair with a wooden pin through it
+    mesh(crown, new THREE.SphereGeometry(0.036, 14, 10), M.hair, 0, -0.01, 0.0);
+    mesh(crown, new THREE.CylinderGeometry(0.004, 0.004, 0.14, 6), toon({ color: C.color || '#6a4a2a' }), 0, -0.004, 0, 0, 0, Math.PI / 2);
+  } else if (C.type === 'buddha') { // a Buddhist crown: five gold petals in an arc, a jewel in the middle
+    for (let k = -2; k <= 2; k++) { const m = mesh(crown, new THREE.CircleGeometry(0.04, 3, Math.PI / 2 - 0.5, 1.0), M.gold, k * 0.04, -0.03 + (2 - Math.abs(k)) * 0.008, 0.065 - Math.abs(k) * 0.018, -0.2, k * 0.35, 0); m.scale.set(1, 1.6, 1); m.material.side = THREE.DoubleSide; }
+    mesh(crown, new THREE.TorusGeometry(0.075, 0.008, 6, 24), M.gold, 0, -0.06, 0.02, Math.PI / 2);
+    mesh(crown, new THREE.SphereGeometry(0.014, 8, 6), M.gem, 0, 0.0, 0.075);
+  } else if (C.type === 'mask') { // a silver mask over the upper face, slits for the eyes
+    const mt = canvasTex(128, 64, (g, W, H) => { g.fillStyle = C.color || '#d8dce8'; g.fillRect(0, 0, W, H); g.strokeStyle = 'rgba(60,60,80,0.5)'; g.lineWidth = 2; for (let k = 0; k < 6; k++) { g.beginPath(); g.moveTo(10 + k * 20, 4); g.quadraticCurveTo(64, 30, 118 - k * 20, 4); g.stroke(); } g.fillStyle = '#05050a'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(64 + s * 22, 34, 13, 4, s * -0.25, 0, Math.PI * 2); g.fill(); } });
+    const m = mesh(head, new THREE.SphereGeometry(0.1, 24, 10, Math.PI * 0.5 - 0.95, 1.9, Math.PI * 0.33, Math.PI * 0.22), new THREE.MeshPhysicalMaterial({ map: mt, metalness: 0.15, roughness: 0.25, clearcoat: 1, sheen: 0.6, sheenColor: '#e8f0ff', emissive: '#202430', side: THREE.DoubleSide }), 0, 0.14, -0.003);
+    m.scale.set(1.05, 1.08, 1.02);
+  } else if (C.type === 'none') {
   } else if (C.type === 'hood') {
     mesh(head, new THREE.SphereGeometry(0.16, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.6), toon({ color: '#141016', side: THREE.DoubleSide }), 0, 0.14, -0.01).scale.set(1, 1.15, 1.05);
     mesh(head, new THREE.PlaneGeometry(0.2, 0.09), toon({ color: '#8a1018', side: THREE.DoubleSide }), 0, 0.09, 0.135); // the mask
@@ -158,12 +182,12 @@ export function buildPuppet(spec) {
   };
   const strands = (col) => { const c = new THREE.Color(col), t = canvasTex(64, 128, (g, W, H) => { g.fillStyle = col; g.fillRect(0, 0, W, H); for (let x = 0; x < W; x++) { const k = 0.72 + 0.5 * Math.random(); g.fillStyle = `rgb(${Math.min(255, c.r * 255 * k + 10)},${Math.min(255, c.g * 255 * k + 10)},${Math.min(255, c.b * 255 * k + 12)})`; g.fillRect(x, 0, 1, H); } }); t.repeat.set(3, 1); return t; };
   const hairLen = (H.len || 0.9) / 4;
-  const hair = look.p.sculpt ? chain(head, 0, 0.13, -0.075, 4, hairLen, 0.088, M.hair, 0.86, 'wrap') : chain(head, 0, 0.12, -0.13, 4, hairLen, 0.25, M.hair, 0.82);
+  const hair = H.none ? [] : look.p.sculpt ? chain(head, 0, 0.13, -0.075, 4, hairLen, 0.088, M.hair, 0.86, 'wrap') : chain(head, 0, 0.12, -0.13, 4, hairLen, 0.25, M.hair, 0.82);
   const LK = lockAt(look), segL = look.p.sculpt ? 0.06 : 0.12, lockN = Math.max(2, Math.round((H.lockLen || 0.24) / segL));
   const lockM = H.locks ? new THREE.MeshPhysicalMaterial({ map: strands(H.locks), roughness: 0.5, sheen: 0.6, sheenColor: '#ffffff', side: THREE.DoubleSide }) : M.hair;
   // each side lock can be several finer strands, a little apart and of different lengths, so it reads as hair
   const NS = look.p.sculpt ? H.lockStrands || 1 : 1, forelocks = [];
-  for (const s of [-1, 1]) for (let j = 0; j < NS; j++) {
+  if (!H.none) for (const s of [-1, 1]) for (let j = 0; j < NS; j++) {
     const o = NS > 1 ? (j - (NS - 1) / 2) / (NS - 1) : 0, n = Math.max(2, lockN - (j % 2) * Math.round(lockN * 0.2));
     forelocks.push(chain(head, s * (LK[0] + Math.abs(o) * 0.004), LK[1] - Math.abs(o) * 0.006, LK[2] + o * 0.026, n, segL, (H.lockW || 0.035) / Math.sqrt(NS), lockM, look.p.sculpt ? 0.95 : 0.9, look.p.sculpt ? 'tube' : 'flat'));
   }

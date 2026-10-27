@@ -4,8 +4,9 @@
 // the sword's tassel swings. All of it is run once over the whole film at load, so any frame stands on its own.
 // Named points for the effects and the cameras: chest, head, eye, tipR, tipL, handR, handL, shoulderR, shoulderL, root, front
 import * as THREE from '../../lib/three.module.min.js';
-import { CHARACTERS } from '../cast/characters.js?v=3';
-import { buildPuppet } from '../models/puppet.js?v=9';
+import { CHARACTERS } from '../cast/characters.js?v=12';
+import { buildPuppet } from '../models/puppet.js?v=12';
+import { faceOf, bodyOf } from '../models/looks.js?v=12';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const cl = (v, a = -1, b = 1) => Math.max(a, Math.min(b, v));
@@ -108,6 +109,12 @@ function puppet(scene, A, C, rt) {
 
 export function buildActors(scene, rt) {
   const views = {};
-  for (const A of rt.actors) { const C = CHARACTERS[A.who]; if (!C || C.kind !== 'puppet') continue; views[A.id] = puppet(scene, A, C, rt); }
+  const look = rt.story.look || {};
+  for (const A of rt.actors) {
+    let C = CHARACTERS[A.who]; if (!C || C.kind !== 'puppet') continue;
+    // in a story in the anime style, each character wears its own face and build from the 50 and the 20
+    if (look.style === 'anime' && C.anime) { const F = faceOf(C.anime.face), B = bodyOf(C.anime.body); C = { ...C, faceShape: F.shape, eyeShape: F.eye, body: B.body, scale: (C.scale || 1) * B.scale }; }
+    views[A.id] = puppet(scene, A, { ...C, ...look, ...(A.look || {}) }, rt);
+  }
   return views;
 }

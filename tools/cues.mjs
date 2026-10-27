@@ -35,4 +35,4 @@ for (const A of rt.actors) {
 const cues = rt.cues.map((c) => { const o = { t: r2(c.t), kind: c.kind, by: c.by }; for (const k of ['t1', 'k', 'hit', 'big', 'model', 'boom', 'name', 'bind', 'n']) if (c[k] != null) o[k] = typeof c[k] === 'number' ? r2(c[k]) : c[k]; return o; });
 const clock = makeClock({ ...story, warp: rt.warp });
 const voices = Object.fromEntries(Object.entries(CHARACTERS).filter(([, c]) => c.voice).map(([k, c]) => [k, c.voice]));
-console.log(JSON.stringify({ ep, LEN: story.LEN, filmLen: clock.filmLen, warp: clock.warp, T: story.T, lines: story.lines, voices, cues, steps: steps.sort((a, b) => a.t - b.t), jets, rods, helis, music: story.music }, null, 1));
+console.log(JSON.stringify({ ep, LEN: story.LEN, filmLen: clock.filmLen, warp: clock.warp, T: story.T, scenes: story.scenes || null, rain: story.set?.rain || null, lines: story.lines, voices, cues, steps: steps.sort((a, b) => a.t - b.t), jets, rods, helis, music: story.music }, null, 1));

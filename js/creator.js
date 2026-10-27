@@ -1,9 +1,9 @@
 // creator.html: any of the 50 faces on any of the 20 builds, in the anime style, in any of the cast's costumes.
 // The big view is live (drag to turn it); the tiles are each drawn once, a few at a time, by a second renderer.
 import * as THREE from '../lib/three.module.min.js';
-import { buildPuppet } from './models/puppet.js?v=9';
-import { faceOf, bodyOf } from './models/looks.js?v=1';
-import { CHARACTERS } from './cast/characters.js?v=3';
+import { buildPuppet } from './models/puppet.js?v=12';
+import { faceOf, bodyOf } from './models/looks.js?v=12';
+import { CHARACTERS } from './cast/characters.js?v=12';
 
 const $ = (id) => document.getElementById(id);
 const OUTFITS = ['ling', 'yan', 'ye', 'wanderer', 'lady'];

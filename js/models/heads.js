@@ -5,7 +5,7 @@
 //   headLook(spec) -> materials (skin, face, hair) for buildPuppet; addHead(head, spec, look) builds it on the neck
 // The style: spec.style, else ?style= in the address, else DEFAULT_STYLE. styles.html shows them side by side.
 import * as THREE from '../../lib/three.module.min.js';
-import { TOON } from '../toon.js?v=1';
+import { TOON } from '../toon.js?v=12';
 
 export const STYLES = {
   paper: { zh: '原本的樣子', en: 'As it was', about: { zh: '畫在球上的臉，色塊明暗', en: 'a face painted on a ball, toon bands' } },
@@ -311,8 +311,9 @@ function makeUp(spec, style, p = P[style]) {
       soft(s * 0.056, 0.018, 0.018, 0.012, 'rgba(210,40,80,0.45)', s * -0.6);
       soft(s * 0.026, -0.02, 0.014, 0.016, 'rgba(230,90,110,0.4)');
     }
-    if (F.paint === 'demon') for (const s of [-1, 1]) { // the demon's mask: red round the eyes and down the cheek, black inside
-      g.fillStyle = 'rgba(150,10,20,0.88)'; path([[s * 0.014, 0.014], [s * 0.04, 0.022], [s * 0.064, 0.016], [s * 0.066, -0.004], [s * 0.05, -0.03], [s * 0.032, -0.05], [s * 0.03, -0.018], [s * 0.016, -0.008]], true); g.fill();
+    if (F.paint === 'yinyang') { g.fillStyle = '#1c1a1e'; g.fillRect(0, 0, X(0), 256); } // half the face black
+    if (F.paint === 'demon') for (const s of [-1, 1]) { // the demon's mask: red (or its colour) round the eyes and down the cheek, black inside
+      g.fillStyle = F.paintColor ? rgba(F.paintColor, 0.88) : 'rgba(150,10,20,0.88)'; path([[s * 0.014, 0.014], [s * 0.04, 0.022], [s * 0.064, 0.016], [s * 0.066, -0.004], [s * 0.05, -0.03], [s * 0.032, -0.05], [s * 0.03, -0.018], [s * 0.016, -0.008]], true); g.fill();
       g.fillStyle = 'rgba(20,0,10,0.88)'; path([[s * 0.018, 0.008], [s * 0.04, 0.014], [s * 0.058, 0.01], [s * 0.054, -0.006], [s * 0.034, -0.012], [s * 0.018, -0.006]], true); g.fill();
     }
     if (F.shadow) for (const s of [-1, 1]) soft(s * EYE_X, 0.007, 0.018, 0.01, F.shadow);
@@ -453,8 +454,8 @@ export function addHead(head, spec, look, mesh) {
   }
   look.face.map.wrapS = look.face.map.wrapT = THREE.ClampToEdgeWrapping;
   const skull = mesh(head, sculptGeo(p), look.face, 0, 0.14, 0);
-  const hair = mesh(head, hairGeo(p), look.hair, 0, 0.14, 0);
-  if (p.outline) for (const m of [skull, hair]) { const o = new THREE.Mesh(m.geometry, new THREE.MeshBasicMaterial({ color: '#1a0c0c', side: THREE.BackSide })); o.scale.setScalar(1.03); m.add(o); }
+  const hair = spec.hair?.none ? null : mesh(head, hairGeo(p), look.hair, 0, 0.14, 0);
+  if (p.outline) for (const m of [skull, hair].filter(Boolean)) { const o = new THREE.Mesh(m.geometry, new THREE.MeshBasicMaterial({ color: '#1a0c0c', side: THREE.BackSide })); o.scale.setScalar(1.03); m.add(o); }
   mesh(head, new THREE.CylinderGeometry(0.046, 0.056, 0.13, 20, 1, true), look.skin, 0, 0.035, -0.014); // the neck, up under the jaw
   for (const s of [-1, 1]) { // the ears
     const ear = mesh(head, new THREE.SphereGeometry(1, 16, 12), look.skin, s * 0.083, 0.125, -0.017, 0, s * 0.35, s * 0.1); ear.scale.set(0.006, 0.027, 0.016);

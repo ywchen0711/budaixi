@@ -4,7 +4,7 @@
 // Orientation follows the engine's hands (engine/mech3d.js): guns point down the hand's -y (along the forearm),
 // melee weapons out along the hand's +z; the launcher faces +z on the shoulder.
 import * as THREE from '../../lib/three.module.min.js';
-import { TOON } from '../toon.js?v=1';
+import { TOON } from '../toon.js?v=12';
 
 const toon = (color, o = {}) => new THREE.MeshToonMaterial({ color, gradientMap: TOON, ...o });
 const glow = (color) => new THREE.MeshBasicMaterial({ color });

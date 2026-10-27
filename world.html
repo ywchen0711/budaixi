@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>天機策・世界設定</title>
+  <meta name="description" content="《掌中劍・天機策》的武林設定：天機策、三教、幽冥魔域，全部人物與十集劇情。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎎%3C/text%3E%3C/svg%3E">
+  <style>
+    :root { --bg: #140a0c; --card: #1e1214; --line: #3a2428; --ink: #f6eee0; --dim: #b8a898; --gold: #e8c060; --red: #9a1418; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.65 'Noto Sans TC', system-ui, sans-serif; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 18px 16px 48px; }
+    h1 { margin: 0; font: 900 2.1em 'Noto Serif TC', serif; color: var(--gold); letter-spacing: 0.12em; }
+    h1 small { display: block; font: 500 0.42em system-ui, sans-serif; color: var(--dim); letter-spacing: 0.04em; margin-top: 2px; }
+    h2 { font: 700 1.25em 'Noto Serif TC', serif; color: var(--gold); margin: 28px 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    .lang { float: right; }
+    button { font: inherit; color: var(--ink); background: #2a1a1c; border: 1px solid #4a3034; border-radius: 6px; padding: 3px 12px; cursor: pointer; }
+    button.on { background: var(--red); border-color: var(--gold); }
+    .log { font-size: 1.05em; color: #e8dccc; margin: 12px 0 4px; }
+    .grid { display: grid; gap: 12px; }
+    .g3 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+    .card b { color: var(--gold); }
+    .fac { color: var(--dim); margin: 14px 0 6px; font-weight: 700; }
+    .people { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+    .who { display: flex; gap: 12px; padding: 10px; }
+    .who img, .who i { width: 92px; height: 116px; flex: none; border-radius: 8px; background: #24161a; object-fit: cover; display: block; }
+    .who h3 { margin: 0; font: 900 1.25em 'Noto Serif TC', serif; }
+    .who h3 small { font: 500 0.6em system-ui, sans-serif; color: var(--gold); margin-left: 6px; }
+    .who p { margin: 4px 0; font-size: 0.88em; color: #ddd0c0; }
+    .who .mv { color: var(--gold); font-size: 0.85em; }
+    .who .po { font-family: 'Noto Serif TC', serif; font-size: 0.85em; color: var(--dim); }
+    .eps .card { display: grid; grid-template-columns: 56px 1fr auto; gap: 10px; align-items: start; }
+    .eps .n { font: 900 1.6em 'Noto Serif TC', serif; color: var(--gold); text-align: center; }
+    .eps h3 { margin: 0 0 4px; font: 700 1.1em 'Noto Serif TC', serif; }
+    .eps p { margin: 0; font-size: 0.9em; color: #ddd0c0; }
+    .eps a { white-space: nowrap; color: #fff; background: var(--red); border: 1px solid var(--gold); border-radius: 6px; padding: 4px 12px; text-decoration: none; }
+    a { color: var(--gold); }
+    @media (max-width: 560px) { .eps .card { grid-template-columns: 40px 1fr; } .eps a { grid-column: 2; justify-self: start; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="lang"><button data-l="zh" class="on">中文</button> <button data-l="en">EN</button></div>
+    <h1 id="t"></h1>
+    <p class="log" id="log"></p>
+    <p><a href="./?ep=s1" id="watch"></a> · <a href="creator.html" id="mk"></a></p>
+    <h2 id="h-lore"></h2><div class="grid g3" id="lore"></div>
+    <h2 id="h-places"></h2><div class="grid g3" id="places"></div>
+    <h2 id="h-people"></h2><div id="people"></div>
+    <h2 id="h-eps"></h2><div class="grid eps" id="eps"></div>
+  </div>
+  <script src="/hub.js" defer data-pos="top-right"></script>
+  <script type="module" src="js/world-page.js?v=12"></script>
+</body>
+</html>

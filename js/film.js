@@ -6,23 +6,23 @@
 //   the camera (core/camera.js)     for the shot
 // Nothing in here belongs to one story.
 import * as THREE from '../lib/three.module.min.js';
-import { buildSet, FOG, skyAt } from './sets.js?v=1';
-import { makeClock } from './core/time.js?v=1';
-import { EPISODES } from './story/index.js?v=1';
-import { FX } from './fx.js?v=1';
-import { createRuntime } from './core/runtime.js?v=1';
-import { buildActors } from './core/actors3d.js?v=9';
-import { createDirector } from './core/director.js?v=1';
-import { createCamera } from './core/camera.js?v=1';
-import { nameOf, CHARACTERS } from './cast/characters.js?v=3';
-import { seg } from './core/util.js?v=1';
-import * as score from './score.js?v=1';
+import { buildSet, FOG, skyAt } from './sets.js?v=12';
+import { makeClock } from './core/time.js?v=12';
+import { EPISODES } from './story/index.js?v=12';
+import { FX } from './fx.js?v=12';
+import { createRuntime } from './core/runtime.js?v=12';
+import { buildActors } from './core/actors3d.js?v=12';
+import { createDirector } from './core/director.js?v=12';
+import { createCamera } from './core/camera.js?v=12';
+import { nameOf, CHARACTERS } from './cast/characters.js?v=12';
+import { seg } from './core/util.js?v=12';
+import * as score from './score.js?v=12';
 
 const $ = (id) => document.getElementById(id);
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const params = new URLSearchParams(location.search);
 const EP = /^[a-z0-9]+$/.test(params.get('ep') || '') ? params.get('ep') : 'ep1';
-const story = (await import(`./story/${EP}.js?v=1`)).default, rt = createRuntime(story);
+const story = (await import(`./story/${EP}.js?v=12`)).default, rt = createRuntime(story);
 const clock = makeClock({ ...story, warp: rt.warp }), LEN = clock.filmLen; // LEN: the film's length (slow motion and hit-stops included)
 let lang = params.get('lang') === 'en' ? 'en' : (() => { try { return localStorage.getItem('budaixi.lang') || 'zh'; } catch (e) { return 'zh'; } })();
 

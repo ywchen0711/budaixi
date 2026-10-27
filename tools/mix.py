@@ -166,24 +166,53 @@ SOUNDS = {
     'loose': lambda c: loose(c['t'], c.get('k', 1.0)),
     'shake': lambda c: shake(c['t'], c.get('k', 0.2)),
     'sparks': sparks,
+    'bell': lambda c: (put('sfx', pitch(VC('Idiophones/Struck Idiophones/Gong 1/gong_fff*'), -7), c['t'], 0.55 * c.get('k', 1.0), 0, verb=1.0), put('sfx', pitch(VC('Idiophones/Struck Idiophones/Hand Bells, Nepalese/HB_*'), -12), c['t'] + 0.05, 0.25 * c.get('k', 1.0), 0, verb=1.0)),
 }
 for c in CUE['cues']:
     f = SOUNDS.get(c['kind'])
     if f: f(c)
 
-# the night: wind in the bamboo and crickets in the forest; on the mountain top a colder wind and no crickets
-T_CLIFF = 181.5
-tt = np.arange(N) / SR; filmCliff = to_film(T_CLIFF)
-forest = np.clip((tt - to_film(8.5)) / 3, 0, 1) * np.clip((filmCliff - tt) / 1.5, 0, 1); peak = np.clip((tt - filmCliff) / 2, 0, 1)
+# the places: each scene's own air (a story's scenes, [t0, t1, place]; the prologue has its two places by time)
+SCN = CUE.get('scenes') or [[8.5, 181.5, 'bamboo'], [181.5, LEN, 'cliff']]
+tt = np.arange(N) / SR
+def window(t0, t1, fade_s=1.2):  # 1 inside the scene (in film time), easing in and out
+    a, b = to_film(t0), to_film(t1)
+    return np.clip((tt - a) / fade_s, 0, 1) * np.clip((b - tt) / fade_s, 0, 1)
 gust = 0.6 + 0.4 * np.sin(tt * 0.31) * np.sin(tt * 0.13 + 1)
-BUS['amb'] += filt(rng.normal(0, 1, (N, 2)).astype(np.float32), 'bandpass', [1500, 7000]) * (forest * gust * 0.012)[:, None]
-BUS['amb'] += filt(filt(rng.normal(0, 1, (N, 2)).astype(np.float32), 'lowpass', 500), 'highpass', 70) * ((0.4 * forest + 1.4 * peak) * (0.5 + 0.5 * gust) * 0.03)[:, None]
-for ci, (f0, pp) in enumerate([(4300, -0.7), (4700, 0.5), (3900, 0.1), (5100, -0.3)]):
-    t = 9.5 + ci * 0.37; n = int(0.016 * SR); x = (np.sin(2 * np.pi * f0 * np.arange(n) / SR) * np.hanning(n)).astype(np.float32)
-    ch = np.zeros((int(0.12 * SR), 2), np.float32)
-    for j in range(3): ch[int(j * 0.035 * SR):int(j * 0.035 * SR) + n] += x[:, None]
-    while t < T_CLIFF - 1:
-        put('amb', ch, t, 0.01 * (1.0 if ci % 2 else 0.6), pp, verb=0.4); t += rng.uniform(0.5, 1.1) * (1 + 3 * (rng.random() < 0.1))
+noiseH = filt(rng.normal(0, 1, (N, 2)).astype(np.float32), 'bandpass', [1500, 7000])
+noiseL = filt(filt(rng.normal(0, 1, (N, 2)).astype(np.float32), 'lowpass', 500), 'highpass', 70)
+def crickets(t0, t1, k=1.0):
+    for ci, (f0, pp) in enumerate([(4300, -0.7), (4700, 0.5), (3900, 0.1), (5100, -0.3)]):
+        t = t0 + 0.5 + ci * 0.37; n = int(0.016 * SR); x = (np.sin(2 * np.pi * f0 * np.arange(n) / SR) * np.hanning(n)).astype(np.float32)
+        ch = np.zeros((int(0.12 * SR), 2), np.float32)
+        for j in range(3): ch[int(j * 0.035 * SR):int(j * 0.035 * SR) + n] += x[:, None]
+        while t < t1 - 1:
+            put('amb', ch, t, 0.01 * k * (1.0 if ci % 2 else 0.6), pp, verb=0.4); t += rng.uniform(0.5, 1.1) * (1 + 3 * (rng.random() < 0.1))
+def frogs(t0, t1):
+    t = t0 + 1
+    while t < t1 - 1:
+        n = int(rng.uniform(0.08, 0.16) * SR); f = rng.uniform(180, 320); ph = np.arange(n) / SR
+        x = (np.sign(np.sin(2 * np.pi * f * ph)) * np.exp(-ph * 9) * (1 + 0.5 * np.sin(2 * np.pi * 30 * ph))).astype(np.float32)
+        put('amb', filt(np.repeat(x[:, None], 2, 1), 'lowpass', 1200), t, 0.012, rng.uniform(-0.8, 0.8), verb=0.5); t += rng.uniform(0.4, 2.5)
+for t0, t1, place in SCN:
+    t1 = t1 if t1 is not None else LEN; w = window(t0, t1)
+    if place == 'bamboo':
+        BUS['amb'] += noiseH * (w * gust * 0.012)[:, None] + noiseL * (w * (0.5 + 0.5 * gust) * 0.012)[:, None]; crickets(t0, t1)
+    elif place == 'cliff': BUS['amb'] += noiseL * (w * (0.5 + 0.5 * gust) * 0.042)[:, None]
+    elif place == 'hall': BUS['amb'] += filt(noiseL, 'lowpass', 220) * (w * 0.02)[:, None] + noiseH * (w * gust * 0.003)[:, None]; crickets(t0, t1, 0.4)
+    elif place == 'lotus':
+        lap = filt(noiseL, 'bandpass', [150, 700]) * (0.5 + 0.5 * np.sin(tt * 1.7) * np.sin(tt * 0.9 + 2))[:, None]
+        BUS['amb'] += lap * (w * 0.03)[:, None] + noiseH * (w * gust * 0.004)[:, None]; frogs(t0, t1); crickets(t0, t1, 0.6)
+    elif place == 'temple':
+        BUS['amb'] += noiseL * (w * (0.5 + 0.5 * gust) * 0.022)[:, None]
+        for tb in np.arange(t0 + 6, t1 - 3, 23): put('amb', pitch(VC('Idiophones/Struck Idiophones/Hand Bells, Nepalese/HB_*'), -14), tb, 0.08, 0.5, verb=0.9)
+    elif place == 'abyss':
+        BUS['amb'] += filt(noiseL, 'lowpass', 120) * (w * 0.09)[:, None] + filt(noiseL, 'bandpass', [200, 500]) * (w * (0.4 + 0.6 * gust) * 0.02)[:, None]
+for r in (CUE.get('rain') or []):  # rain: a hiss and the patter of drops
+    w = window(r['t'][0], r['t'][1], 1.5)
+    BUS['amb'] += filt(rng.normal(0, 1, (N, 2)).astype(np.float32), 'bandpass', [900, 9000]) * (w * 0.03)[:, None]
+    for t in np.arange(r['t'][0], r['t'][1], 0.012):
+        if rng.random() < 0.5: put('amb', filt(rng.normal(0, 1, (int(0.004 * SR), 2)).astype(np.float32), 'highpass', 2500) * 0.3, t, rng.uniform(0.005, 0.03), rng.uniform(-1, 1), verb=0.2)
 
 # ---------------------------------------------------------------- the music
 NOTE = {'C': 0, 'C#': 1, 'Db': 1, 'D': 2, 'D#': 3, 'Eb': 3, 'E': 4, 'F': 5, 'F#': 6, 'Gb': 6, 'G': 7, 'G#': 8, 'Ab': 8, 'A': 9, 'A#': 10, 'Bb': 10, 'B': 11}
@@ -337,5 +366,5 @@ for lang, lines in LANGS.items():
     g = uniform_filter1d(minimum_filter1d(g, size=int(0.02 * SR)), size=int(0.02 * SR))
     mix = np.clip(mix * g[:, None], -db(-0.5), db(-0.5))[:int((FILM + 0.6) * SR)]
     wav = os.path.join(HERE, f'{EP}.{lang}.wav'); sf.write(wav, mix, SR, subtype='PCM_24')
-    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', wav, '-c:a', 'libmp3lame', '-q:a', '1' if FILM < 90 else '3', os.path.join(out, f'{EP}.{lang}.mp3')], check=True)
+    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', wav, '-c:a', 'libmp3lame', '-q:a', '1' if FILM < 90 else '3' if FILM < 400 else '6', os.path.join(out, f'{EP}.{lang}.mp3')], check=True)
     print(EP, lang, len(lines), 'lines', 'film', round(FILM, 1), 'peak', round(float(np.abs(mix).max()), 3), 'rms dB', round(float(20 * np.log10(np.sqrt((mix ** 2).mean()))), 1))
