@@ -73,6 +73,7 @@ const G1 = (y, y0, s) => Math.exp(-(((y - y0) / s) ** 2));
 const smax = (a, b, k) => { const h = clamp(0.5 + 0.5 * (b - a) / k); return a * (1 - h) + b * h + k * h * (1 - h) * 0.5; };
 // how far forward the face is at (x, y); -1 where there is no face
 function faceZ(x, y, p) {
+  x /= p.wid || 1; if (y < 0) y /= p.lowY || 1; // a wider or narrower face, a longer or shorter lower face
   const ax = Math.abs(x);
   const Zm = curve(y, [[0.16, -0.03], [0.12, 0.052], [0.09, 0.08], [0.05, 0.092], [0.024, 0.097], [0.0, 0.093], [-0.03, 0.094], [-0.06, 0.095], [-0.09, 0.091], [-0.11, 0.086], [-0.122, 0.077], [-0.132, 0.057], [-0.14, 0.02], [-0.155, -0.06]]);
   const kx = curve(y, [[0.12, 5.6], [0.05, 6], [0.0, 6.8], [-0.04, 8.2], [-0.08, 10], [-0.105, 15 * (p.chinPoint || 1)], [-0.13, 26]]);
@@ -83,6 +84,9 @@ function faceZ(x, y, p) {
   z -= 0.003 * G2(x, y, 0, 0.007, 0.012, 0.012);
   z -= 0.011 * (p.socket ?? 1) * G2(ax, y, EYE_X, EYE_Y + 0.001, 0.0185, 0.0135);
   z += 0.006 * (p.cheek ?? 1) * G2(ax, y, 0.05, -0.024, 0.02, 0.018);
+  if (p.jawSq) z += 0.005 * p.jawSq * G2(ax, y, 0.058, -0.088, 0.014, 0.016);  // the corners of a square jaw
+  if (p.hollow) z -= 0.004 * p.hollow * G2(ax, y, 0.048, -0.056, 0.014, 0.016); // hollow cheeks
+  if (p.temple) z -= 0.004 * p.temple * G2(ax, y, 0.072, 0.035, 0.012, 0.03);  // narrow temples
   // the nose: a ridge from the bridge down to the tip, wider as it goes, the tip, the wings, turning back under the tip
   const N = p.nose ?? 1, NB = p.noseBulb || 1;
   if (y < 0.012 && y > -0.06) {
@@ -108,8 +112,8 @@ function faceZ(x, y, p) {
 }
 // where the surface is, for a direction d from the centre of the skull
 function shapePoint(d, p) {
-  let x = SK.hw * d.x, y = SK.cy + SK.hh * d.y, z = SK.cz + SK.hd * d.z;
-  const low = smooth(-0.02, -0.14, y);
+  let x = SK.hw * (p.wid || 1) * d.x, y = SK.cy + SK.hh * d.y, z = SK.cz + SK.hd * d.z;
+  const low = smooth(-0.02, -0.14 * (p.lowY || 1), y);
   x *= 1 - 0.22 * low;                                               // the lower head narrows to the jaw and the neck
   if (d.z > 0) z = SK.cz + (z - SK.cz) * (0.72 - 0.3 * low);        // in front the skull sits back behind the face
   z -= 0.012 * smooth(0.05, 0.15, y) * Math.max(0, d.z);             // the forehead slopes back into the crown
@@ -117,7 +121,7 @@ function shapePoint(d, p) {
   return new THREE.Vector3(x, y, z);
 }
 function sculptGeo(p) {
-  const geo = new THREE.SphereGeometry(1, 160, 112), pos = geo.attributes.position, uv = geo.attributes.uv, v = new THREE.Vector3();
+  const geo = p.lod ? new THREE.SphereGeometry(1, 72, 52) : new THREE.SphereGeometry(1, 160, 112), pos = geo.attributes.position, uv = geo.attributes.uv, v = new THREE.Vector3();
   for (let i = 0; i < pos.count; i++) {
     v.fromBufferAttribute(pos, i).normalize();
     const q = shapePoint(v, p); pos.setXYZ(i, q.x, q.y, q.z);
@@ -141,7 +145,7 @@ function hairlineY(q) {
   return 0.02 + (-0.095 - 0.02) * smooth(1.6, 2.1, a);
 }
 function hairGeo(p) {
-  const geo = new THREE.SphereGeometry(1, 160, 100), pos = geo.attributes.position, v = new THREE.Vector3(), c = new THREE.Vector3(0, SK.cy, SK.cz);
+  const geo = p.lod ? new THREE.SphereGeometry(1, 72, 48) : new THREE.SphereGeometry(1, 160, 100), pos = geo.attributes.position, v = new THREE.Vector3(), c = new THREE.Vector3(0, SK.cy, SK.cz);
   for (let i = 0; i < pos.count; i++) {
     v.fromBufferAttribute(pos, i).normalize();
     let q = shapePoint(v, p), h = hairlineY(q);
@@ -276,11 +280,12 @@ function paintOld(spec, style) {
 // ---------------------------------------------------------------- the face, made up (on the front-projected texture)
 // The texture is 256 x 256 (drawn at 4x): a point (x, y) on the face, in metres, is at (128 + x / PS, 128 - (y - PY) / PS).
 const PS = 0.0009, PY = -0.02;
-function makeUp(spec, style) {
-  const F = spec.face || {}, p = P[style], base = skinOf(spec, style);
+function makeUp(spec, style, p = P[style]) {
+  const F = spec.face || {}, base = skinOf(spec, style), E = spec.eyeShape || {};
   return canvasTex(1024, 1024, (g) => {
     g.scale(4, 4);
-    const X = (x) => 128 + x / PS, Y = (y) => 128 - (y - PY) / PS, L = (m) => m / PS;
+    const wid = p.wid || 1, lowY = p.lowY || 1; // the features move with the face's shape
+    const X = (x) => 128 + x * wid / PS, Y = (y) => 128 - ((y < 0 ? y * lowY : y) - PY) / PS, L = (m) => m / PS;
     const soft = (x, y, rx, ry, col, rot = 0) => { g.save(); g.translate(X(x), Y(y)); g.rotate(rot); g.scale(1, ry / rx); const gr = g.createRadialGradient(0, 0, 0, 0, 0, L(rx)); gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(-L(rx), -L(rx), L(rx) * 2, L(rx) * 2); g.restore(); };
     const path = (pts, close) => { g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(X(x), Y(y)) : g.moveTo(X(x), Y(y)))); if (close) g.closePath(); };
     const quad = (x0, y0, x1, y1, x2, y2) => { g.beginPath(); g.moveTo(X(x0), Y(y0)); g.quadraticCurveTo(X(x1), Y(y1), X(x2), Y(y2)); };
@@ -314,7 +319,7 @@ function makeUp(spec, style) {
     if (F.eyeshadow && style !== 'opera') for (const s of [-1, 1]) soft(s * (EYE_X + 0.004), 0.006, 0.017, 0.009, F.eyeshadow, s * -0.3);
     const er = 0.0122 * (p.eyeK || 1), line = F.line || '#140806';
     for (const s of [-1, 1]) {
-      const ex = s * EYE_X;
+      const ex = s * EYE_X * (anime ? (E.gap || 1) * 1.1 : 1);
       if (!anime) {
         // glass eyes sit in the sockets: paint the dark wing out from the outer corner and the crease above the lid
         const wing = style === 'opera' ? 1.6 : style === 'film' ? 0.3 : style === 'wood' ? 1.2 : style === 'drama' ? (F.fem ? 0.55 : 0.2) : 1;
@@ -324,22 +329,25 @@ function makeUp(spec, style) {
         quad(ex - s * er * 0.95, 0.0065, ex, 0.0115 + er * 0.25, ex + s * er * 1.05, 0.007); g.stroke();
       } else {
         // anime: a big painted eye, its lids cutting it, a heavy upper lash line, two highlights
-        const w = 0.0175, h = 0.016, y = -0.002;
+        const w = (E.w || 0.0175) * 1.22, h = (E.h || 0.016) * 1.25, y = -0.002, ir = (E.iris || 1) * 1.22, lw = E.lash || 1, ex0 = ex; // anime eyes: bigger than life
+        g.save(); g.translate(X(ex0), Y(y)); g.rotate(-s * (E.tilt || 0)); g.translate(-X(ex0), -Y(y)); // the slant of the eye
         g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(X(ex), Y(y), L(w), L(h), 0, 0, Math.PI * 2); g.fill();
         const gr = g.createLinearGradient(0, Y(y + h), 0, Y(y - h)); gr.addColorStop(0, '#0a0610'); gr.addColorStop(0.55, F.iris && F.iris !== '#2a1a14' ? F.iris : '#5a3424'); gr.addColorStop(1, '#d8a070');
-        g.fillStyle = gr; g.beginPath(); g.ellipse(X(ex + s * 0.001), Y(y - 0.001), L(0.0095), L(0.0135), 0, 0, Math.PI * 2); g.fill();
-        g.fillStyle = F.pupil && F.pupil !== '#050303' ? F.pupil : '#0a0408'; g.beginPath(); g.ellipse(X(ex + s * 0.001), Y(y - 0.001), L(0.0042), L(0.0062), 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = gr; g.beginPath(); g.ellipse(X(ex + s * 0.001), Y(y - 0.001), L(0.0095 * ir), L(Math.min(h * 0.92, 0.0135 * ir)), 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = F.pupil && F.pupil !== '#050303' ? F.pupil : '#0a0408'; g.beginPath(); g.ellipse(X(ex + s * 0.001), Y(y - 0.001), L(0.0042 * ir * (E.sharp ? 0.6 : 1)), L(Math.min(h * 0.5, 0.0062 * ir)), 0, 0, Math.PI * 2); g.fill();
         g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(X(ex - 0.003), Y(y + 0.005), L(0.0032), L(0.004), 0, 0, Math.PI * 2); g.fill(); g.beginPath(); g.arc(X(ex + 0.004), Y(y - 0.006), L(0.0016), 0, Math.PI * 2); g.fill();
         g.fillStyle = base;
         g.beginPath(); g.moveTo(X(ex - w * 1.3), Y(y + h * 1.5)); g.lineTo(X(ex + w * 1.3), Y(y + h * 1.5)); g.lineTo(X(ex + s * w * 1.2), Y(y + 0.004)); g.quadraticCurveTo(X(ex), Y(y + h * 1.2), X(ex - s * w * 1.2), Y(y + 0.001)); g.fill();
         g.beginPath(); g.moveTo(X(ex - w * 1.3), Y(y - h * 1.4)); g.lineTo(X(ex + w * 1.3), Y(y - h * 1.4)); g.lineTo(X(ex + s * w * 1.1), Y(y - 0.007)); g.quadraticCurveTo(X(ex), Y(y - h * 1.15), X(ex - s * w * 1.1), Y(y - 0.006)); g.fill();
-        g.strokeStyle = line; g.lineCap = 'round'; g.lineWidth = 2.6;
+        g.strokeStyle = line; g.lineCap = 'round'; g.lineWidth = 2.6 * lw;
         g.beginPath(); g.moveTo(X(ex - s * w * 1.15), Y(y + 0.0015)); g.quadraticCurveTo(X(ex), Y(y + h * 1.22), X(ex + s * w * 1.2), Y(y + 0.005)); g.lineTo(X(ex + s * w * 1.45), Y(y + 0.008)); g.stroke();
-        g.lineWidth = 0.9; quad(ex - s * w * 0.8, y - 0.011, ex + s * 0.002, y - h * 1.12, ex + s * w * 1.05, y - 0.006); g.stroke();
+        g.lineWidth = 0.9; quad(ex - s * w * 0.8, y - h * 0.68, ex + s * 0.002, y - h * 1.12, ex + s * w * 1.05, y - h * 0.38); g.stroke();
+        g.restore();
       }
       // the brows, hair by hair (or in one stroke for the painted styles): sword-blade, fine and arched, or a demon's
       const bw = { pili: 0.8, wood: 1.4, opera: 1.2, anime: 0.8, film: 1.3, drama: 1.0 }[style] || 1;
-      const B = F.brow === 'thick' ? [[0.012, 0.016], [0.033, 0.0235], [0.058, 0.026], 3.6] : F.brow === 'fine' ? [[0.015, 0.02], [0.033, 0.029], [0.053, 0.022], 1.6] : F.brow === 'demon' ? [[0.013, 0.014], [0.036, 0.024], [0.062, 0.042], 3.0] : [[0.014, 0.017], [0.034, 0.025], [0.058, 0.034], 2.6];
+      const brow = anime && E.brow ? E.brow : F.brow;
+      const B = brow === 'thick' ? [[0.012, 0.016], [0.033, 0.0235], [0.058, 0.026], 3.6] : brow === 'fine' ? [[0.015, 0.02], [0.033, 0.029], [0.053, 0.022], 1.6] : brow === 'demon' ? [[0.013, 0.014], [0.036, 0.024], [0.062, 0.042], 3.0] : [[0.014, 0.017], [0.034, 0.025], [0.058, 0.034], 2.6];
       const pt = (t) => { const [a, b, c] = B; return [s * ((1 - t) ** 2 * a[0] + 2 * t * (1 - t) * b[0] + t * t * c[0]), (1 - t) ** 2 * a[1] + 2 * t * (1 - t) * b[1] + t * t * c[1]]; };
       g.strokeStyle = F.browColor || (style === 'film' ? '#3a2418' : '#100604'); g.lineCap = 'round';
       const hairs = style === 'pili' || style === 'film' || style === 'opera' || style === 'drama';
@@ -350,11 +358,18 @@ function makeUp(spec, style) {
       }
     }
     // the nose: a little shade beside the bridge, the nostrils
-    if (anime) { g.fillStyle = 'rgba(180,100,90,0.5)'; g.beginPath(); g.ellipse(X(-0.002), Y(-0.042), L(0.002), L(0.001), 0, 0, Math.PI * 2); g.fill(); }
+    if (anime && E.nose === 'line') { g.strokeStyle = 'rgba(170,95,85,0.55)'; g.lineWidth = 0.8; quad(-0.003, -0.025, -0.001, -0.036, -0.004, -0.043); g.stroke(); }
+    else if (anime) { g.fillStyle = 'rgba(180,100,90,0.5)'; g.beginPath(); g.ellipse(X(-0.002), Y(-0.042), L(0.002), L(0.001), 0, 0, Math.PI * 2); g.fill(); }
     else { soft(-0.008, -0.02, 0.003, 0.014, 'rgba(150,80,70,0.18)'); for (const s of [-1, 1]) soft(s * 0.0065, -0.047, 0.0028, 0.0016, 'rgba(80,25,25,0.75)', s * 0.4); }
     // the mouth: the lips in their colour, the line between them darker, a gleam on the lower lip
     const lip = F.lip || '#b42828', mw = 0.022 * (p.mouthW || 1) * (F.male ? 1.08 : 1);
-    if (anime) { g.strokeStyle = 'rgba(120,40,40,0.8)'; g.lineWidth = 1.2; quad(-0.009, -0.07, 0, -0.072, 0.009, -0.07); g.stroke(); }
+    if (anime) {
+      const m = E.mouth || 'line', mw2 = 0.009 * (p.mouthW || 1) * (m === 'small' ? 0.6 : 1);
+      g.strokeStyle = 'rgba(120,40,40,0.8)'; g.lineWidth = 1.2;
+      if (m === 'smile') { quad(-mw2 * 1.1, -0.068, 0, -0.0735, mw2 * 1.1, -0.068); g.stroke(); }
+      else { quad(-mw2, -0.07, 0, -0.072, mw2, -0.07); g.stroke(); }
+      if (F.lip && F.fem) { g.fillStyle = rgba(F.lip, 0.35); g.beginPath(); g.ellipse(X(0), Y(-0.0735), L(mw2 * 0.6), L(0.0018), 0, 0, Math.PI * 2); g.fill(); }
+    }
     else {
       const k = style === 'film' ? 0.55 : style === 'drama' && F.male ? 0.5 : 1;
       const gr = g.createLinearGradient(0, Y(-0.06), 0, Y(-0.082)); gr.addColorStop(0, rgba(lip, 0.85 * k)); gr.addColorStop(0.45, rgba(lip, 1 * k)); gr.addColorStop(1, rgba(lip, 0.7 * k));
@@ -399,12 +414,13 @@ export function headLook(spec) {
   const style = styleOf(spec), p00 = P[style], fem = spec.face?.fem, male = spec.face?.male;
   // a man's face: a heavier brow, a stronger nose, a wider jaw, a squarer chin
   const p0 = male && p00.sculpt ? { ...p00, brow: (p00.brow ?? 1) * 1.5, nose: (p00.nose ?? 1) * 1.08, jawW: (p00.jawW ?? 1) * 1.06, chin: (p00.chin ?? 1) * 1.35, chinPoint: (p00.chinPoint ?? 1) * 0.85, socket: (p00.socket ?? 1) * 1.15, eyeK: (p00.eyeK ?? 1) * 0.96 } : p00;
-  const p = fem && p0.sculpt ? { ...p0, nose: (p0.nose ?? 1) * 0.82, brow: (p0.brow ?? 1) * 0.4, jawW: (p0.jawW ?? 1) * 0.9, chin: (p0.chin ?? 1) * 0.7, chinPoint: (p0.chinPoint ?? 1) * 1.05, mouthW: (p0.mouthW ?? 1) * 0.9, eyeK: (p0.eyeK ?? 1) * 1.05 } : p0;
-  const face = p.sculpt ? makeUp(spec, style) : paintOld(spec, style);
+  const pS = p0.sculpt && (spec.faceShape || spec.lod) ? { ...p0, ...(spec.faceShape || {}), lod: !!spec.lod } : p0;
+  const p = fem && pS.sculpt ? { ...pS, nose: (pS.nose ?? 1) * 0.82, brow: (pS.brow ?? 1) * 0.4, jawW: (pS.jawW ?? 1) * 0.9, chin: (pS.chin ?? 1) * 0.7, chinPoint: (pS.chinPoint ?? 1) * 1.05, mouthW: (pS.mouthW ?? 1) * 0.9, eyeK: (pS.eyeK ?? 1) * 1.05 } : pS;
+  const face = p.sculpt ? makeUp(spec, style, p) : paintOld(spec, style);
   const skinCol = skinOf(spec, style);
   const toonM = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
   const mk = (o) => {
-    if (p.skin === 'cel') return new THREE.MeshToonMaterial({ gradientMap: CEL, emissive: '#ffffff', emissiveIntensity: 0.35, ...o, ...(o.map ? { emissiveMap: o.map } : { emissive: o.color }) });
+    if (p.skin === 'cel') return new THREE.MeshToonMaterial({ gradientMap: CEL, emissive: '#ffffff', emissiveIntensity: 0.22, ...o, ...(o.map ? { emissiveMap: o.map } : { emissive: o.color }) });
     if (style === 'paper') return toonM(o);
     if (p.skin === 'lacquer') return new THREE.MeshPhysicalMaterial({ roughness: 0.42, clearcoat: 1, clearcoatRoughness: 0.12, flatShading: !!p.flat, ...o });
     if (p.skin === 'powder') return new THREE.MeshPhysicalMaterial({ roughness: 0.55, sheen: 0.6, sheenColor: '#ffd8e0', sheenRoughness: 0.5, clearcoat: 0.25, clearcoatRoughness: 0.4, ...o });

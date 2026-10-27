@@ -7,7 +7,7 @@
 // gem}, robe {base, pattern, ink, trim, inner, sleeve}, cape, ribbons, weapons {R, L}, scale
 import * as THREE from '../../lib/three.module.min.js';
 import { TOON } from '../toon.js?v=1';
-import { headLook, addHead, lockAt } from './heads.js?v=6';
+import { headLook, addHead, lockAt } from './heads.js?v=9';
 
 const toon = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
 function canvasTex(w, h, paint) {
@@ -78,6 +78,8 @@ function weapon(type, M, side) {
 // ---------------------------------------------------------------- the puppet
 export function buildPuppet(spec) {
   const R = spec.robe || {}, H = spec.hair || {}, K = spec.scale || 1;
+  // the build (js/models/looks.js): L below the waist, T the torso, S shoulders, W waist, Hp hips, G girth, A arms, Hd head
+  const B = { L: 1, T: 1, S: 1, W: 1, Hp: 1, G: 1, A: 1, Hd: 1, ...(spec.body || {}) }, P0 = 0.62 * B.L;
   const look = headLook(spec);
   const M = {
     skin: look.skin, face: look.face,
@@ -94,27 +96,29 @@ export function buildPuppet(spec) {
   const tube = (r0, r1, h, n = 18) => new THREE.CylinderGeometry(r1, r0, h, n, 1, true); // r0 at the bottom
 
   // ---- the lower robe: a waist, two tiers of skirt that sway, an apron panel in front, gold hems
-  const pelvis = pivot(body, 0, 0.62, 0);
-  mesh(pelvis, new THREE.CylinderGeometry(0.17, 0.17, 0.07, 18), M.belt, 0, 0, 0);
+  const pelvis = pivot(body, 0, P0, 0);
+  mesh(pelvis, new THREE.CylinderGeometry(0.17, 0.17, 0.07, 18), M.belt, 0, 0, 0).scale.set(B.W, 1, B.W * B.G);
   mesh(pelvis, new THREE.CylinderGeometry(0.04, 0.04, 0.012, 14), M.jade, 0.0, -0.06, 0.17, Math.PI / 2);
-  const skirtU = pivot(pelvis, 0, -0.02, 0), skirtL = pivot(skirtU, 0, -0.3, 0);
+  const skirtU = pivot(pelvis, 0, -0.02, 0), skirtL = pivot(skirtU, 0, -0.3, 0); skirtU.scale.set(B.Hp, B.L, B.Hp * B.G);
   const sU = mesh(skirtU, tube(0.29 * (R.skirt || 1), 0.165, 0.3), M.silk, 0, -0.15, 0); sU.material = M.silk; sU.material.side = THREE.DoubleSide;
   mesh(skirtL, tube(0.42 * (R.skirt || 1), 0.29 * (R.skirt || 1), 0.32), M.silk, 0, -0.16, 0);
   mesh(skirtL, new THREE.TorusGeometry(0.42 * (R.skirt || 1), 0.012, 6, 28), M.trim, 0, -0.31, 0, Math.PI / 2);
-  const apron = pivot(pelvis, 0, -0.03, 0.17); mesh(apron, new THREE.PlaneGeometry(0.16, 0.5), M.silk2, 0, -0.25, 0.02).material.side = THREE.DoubleSide;
+  const apron = pivot(pelvis, 0, -0.03, 0.17 * B.Hp * B.G); apron.scale.set(1, B.L, 1); mesh(apron, new THREE.PlaneGeometry(0.16, 0.5), M.silk2, 0, -0.25, 0.02).material.side = THREE.DoubleSide;
   mesh(apron, new THREE.PlaneGeometry(0.17, 0.03), M.trim, 0, -0.5, 0.025);
   // ---- the chest: a tapered robe, the collar crossed right over left, shoulders
   const torso = pivot(pelvis, 0, 0.03, 0);
-  const chest = mesh(torso, new THREE.CylinderGeometry(0.21, 0.155, 0.42, 18), M.silk, 0, 0.21, 0); chest.scale.z = 0.72;
-  mesh(torso, new THREE.SphereGeometry(0.21, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), M.silk, 0, 0.41, 0).scale.set(1, 0.35, 0.72);
+  const chest = mesh(torso, new THREE.CylinderGeometry(0.21 * B.S, 0.155 * B.W, 0.42 * B.T, 18), M.silk, 0, 0.21 * B.T, 0); chest.scale.z = 0.72 * B.G;
+  mesh(torso, new THREE.SphereGeometry(0.21 * B.S, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), M.silk, 0, 0.41 * B.T, 0).scale.set(1, 0.35, 0.72 * B.G);
+  // what is worn over the chest follows its build: a group scaled to it
+  const dress = pivot(torso, 0, 0, 0); dress.scale.set((B.S + B.W) / 2, B.T, B.G);
   for (const s of [-1, 1]) { // the crossed collar: on each side a band from the neck down to below the breastbone
-    mesh(torso, new THREE.BoxGeometry(0.055, 0.27, 0.008), M.silk2, s * 0.03, 0.352, 0.148, 0.09, 0, -s * 0.36);
-    mesh(torso, new THREE.BoxGeometry(0.026, 0.28, 0.01), M.trim, s * 0.056, 0.35, 0.149, 0.09, 0, -s * 0.36);
+    mesh(dress, new THREE.BoxGeometry(0.055, 0.27, 0.008), M.silk2, s * 0.03, 0.352, 0.148, 0.09, 0, -s * 0.36);
+    mesh(dress, new THREE.BoxGeometry(0.026, 0.28, 0.01), M.trim, s * 0.056, 0.35, 0.149, 0.09, 0, -s * 0.36);
   }
-  mesh(torso, new THREE.CylinderGeometry(0.05, 0.06, 0.07, 10), M.skin, 0, 0.47, 0);
-  if (spec.armor) for (const s of [-1, 1]) mesh(torso, new THREE.SphereGeometry(0.11, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.gold, s * 0.2, 0.39, 0).scale.set(1.1, 0.6, 1);
+  mesh(torso, new THREE.CylinderGeometry(0.05, 0.06, 0.07, 10), M.skin, 0, 0.47 * B.T, 0);
+  if (spec.armor) for (const s of [-1, 1]) mesh(torso, new THREE.SphereGeometry(0.11, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.gold, s * 0.2 * B.S, 0.39 * B.T, 0).scale.set(1.1 * B.S, 0.6, B.G);
   // ---- the head: big, carved, painted; hair over it; a crown
-  const neck = pivot(torso, 0, 0.5, 0), head = pivot(neck, 0, 0.0, 0);
+  const neck = pivot(torso, 0, 0.5 * B.T, 0), head = pivot(neck, 0, 0.0, 0); head.scale.setScalar(B.Hd);
   addHead(head, spec, look, mesh); // the skull, the face, the eyes, the hair over it: js/models/heads.js, in the chosen style
   const crown = pivot(head, 0, 0.29, -0.03), C = spec.crown || {};
   if (C.type === 'horns') {
@@ -171,25 +175,25 @@ export function buildPuppet(spec) {
   // ---- arms: shoulder, upper arm (in its sleeve), elbow, a wide sleeve that hangs, a small hand
   const SW = R.sleeve || 1;
   const arm = (side) => {
-    const sh = pivot(torso, side * 0.21, 0.37, 0);
-    mesh(sh, new THREE.SphereGeometry(0.075, 12, 8), M.silk, 0, 0, 0);
+    const sh = pivot(torso, side * 0.21 * B.S, 0.37 * B.T, 0), g = 0.8 + 0.2 * B.G, ua = 0.25 * B.A, fa = 0.2 * B.A;
+    mesh(sh, new THREE.SphereGeometry(0.075 * g, 12, 8), M.silk, 0, 0, 0);
     const up = pivot(sh, 0, 0, 0);
-    mesh(up, tube(0.095 * SW, 0.075, 0.25), M.silk, 0, -0.125, 0).material.side = THREE.DoubleSide;
-    const el = pivot(up, 0, -0.25, 0);
-    mesh(el, tube(0.1 * SW, 0.08, 0.2), M.silk, 0, -0.1, 0);
-    mesh(el, new THREE.TorusGeometry(0.1 * SW, 0.005, 6, 18), M.trim, 0, -0.2, 0, Math.PI / 2);
+    mesh(up, tube(0.095 * SW * g, 0.075 * g, ua), M.silk, 0, -ua / 2, 0).material.side = THREE.DoubleSide;
+    const el = pivot(up, 0, -ua, 0);
+    mesh(el, tube(0.1 * SW * g, 0.08 * g, fa), M.silk, 0, -fa / 2, 0);
+    mesh(el, new THREE.TorusGeometry(0.1 * SW * g, 0.005, 6, 18), M.trim, 0, -fa, 0, Math.PI / 2);
     // the long hanging part of the sleeve, below the forearm, on its own joint
     const drop = pivot(el, 0, -0.12, -0.02); mesh(drop, new THREE.PlaneGeometry(0.24 * SW, 0.34 * SW), M.silk, 0, -0.17 * SW, 0).material.side = THREE.DoubleSide;
     mesh(drop, new THREE.PlaneGeometry(0.25 * SW, 0.02), M.trim, 0, -0.34 * SW, 0.002);
-    const wr = pivot(el, 0, -0.2, 0);
+    const wr = pivot(el, 0, -fa, 0);
     mesh(wr, new THREE.BoxGeometry(0.055, 0.075, 0.035), M.skin, 0, -0.045, 0.004); mesh(wr, new THREE.BoxGeometry(0.018, 0.04, 0.018), M.skin, -side * 0.032, -0.03, 0.02, 0, 0, side * 0.5);
     const hand = pivot(wr, 0, -0.06, 0.01);
     return { sh, up, el, wr, hand, drop, side };
   };
   const armR = arm(1), armL = arm(-1);
   // ---- a cape, or silk ribbons flowing from the shoulders
-  const cape = spec.cape ? chain(torso, 0, 0.42, -0.13, 4, 0.2, 0.52, M.cape, 0.98) : [];
-  const ribbonsBody = spec.ribbons ? [-1, 1].map((s) => chain(torso, s * 0.2, 0.38, -0.05, 6, 0.13, 0.05, M.ribbon, 0.97)) : [];
+  const cape = spec.cape ? chain(torso, 0, 0.42 * B.T, -0.13 * B.G, 4, 0.2, 0.52, M.cape, 0.98) : [];
+  const ribbonsBody = spec.ribbons ? [-1, 1].map((s) => chain(torso, s * 0.2 * B.S, 0.38 * B.T, -0.05, 6, 0.13, 0.05, M.ribbon, 0.97)) : [];
   // ---- what a swordsman of the dramas wears: earrings, a rough cloak over the shoulders, a sash across, a sword on the back
   if (spec.earrings) for (const s of [-1, 1]) {
     mesh(head, new THREE.SphereGeometry(0.0035, 8, 6), M.gold, s * 0.084, 0.097, -0.012);
@@ -198,16 +202,16 @@ export function buildPuppet(spec) {
   }
   if (spec.shawl) {
     const sh = toon({ map: silkTex({ base: spec.shawl.color, pattern: 'weave' }, 5), side: THREE.DoubleSide });
-    const cl = mesh(torso, new THREE.CylinderGeometry(0.16, 0.3, 0.32, 28, 1, true, Math.PI * 0.17, Math.PI * 1.66), sh, 0, 0.34, -0.005, 0, 0, -0.1); cl.scale.z = 0.8; // open at the front, over the collar
+    const cl = mesh(dress, new THREE.CylinderGeometry(0.16, 0.3, 0.32, 28, 1, true, Math.PI * 0.17, Math.PI * 1.66), sh, 0, 0.34, -0.005, 0, 0, -0.1); cl.scale.z = 0.8; // open at the front, over the collar
   }
   if (spec.sash) {
     const sm = toon({ map: silkTex({ base: spec.sash, pattern: 'weave' }, 9) });
-    mesh(torso, new THREE.BoxGeometry(0.05, 0.6, 0.014), sm, 0.0, 0.25, 0.166, -0.12, 0, -0.62);
-    mesh(torso, new THREE.BoxGeometry(0.05, 0.6, 0.014), sm, 0.0, 0.25, -0.166, 0.12, 0, 0.62);
-    mesh(torso, new THREE.TorusGeometry(0.03, 0.012, 6, 12), sm, 0.13, 0.43, 0.06, 0.4, 0.6, 0); // the knot at the shoulder
+    mesh(dress, new THREE.BoxGeometry(0.05, 0.6, 0.014), sm, 0.0, 0.25, 0.166, -0.12, 0, -0.62);
+    mesh(dress, new THREE.BoxGeometry(0.05, 0.6, 0.014), sm, 0.0, 0.25, -0.166, 0.12, 0, 0.62);
+    mesh(dress, new THREE.TorusGeometry(0.03, 0.012, 6, 12), sm, 0.13, 0.43, 0.06, 0.4, 0.6, 0); // the knot at the shoulder
   }
   if (spec.back) { // the big sword on the back: the hilt up over the right shoulder, the blade down to the left hip
-    const b = new THREE.Group(); b.position.set(0.02, 0.27, -0.185); b.rotation.set(Math.PI / 2, 0, -0.62, 'ZYX'); torso.add(b);
+    const b = new THREE.Group(); b.position.set(0.02, 0.27, -0.185); b.rotation.set(Math.PI / 2, 0, -0.62, 'ZYX'); dress.add(b);
     const leather = toon({ color: '#1e1a1c' }), metal = toon({ color: '#3a3a40' });
     mesh(b, new THREE.BoxGeometry(0.075, 0.03, 0.74), leather, 0, 0, 0.3);
     for (const z of [0.0, 0.32, 0.64]) mesh(b, new THREE.BoxGeometry(0.084, 0.036, 0.04), metal, 0, 0, z);
@@ -233,7 +237,7 @@ export function buildPuppet(spec) {
   void tmp;
   // ch: { lean, twist, roll, crouch, bob, headX, headY, headZ, R: {s, e, w, a}, L: {...} }; sec: the swinging cloth and hair
   function pose(ch, sec = {}) {
-    pelvis.position.y = 0.62 - 0.16 * (ch.crouch || 0) + (ch.bob || 0);
+    pelvis.position.y = P0 - 0.16 * B.L * (ch.crouch || 0) + (ch.bob || 0);
     pelvis.rotation.set((ch.lean || 0) * 0.35, (ch.twist || 0) * 0.3, (ch.roll || 0) * 0.4);
     torso.rotation.set((ch.lean || 0) * 0.65, (ch.twist || 0) * 0.7, (ch.roll || 0) * 0.6);
     head.rotation.set(ch.headX || 0, ch.headY || 0, ch.headZ || 0);

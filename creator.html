@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>角色創作 Character Maker</title>
+  <meta name="description" content="《掌中劍》日系風格角色創作：50 種臉型、20 種體格，任意組合，可以轉動預覽。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎎%3C/text%3E%3C/svg%3E">
+  <style>
+    :root { --bg: #140a0c; --card: #1e1214; --line: #3a2428; --ink: #f6eee0; --dim: #b8a898; --gold: #e8c060; --red: #9a1418; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 'Noto Sans TC', system-ui, sans-serif; }
+    header { padding: 16px 16px 4px; max-width: 1400px; margin: 0 auto; }
+    h1 { margin: 0 0 2px; font-size: 1.45em; color: var(--gold); letter-spacing: 0.08em; }
+    header p { margin: 0 0 6px; color: var(--dim); }
+    .wrap { display: grid; grid-template-columns: minmax(280px, 420px) 1fr; gap: 16px; padding: 8px 16px 32px; max-width: 1400px; margin: 0 auto; align-items: start; }
+    @media (max-width: 820px) { .wrap { grid-template-columns: 1fr; } }
+    .stage { position: sticky; top: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    #view { width: 100%; aspect-ratio: 3 / 4; display: block; touch-action: none; cursor: grab; }
+    .now { padding: 10px 12px 12px; }
+    .now b { color: var(--gold); }
+    .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0; }
+    .row span { color: var(--dim); margin-right: 2px; }
+    button { font: inherit; color: var(--ink); background: #2a1a1c; border: 1px solid #4a3034; border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+    button.on { background: var(--red); border-color: var(--gold); }
+    h2 { font-size: 1.05em; margin: 4px 0 8px; color: var(--gold); }
+    h2 small { color: var(--dim); font-weight: normal; margin-left: 8px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-bottom: 18px; }
+    .grid.bodies { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+    .tile { background: var(--card); border: 2px solid var(--line); border-radius: 8px; padding: 0; overflow: hidden; text-align: center; color: var(--dim); font-size: 0.78em; line-height: 1.25; }
+    .tile.on { border-color: var(--gold); color: var(--ink); }
+    .tile img, .tile i { display: block; width: 100%; aspect-ratio: 1; background: #24161a; }
+    .grid.bodies .tile img, .grid.bodies .tile i { aspect-ratio: 3 / 4; }
+    .tile div { padding: 3px 2px 5px; }
+    .tile em { font-style: normal; color: var(--gold); margin-right: 3px; }
+    a { color: var(--gold); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>角色創作 · Character maker</h1>
+    <p>日系風格。50 種臉型 × 20 種體格，任選組合；拖曳預覽可以轉動。網址會記住你的選擇，可以直接分享。<br>
+      Anime style: 50 faces × 20 builds, any combination. Drag the preview to turn it; the address keeps your choice. <a href="styles.html">風格比較 Styles</a></p>
+  </header>
+  <div class="wrap">
+    <div class="stage">
+      <canvas id="view"></canvas>
+      <div class="now">
+        <div>臉型 <b id="fn"></b></div>
+        <div>體格 <b id="bn"></b></div>
+        <div class="row"><span>服裝</span><span id="outfits"></span></div>
+        <div class="row"><span>鏡頭</span><button data-shot="face">臉</button><button data-shot="bust">半身</button><button data-shot="full" class="on">全身</button>
+          <button id="rnd" style="margin-left:auto">🎲 隨機</button></div>
+      </div>
+    </div>
+    <main>
+      <h2>臉型 Faces<small>10 種輪廓 × 5 種眼型</small></h2>
+      <div class="grid faces" id="faces"></div>
+      <h2>體格 Builds<small>4 種身高 × 5 種身形</small></h2>
+      <div class="grid bodies" id="bodies"></div>
+    </main>
+  </div>
+  <script src="/hub.js" defer data-pos="top-right"></script>
+  <script type="module" src="js/creator.js?v=1"></script>
+</body>
+</html>

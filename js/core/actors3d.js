@@ -5,7 +5,7 @@
 // Named points for the effects and the cameras: chest, head, eye, tipR, tipL, handR, handL, shoulderR, shoulderL, root, front
 import * as THREE from '../../lib/three.module.min.js';
 import { CHARACTERS } from '../cast/characters.js?v=3';
-import { buildPuppet } from '../models/puppet.js?v=6';
+import { buildPuppet } from '../models/puppet.js?v=9';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const cl = (v, a = -1, b = 1) => Math.max(a, Math.min(b, v));

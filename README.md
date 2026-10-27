@@ -18,6 +18,10 @@ swinging after them.
 Play: https://ywchen0711.github.io/budaixi/ (space to play or pause, ← → to skip, Chinese or English subtitles and
 voices; `?t=60` starts at second 60, `?lang=en` in English).
 
+Also: [styles.html](https://ywchen0711.github.io/budaixi/styles.html) compares the head styles side by side, and
+[creator.html](https://ywchen0711.github.io/budaixi/creator.html) makes characters in the anime style: 50 faces (10
+outlines × 5 kinds of eyes) on 20 builds (4 heights × 5 frames), in any of the cast's costumes (`js/models/looks.js`).
+
 ## How it is built
 
 | | |
