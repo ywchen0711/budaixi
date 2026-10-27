@@ -1,0 +1,2706 @@
+{
+ "ep": "ep1",
+ "LEN": 292,
+ "filmLen": 300.10666666666674,
+ "warp": [
+  [
+   30.7,
+   30.759999999999998,
+   0.2,
+   "stop"
+  ],
+  [
+   35.9,
+   35.96,
+   0.2,
+   "stop"
+  ],
+  [
+   39.95,
+   40.010000000000005,
+   0.2,
+   "stop"
+  ],
+  [
+   41.6,
+   41.660000000000004,
+   0.2,
+   "stop"
+  ],
+  [
+   44,
+   44.06,
+   0.2,
+   "stop"
+  ],
+  [
+   78.8,
+   78.86,
+   0.2,
+   "stop"
+  ],
+  [
+   82.8,
+   82.86,
+   0.2,
+   "stop"
+  ],
+  [
+   129.5,
+   129.56,
+   0.2,
+   "stop"
+  ],
+  [
+   140.5,
+   140.56,
+   0.2,
+   "stop"
+  ],
+  [
+   141,
+   141.06,
+   0.2,
+   "stop"
+  ],
+  [
+   165.95,
+   166.01,
+   0.2,
+   "stop"
+  ],
+  [
+   230.4,
+   231.6,
+   0.25
+  ],
+  [
+   233.2,
+   234,
+   0.3
+  ]
+ ],
+ "T": {
+  "open": 2,
+  "yanRun": 15,
+  "envoys": 21.6,
+  "yeComes": 53,
+  "palm1": 86.2,
+  "wave1": 98.2,
+  "lingComes": 100,
+  "duel": 128.6,
+  "waves": 146.8,
+  "palm2": 157.2,
+  "frost": 165.95,
+  "sky": 176.2,
+  "cliff": 182.9,
+  "demons": 217.4,
+  "daggers": 224,
+  "moon": 229,
+  "strike": 233.25,
+  "fallOff": 242.2
+ },
+ "lines": {
+  "zh": [
+   [
+    2,
+    6.6,
+    "narrator",
+    "江湖風雨幾時休，一劍光寒十四州。"
+   ],
+   [
+    6.9,
+    11.6,
+    "narrator",
+    "月下竹林藏殺氣，掌中乾坤論恩仇。"
+   ],
+   [
+    18,
+    21.5,
+    "yan",
+    "天機劍譜……絕不能落入血蓮手中！"
+   ],
+   [
+    24.6,
+    27.4,
+    "envoy",
+    "燕飛霜，交出劍譜，留你全屍！"
+   ],
+   [
+    27.7,
+    29.3,
+    "yan",
+    "血蓮的狗，也配？"
+   ],
+   [
+    48,
+    50.6,
+    "yan",
+    "……還有人。出來！"
+   ],
+   [
+    51,
+    53,
+    "ye",
+    "哈哈哈哈……"
+   ],
+   [
+    58.6,
+    63,
+    "ye",
+    "血蓮開處萬骨枯，天下蒼生一念屠。"
+   ],
+   [
+    63.4,
+    68,
+    "ye",
+    "若問魔尊何處去，九幽門下盡我途。"
+   ],
+   [
+    68.5,
+    72.5,
+    "ye",
+    "燕飛霜，把劍譜交出來，本尊讓你死得痛快。"
+   ],
+   [
+    73,
+    75.3,
+    "yan",
+    "要劍譜，先問過我的刀！"
+   ],
+   [
+    84.6,
+    86,
+    "ye",
+    "血蓮掌！"
+   ],
+   [
+    95.6,
+    97.6,
+    "ye",
+    "去吧。"
+   ],
+   [
+    104.5,
+    109,
+    "ling",
+    "一劍霜寒照九州，白衣不染世間愁。"
+   ],
+   [
+    109.4,
+    114,
+    "ling",
+    "若問劍心何所在，月明千里一孤舟。"
+   ],
+   [
+    114.5,
+    118.8,
+    "ye",
+    "凌雲霄！十年前斷你師門，今日斷你性命！"
+   ],
+   [
+    119.3,
+    123.5,
+    "ling",
+    "十年前我留你一命，是我此生最大的錯。"
+   ],
+   [
+    123.8,
+    125.6,
+    "ling",
+    "燕姑娘，退下。"
+   ],
+   [
+    154.8,
+    157,
+    "ye",
+    "血蓮・九幽掌！"
+   ],
+   [
+    158.2,
+    159.6,
+    "yan",
+    "凌大俠！"
+   ],
+   [
+    163.2,
+    165.3,
+    "ling",
+    "霜天——一劍！"
+   ],
+   [
+    168.8,
+    172,
+    "ye",
+    "好……好一個凌雲霄！"
+   ],
+   [
+    172.4,
+    176,
+    "ye",
+    "陪本尊到九霄之上，再分生死！"
+   ],
+   [
+    188.6,
+    195.6,
+    "narrator",
+    "一輪明月，照盡江湖恩怨；一劍一掌，誰主沉浮？"
+   ],
+   [
+    214.6,
+    217,
+    "ye",
+    "萬魔——歸宗！"
+   ],
+   [
+    224.8,
+    227,
+    "yan",
+    "凌大俠，就是現在！"
+   ],
+   [
+    229.1,
+    230.4,
+    "ling",
+    "一劍——"
+   ],
+   [
+    232,
+    233.2,
+    "ling",
+    "月華！"
+   ],
+   [
+    238,
+    242.2,
+    "ye",
+    "哈……哈哈……本尊……不會就此……"
+   ],
+   [
+    248.2,
+    250.2,
+    "yan",
+    "他……死了嗎？"
+   ],
+   [
+    250.6,
+    255,
+    "ling",
+    "血蓮不死，江湖不寧。今夜，只是開始。"
+   ],
+   [
+    255.4,
+    258.4,
+    "yan",
+    "那天機劍譜……我們該怎麼辦？"
+   ],
+   [
+    258.8,
+    262,
+    "ling",
+    "先離開這裡。風，要變了。"
+   ],
+   [
+    266,
+    271.6,
+    "narrator",
+    "劍影月華今宵盡，江湖兒女幾人歸？"
+   ],
+   [
+    272,
+    278,
+    "narrator",
+    "欲知血蓮生死事，且待下回再分明。"
+   ]
+  ],
+  "en": [
+   [
+    2,
+    6.6,
+    "narrator",
+    "When will the storms of the rivers and lakes ever end? One sword’s cold light falls on fourteen provinces."
+   ],
+   [
+    6.9,
+    11.6,
+    "narrator",
+    "Death hides in the bamboo under the moon; in the palm of a hand, old debts are settled."
+   ],
+   [
+    18,
+    21.5,
+    "yan",
+    "The Heavenly Sword Manual... the Blood Lotus must never have it!"
+   ],
+   [
+    24.6,
+    27.4,
+    "envoy",
+    "Yan Feishuang! Give up the manual and we leave your body whole!"
+   ],
+   [
+    27.7,
+    29.3,
+    "yan",
+    "You? The Blood Lotus’s dogs?"
+   ],
+   [
+    48,
+    50.6,
+    "yan",
+    "...There is someone else. Show yourself!"
+   ],
+   [
+    51,
+    53,
+    "ye",
+    "Ha ha ha ha..."
+   ],
+   [
+    58.6,
+    63,
+    "ye",
+    "Where the blood lotus opens, ten thousand bones dry; a single thought of mine, and all beneath heaven is slaughtered."
+   ],
+   [
+    63.4,
+    68,
+    "ye",
+    "Ask where the Demon Lord goes: every gate of the Nine Netherworlds is my road."
+   ],
+   [
+    68.5,
+    72.5,
+    "ye",
+    "Yan Feishuang. Give me the manual, and I will let you die quickly."
+   ],
+   [
+    73,
+    75.3,
+    "yan",
+    "For the manual, ask my blades first!"
+   ],
+   [
+    84.6,
+    86,
+    "ye",
+    "Blood Lotus Palm!"
+   ],
+   [
+    95.6,
+    97.6,
+    "ye",
+    "Go now."
+   ],
+   [
+    104.5,
+    109,
+    "ling",
+    "One sword, frost-cold, over the nine provinces; a white robe the sorrows of the world cannot stain."
+   ],
+   [
+    109.4,
+    114,
+    "ling",
+    "Ask where the sword’s heart lies: a lone boat under a moon that shines a thousand miles."
+   ],
+   [
+    114.5,
+    118.8,
+    "ye",
+    "Ling Yunxiao! Ten years ago I ended your school; today I end your life!"
+   ],
+   [
+    119.3,
+    123.5,
+    "ling",
+    "Ten years ago I let you live. It was the greatest mistake of my life."
+   ],
+   [
+    123.8,
+    125.6,
+    "ling",
+    "Miss Yan. Stand back."
+   ],
+   [
+    154.8,
+    157,
+    "ye",
+    "Blood Lotus: Nine Netherworlds Palm!"
+   ],
+   [
+    158.2,
+    159.6,
+    "yan",
+    "Master Ling!"
+   ],
+   [
+    163.2,
+    165.3,
+    "ling",
+    "Frost Sky — One Sword!"
+   ],
+   [
+    168.8,
+    172,
+    "ye",
+    "Good... a fine swordsman, Ling Yunxiao!"
+   ],
+   [
+    172.4,
+    176,
+    "ye",
+    "Come with me, above the nine heavens, and we will see who dies!"
+   ],
+   [
+    188.6,
+    195.6,
+    "narrator",
+    "One bright moon over every grudge in the world; one sword, one palm: which will rise, and which will fall?"
+   ],
+   [
+    214.6,
+    217,
+    "ye",
+    "Ten Thousand Demons — Return to the Source!"
+   ],
+   [
+    224.8,
+    227,
+    "yan",
+    "Master Ling — now!"
+   ],
+   [
+    229.1,
+    230.4,
+    "ling",
+    "One Sword —"
+   ],
+   [
+    232,
+    233.2,
+    "ling",
+    "Moonlight!"
+   ],
+   [
+    238,
+    242.2,
+    "ye",
+    "Ha... ha ha... this is not... the end of me..."
+   ],
+   [
+    248.2,
+    250.2,
+    "yan",
+    "Is he... dead?"
+   ],
+   [
+    250.6,
+    255,
+    "ling",
+    "While the Blood Lotus lives, the world knows no peace. Tonight is only the beginning."
+   ],
+   [
+    255.4,
+    258.4,
+    "yan",
+    "And the sword manual... what do we do?"
+   ],
+   [
+    258.8,
+    262,
+    "ling",
+    "Leave this place first. The wind is turning."
+   ],
+   [
+    266,
+    271.6,
+    "narrator",
+    "The sword’s shadow and the moon’s light end with the night; of those who live by the sword, how many come home?"
+   ],
+   [
+    272,
+    278,
+    "narrator",
+    "Whether the Blood Lotus lives or dies, the next part will tell."
+   ]
+  ]
+ },
+ "voices": {
+  "ling": {
+   "zh": [
+    "zh-CN-YunxiNeural",
+    -4,
+    -6
+   ],
+   "en": [
+    "en-US-AndrewNeural",
+    -4,
+    -6
+   ],
+   "fx": "stage"
+  },
+  "yan": {
+   "zh": [
+    "zh-TW-HsiaoChenNeural",
+    0,
+    0
+   ],
+   "en": [
+    "en-US-AvaNeural",
+    0,
+    0
+   ],
+   "fx": "stage"
+  },
+  "ye": {
+   "zh": [
+    "zh-CN-YunyangNeural",
+    -30,
+    -14
+   ],
+   "en": [
+    "en-GB-RyanNeural",
+    -16,
+    -12
+   ],
+   "fx": "stage"
+  },
+  "envoy": {
+   "zh": [
+    "zh-CN-YunjianNeural",
+    -6,
+    6
+   ],
+   "en": [
+    "en-US-EricNeural",
+    -6,
+    6
+   ],
+   "fx": "stage"
+  },
+  "narrator": {
+   "zh": [
+    "zh-CN-YunjianNeural",
+    -16,
+    -10
+   ],
+   "en": [
+    "en-US-ChristopherNeural",
+    -10,
+    -10
+   ],
+   "fx": "narrator"
+  }
+ },
+ "cues": [
+  {
+   "t": 21.6,
+   "kind": "leap",
+   "by": "e1",
+   "k": 0.8
+  },
+  {
+   "t": 21.65,
+   "kind": "whoosh",
+   "by": "e1",
+   "k": 0.7
+  },
+  {
+   "t": 22,
+   "kind": "leap",
+   "by": "e2",
+   "k": 0.8
+  },
+  {
+   "t": 22.05,
+   "kind": "whoosh",
+   "by": "e2",
+   "k": 0.7
+  },
+  {
+   "t": 22.4,
+   "kind": "leap",
+   "by": "e3",
+   "k": 0.8
+  },
+  {
+   "t": 22.45,
+   "kind": "whoosh",
+   "by": "e3",
+   "k": 0.7
+  },
+  {
+   "t": 22.5,
+   "kind": "land",
+   "by": "e1",
+   "k": 1.1
+  },
+  {
+   "t": 22.8,
+   "kind": "leap",
+   "by": "e4",
+   "k": 0.8
+  },
+  {
+   "t": 22.85,
+   "kind": "whoosh",
+   "by": "e4",
+   "k": 0.7
+  },
+  {
+   "t": 22.9,
+   "kind": "land",
+   "by": "e2",
+   "k": 1.1
+  },
+  {
+   "t": 23.3,
+   "kind": "land",
+   "by": "e3",
+   "k": 1.1
+  },
+  {
+   "t": 23.7,
+   "kind": "land",
+   "by": "e4",
+   "k": 1.1
+  },
+  {
+   "t": 30,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 0.8
+  },
+  {
+   "t": 30.04,
+   "kind": "whoosh",
+   "by": "e1",
+   "k": 1
+  },
+  {
+   "t": 30.54,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 1.2
+  },
+  {
+   "t": 30.7,
+   "kind": "hit",
+   "by": "yan",
+   "k": 1.2
+  },
+  {
+   "t": 32.05,
+   "kind": "leap",
+   "by": "yan",
+   "k": 0.95
+  },
+  {
+   "t": 32.15,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 0.7
+  },
+  {
+   "t": 32.29,
+   "kind": "whoosh",
+   "by": "e2",
+   "k": 1
+  },
+  {
+   "t": 32.29,
+   "kind": "whoosh",
+   "by": "e3",
+   "k": 1
+  },
+  {
+   "t": 32.45,
+   "kind": "clash",
+   "by": "e2",
+   "k": 1
+  },
+  {
+   "t": 33.2,
+   "kind": "land",
+   "by": "yan",
+   "k": 0.6
+  },
+  {
+   "t": 33.39,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 1.1
+  },
+  {
+   "t": 33.55,
+   "kind": "hit",
+   "by": "yan",
+   "k": 1.1
+  },
+  {
+   "t": 35.74,
+   "kind": "whoosh",
+   "by": "e4",
+   "k": 1.2
+  },
+  {
+   "t": 35.9,
+   "kind": "clash",
+   "by": "e4",
+   "k": 1.2
+  },
+  {
+   "t": 36.1,
+   "kind": "qiup",
+   "by": "yan",
+   "t1": 37.3,
+   "k": 0.8
+  },
+  {
+   "t": 36.6,
+   "kind": "palm",
+   "by": "yan",
+   "t1": 36.88,
+   "k": 0.9
+  },
+  {
+   "t": 36.9,
+   "kind": "leap",
+   "by": "e4",
+   "k": 0.65
+  },
+  {
+   "t": 37.6,
+   "kind": "land",
+   "by": "e4",
+   "k": 1
+  },
+  {
+   "t": 38.74,
+   "kind": "whoosh",
+   "by": "e1",
+   "k": 1
+  },
+  {
+   "t": 38.9,
+   "kind": "clash",
+   "by": "e1",
+   "k": 1
+  },
+  {
+   "t": 39.25,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 0.8
+  },
+  {
+   "t": 39.79,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 1.3
+  },
+  {
+   "t": 39.95,
+   "kind": "hit",
+   "by": "yan",
+   "k": 1.3
+  },
+  {
+   "t": 40.84,
+   "kind": "whoosh",
+   "by": "e2",
+   "k": 1
+  },
+  {
+   "t": 41,
+   "kind": "clash",
+   "by": "e2",
+   "k": 1
+  },
+  {
+   "t": 41.44,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 1.4
+  },
+  {
+   "t": 41.6,
+   "kind": "hit",
+   "by": "yan",
+   "k": 1.4
+  },
+  {
+   "t": 43.14,
+   "kind": "whoosh",
+   "by": "e1",
+   "k": 1
+  },
+  {
+   "t": 43.3,
+   "kind": "clash",
+   "by": "e1",
+   "k": 1
+  },
+  {
+   "t": 43.84,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 1.4
+  },
+  {
+   "t": 44,
+   "kind": "hit",
+   "by": "yan",
+   "k": 1.4
+  },
+  {
+   "t": 45.6,
+   "kind": "missile",
+   "by": "yan",
+   "t1": 45.95,
+   "model": "micro",
+   "boom": 0,
+   "n": 4560
+  },
+  {
+   "t": 45.62,
+   "kind": "loose",
+   "by": "yan",
+   "t1": 52,
+   "k": 1
+  },
+  {
+   "t": 49.8,
+   "kind": "leaves",
+   "k": 1.6
+  },
+  {
+   "t": 52.8,
+   "kind": "qiup",
+   "by": "ye",
+   "t1": 68.5,
+   "k": 0.9
+  },
+  {
+   "t": 53,
+   "kind": "leap",
+   "by": "ye",
+   "k": 0.8
+  },
+  {
+   "t": 57,
+   "kind": "land",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 57,
+   "kind": "leaves",
+   "k": 1.2
+  },
+  {
+   "t": 57,
+   "kind": "qiburst",
+   "k": 0.8
+  },
+  {
+   "t": 76.04,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 1
+  },
+  {
+   "t": 76.2,
+   "kind": "clash",
+   "by": "yan",
+   "k": 1
+  },
+  {
+   "t": 76.74,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 1
+  },
+  {
+   "t": 76.9,
+   "kind": "clash",
+   "by": "yan",
+   "k": 1
+  },
+  {
+   "t": 77.44,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 1
+  },
+  {
+   "t": 77.6,
+   "kind": "clash",
+   "by": "yan",
+   "k": 1
+  },
+  {
+   "t": 78.05,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 0.8
+  },
+  {
+   "t": 78.64,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 1.2
+  },
+  {
+   "t": 78.8,
+   "kind": "clash",
+   "by": "yan",
+   "k": 1.2
+  },
+  {
+   "t": 79.44,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 79.6,
+   "kind": "hit",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 81.94,
+   "kind": "whoosh",
+   "by": "yan",
+   "k": 1
+  },
+  {
+   "t": 82.1,
+   "kind": "clash",
+   "by": "yan",
+   "k": 1
+  },
+  {
+   "t": 82.64,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1.2
+  },
+  {
+   "t": 82.8,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1.2
+  },
+  {
+   "t": 84.5,
+   "kind": "qiup",
+   "by": "ye",
+   "t1": 87.5,
+   "k": 1.4
+  },
+  {
+   "t": 86.2,
+   "kind": "palm",
+   "by": "ye",
+   "t1": 86.48,
+   "k": 1.3
+  },
+  {
+   "t": 86.5,
+   "kind": "leap",
+   "by": "yan",
+   "k": 0.74
+  },
+  {
+   "t": 87.5,
+   "kind": "land",
+   "by": "yan",
+   "k": 1.2
+  },
+  {
+   "t": 87.5,
+   "kind": "bamboo"
+  },
+  {
+   "t": 98.2,
+   "kind": "wave",
+   "by": "ling",
+   "t1": 98.75,
+   "k": 1.2
+  },
+  {
+   "t": 98.8,
+   "kind": "leap",
+   "by": "ye",
+   "k": 0.86
+  },
+  {
+   "t": 99.8,
+   "kind": "land",
+   "by": "ye",
+   "k": 0.6
+  },
+  {
+   "t": 100,
+   "kind": "leap",
+   "by": "ling",
+   "k": 0.8
+  },
+  {
+   "t": 100,
+   "kind": "qiup",
+   "by": "ling",
+   "t1": 104.5,
+   "k": 0.7
+  },
+  {
+   "t": 100.05,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 0.8
+  },
+  {
+   "t": 104,
+   "kind": "land",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 104,
+   "kind": "leaves",
+   "k": 1
+  },
+  {
+   "t": 104,
+   "kind": "qiburst",
+   "k": 0.6
+  },
+  {
+   "t": 129.34,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1.2
+  },
+  {
+   "t": 129.5,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1.2
+  },
+  {
+   "t": 130.14,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 130.3,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 130.84,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 131,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 131.45,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 0.8
+  },
+  {
+   "t": 131.94,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 0.8
+  },
+  {
+   "t": 132.1,
+   "kind": "hit",
+   "by": "ling",
+   "k": 0.8
+  },
+  {
+   "t": 133.24,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 133.4,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 133.45,
+   "kind": "bamboo"
+  },
+  {
+   "t": 133.74,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 133.9,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 134.19,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 134.35,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 134.64,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 134.8,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 134.85,
+   "kind": "bamboo"
+  },
+  {
+   "t": 135.14,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 135.3,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 135.59,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 135.75,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 136.09,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 136.25,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 136.3,
+   "kind": "bamboo"
+  },
+  {
+   "t": 136.54,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 136.7,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 139.6,
+   "kind": "leap",
+   "by": "ling",
+   "k": 1.5
+  },
+  {
+   "t": 139.7,
+   "kind": "leap",
+   "by": "ye",
+   "k": 1.5
+  },
+  {
+   "t": 140.34,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1.2
+  },
+  {
+   "t": 140.5,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1.2
+  },
+  {
+   "t": 140.84,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1.2
+  },
+  {
+   "t": 141,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1.2
+  },
+  {
+   "t": 141.05,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 0.7
+  },
+  {
+   "t": 141.05,
+   "kind": "bamboo"
+  },
+  {
+   "t": 141.9,
+   "kind": "land",
+   "by": "ling",
+   "k": 0.7
+  },
+  {
+   "t": 142,
+   "kind": "land",
+   "by": "ye",
+   "k": 0.7
+  },
+  {
+   "t": 145.74,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 145.94,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 146,
+   "kind": "wave",
+   "by": "ye",
+   "t1": 146.8,
+   "k": 1.3
+  },
+  {
+   "t": 146.2,
+   "kind": "wave",
+   "by": "ling",
+   "t1": 146.8,
+   "k": 1.3
+  },
+  {
+   "t": 146.8,
+   "kind": "qiburst",
+   "k": 2
+  },
+  {
+   "t": 146.8,
+   "kind": "shake",
+   "k": 0.15
+  },
+  {
+   "t": 146.8,
+   "kind": "flash",
+   "k": 0.55
+  },
+  {
+   "t": 150,
+   "kind": "qiup",
+   "by": "ye",
+   "t1": 157.6,
+   "k": 1.6
+  },
+  {
+   "t": 157.2,
+   "kind": "palm",
+   "by": "ye",
+   "t1": 157.48,
+   "k": 1.6
+  },
+  {
+   "t": 157.5,
+   "kind": "flash",
+   "k": 0.4
+  },
+  {
+   "t": 157.5,
+   "kind": "shake",
+   "k": 0.12
+  },
+  {
+   "t": 161,
+   "kind": "qiup",
+   "by": "ling",
+   "t1": 166.8,
+   "k": 1.5
+  },
+  {
+   "t": 165.79,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1.6
+  },
+  {
+   "t": 165.95,
+   "kind": "hit",
+   "by": "ling",
+   "k": 1.6
+  },
+  {
+   "t": 165.95,
+   "kind": "flash",
+   "k": 0.5
+  },
+  {
+   "t": 165.95,
+   "kind": "shake",
+   "k": 0.12
+  },
+  {
+   "t": 166.05,
+   "kind": "loose",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 167.6,
+   "kind": "qiup",
+   "by": "ye",
+   "t1": 181,
+   "k": 2
+  },
+  {
+   "t": 168,
+   "kind": "qiburst",
+   "k": 1.6
+  },
+  {
+   "t": 176.2,
+   "kind": "leap",
+   "by": "ye",
+   "k": 1.5
+  },
+  {
+   "t": 176.3,
+   "kind": "qiburst",
+   "k": 1.4
+  },
+  {
+   "t": 177,
+   "kind": "leap",
+   "by": "ling",
+   "k": 1.5
+  },
+  {
+   "t": 177.1,
+   "kind": "qiburst",
+   "k": 1
+  },
+  {
+   "t": 179.6,
+   "kind": "flash",
+   "k": 0.8
+  },
+  {
+   "t": 182.8,
+   "kind": "qiup",
+   "by": "ye",
+   "t1": 300,
+   "k": 0.8
+  },
+  {
+   "t": 182.9,
+   "kind": "leap",
+   "by": "ye",
+   "k": 0.8
+  },
+  {
+   "t": 185,
+   "kind": "land",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 185,
+   "kind": "leap",
+   "by": "ling",
+   "k": 0.8
+  },
+  {
+   "t": 185,
+   "kind": "qiburst",
+   "k": 0.8
+  },
+  {
+   "t": 185.05,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 0.8
+  },
+  {
+   "t": 187.2,
+   "kind": "land",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 187.2,
+   "kind": "qiburst",
+   "k": 0.6
+  },
+  {
+   "t": 197.54,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 197.7,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 198.24,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 198.4,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 198.94,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 199.1,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 199.74,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 199.9,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 200.44,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 200.6,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 201.14,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 201.3,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 202.04,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 202.2,
+   "kind": "clash",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 202.84,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 203,
+   "kind": "clash",
+   "by": "ye",
+   "k": 1.1
+  },
+  {
+   "t": 203.84,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 204,
+   "kind": "hit",
+   "by": "ling",
+   "k": 1.1
+  },
+  {
+   "t": 205,
+   "kind": "leap",
+   "by": "ling",
+   "k": 0.98
+  },
+  {
+   "t": 205.15,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 0.7
+  },
+  {
+   "t": 206.4,
+   "kind": "land",
+   "by": "ling",
+   "k": 0.6
+  },
+  {
+   "t": 210.5,
+   "kind": "qiup",
+   "by": "ye",
+   "t1": 219.8,
+   "k": 2.4
+  },
+  {
+   "t": 217.24,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 217.42,
+   "kind": "wave",
+   "by": "ye",
+   "t1": 217.82,
+   "k": 1.1
+  },
+  {
+   "t": 217.58,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 217.62,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 217.76,
+   "kind": "wave",
+   "by": "ye",
+   "t1": 218.16,
+   "k": 1.1
+  },
+  {
+   "t": 217.92,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 217.96,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 218.1,
+   "kind": "wave",
+   "by": "ye",
+   "t1": 218.5,
+   "k": 1.1
+  },
+  {
+   "t": 218.26,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 218.3,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 218.44,
+   "kind": "wave",
+   "by": "ye",
+   "t1": 218.84,
+   "k": 1.1
+  },
+  {
+   "t": 218.6,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 218.64,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 218.78,
+   "kind": "wave",
+   "by": "ye",
+   "t1": 219.18,
+   "k": 1.1
+  },
+  {
+   "t": 218.94,
+   "kind": "whoosh",
+   "by": "ye",
+   "k": 1
+  },
+  {
+   "t": 218.98,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 219.12,
+   "kind": "wave",
+   "by": "ye",
+   "t1": 219.52,
+   "k": 1.1
+  },
+  {
+   "t": 219.6,
+   "kind": "shake",
+   "k": 0.1
+  },
+  {
+   "t": 222.5,
+   "kind": "leap",
+   "by": "yan",
+   "k": 0.8
+  },
+  {
+   "t": 223.6,
+   "kind": "land",
+   "by": "yan",
+   "k": 1.1
+  },
+  {
+   "t": 224,
+   "kind": "missile",
+   "by": "yan",
+   "t1": 224.5,
+   "model": "micro",
+   "boom": 0,
+   "n": 22400
+  },
+  {
+   "t": 224.15,
+   "kind": "missile",
+   "by": "yan",
+   "t1": 224.65,
+   "model": "micro",
+   "boom": 0,
+   "n": 22415
+  },
+  {
+   "t": 227,
+   "kind": "qiup",
+   "by": "ling",
+   "t1": 236.5,
+   "k": 2.2
+  },
+  {
+   "t": 229,
+   "kind": "leap",
+   "by": "ling",
+   "k": 1.5
+  },
+  {
+   "t": 229.25,
+   "kind": "whoosh",
+   "by": "ling",
+   "k": 0.7
+  },
+  {
+   "t": 232.85,
+   "kind": "wave",
+   "by": "ling",
+   "t1": 233.25,
+   "k": 2.6
+  },
+  {
+   "t": 233.2,
+   "kind": "land",
+   "by": "ling",
+   "k": 1
+  },
+  {
+   "t": 233.3,
+   "kind": "qiburst",
+   "k": 2.4
+  },
+  {
+   "t": 233.3,
+   "kind": "flash",
+   "k": 0.7
+  },
+  {
+   "t": 233.3,
+   "kind": "shake",
+   "k": 0.2
+  },
+  {
+   "t": 239.6,
+   "kind": "sparks",
+   "t1": 242.2,
+   "k": 0.4
+  },
+  {
+   "t": 241.5,
+   "kind": "qiburst",
+   "k": 0.8
+  },
+  {
+   "t": 245.8,
+   "kind": "qiburst",
+   "k": 2
+  }
+ ],
+ "steps": [],
+ "jets": [],
+ "rods": [],
+ "helis": [],
+ "music": [
+  {
+   "luogu": "kaitai",
+   "t": 0.4,
+   "t1": 5.2
+  },
+  {
+   "luogu": "hit",
+   "t": 5.2,
+   "g": 1.2
+  },
+  {
+   "zheng": "Dm",
+   "t": 5.4,
+   "t1": 15,
+   "g": 0.5
+  },
+  {
+   "pad": "VC",
+   "n": "D2",
+   "t": 5.4,
+   "d": 10,
+   "g": 0.25
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 5.4,
+   "d": 10,
+   "g": 0.3
+  },
+  {
+   "line": "OC",
+   "g": 0.4,
+   "notes": [
+    [
+     "A4",
+     6,
+     1.2
+    ],
+    [
+     "D5",
+     7.3,
+     1.6
+    ],
+    [
+     "C5",
+     9,
+     0.6
+    ],
+    [
+     "A4",
+     9.7,
+     0.6
+    ],
+    [
+     "G4",
+     10.4,
+     1.4
+    ],
+    [
+     "A4",
+     12,
+     2.6
+    ]
+   ]
+  },
+  {
+   "luogu": "chase",
+   "t": 15,
+   "t1": 23.6
+  },
+  {
+   "line": "RC",
+   "g": 0.3,
+   "notes": [
+    [
+     "D5",
+     15.2,
+     0.25
+    ],
+    [
+     "F5",
+     15.5,
+     0.25
+    ],
+    [
+     "G5",
+     15.8,
+     0.25
+    ],
+    [
+     "A5",
+     16.1,
+     0.5
+    ],
+    [
+     "G5",
+     16.7,
+     0.25
+    ],
+    [
+     "F5",
+     17,
+     0.25
+    ],
+    [
+     "D5",
+     17.3,
+     0.5
+    ],
+    [
+     "C5",
+     17.9,
+     0.25
+    ],
+    [
+     "D5",
+     18.2,
+     0.8
+    ]
+   ]
+  },
+  {
+   "luogu": "hit",
+   "t": 23.6,
+   "g": 1.2
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 23.6,
+   "d": 5.6,
+   "g": 0.35
+  },
+  {
+   "zheng": "gliss",
+   "t": 24.4,
+   "g": 0.6
+  },
+  {
+   "luogu": "fight",
+   "t": 29.2,
+   "t1": 46.2
+  },
+  {
+   "luogu": "hit",
+   "t": 30.7,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 33.55,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 36.6,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 39.95,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 41.6,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 44,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 45.95,
+   "g": 0.8
+  },
+  {
+   "pad": "PS",
+   "n": "D4",
+   "t": 46.6,
+   "d": 4,
+   "g": 0.25
+  },
+  {
+   "pad": "PS",
+   "n": "A3",
+   "t": 48.4,
+   "d": 3.6,
+   "g": 0.2
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 50,
+   "d": 7.5,
+   "g": 0.4
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 50,
+   "d": 7.5,
+   "g": 0.4
+  },
+  {
+   "hit": "roll",
+   "t": 52,
+   "g": 0.5
+  },
+  {
+   "luogu": "hit",
+   "t": 57,
+   "g": 1.4
+  },
+  {
+   "hit": "gong",
+   "t": 57,
+   "g": 0.8
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 57.4,
+   "d": 11,
+   "g": 0.35
+  },
+  {
+   "pad": "VC",
+   "n": "A1",
+   "t": 57.4,
+   "d": 11,
+   "g": 0.25
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 58.4,
+   "d": 9,
+   "g": 0.22
+  },
+  {
+   "line": "PS",
+   "g": 0.3,
+   "notes": [
+    [
+     "D4",
+     58.6,
+     2
+    ],
+    [
+     "F4",
+     60.8,
+     1.2
+    ],
+    [
+     "Eb4",
+     62.2,
+     1.6
+    ],
+    [
+     "D4",
+     63.9,
+     2
+    ],
+    [
+     "C4",
+     66,
+     1.2
+    ],
+    [
+     "D4",
+     67.3,
+     1.6
+    ]
+   ]
+  },
+  {
+   "luogu": "hit",
+   "t": 63.2,
+   "g": 0.6
+  },
+  {
+   "luogu": "hit",
+   "t": 68,
+   "g": 1
+  },
+  {
+   "luogu": "fight",
+   "t": 75.2,
+   "t1": 86
+  },
+  {
+   "luogu": "hit",
+   "t": 76.2,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 77.6,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 78.8,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 79.6,
+   "g": 0.7
+  },
+  {
+   "luogu": "hit",
+   "t": 82.1,
+   "g": 0.7
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 84.4,
+   "d": 1.8,
+   "g": 0.3
+  },
+  {
+   "luogu": "hit",
+   "t": 86.4,
+   "g": 1.4
+  },
+  {
+   "hit": "gong",
+   "t": 86.4,
+   "g": 0.7
+  },
+  {
+   "pad": "PS",
+   "n": "A3",
+   "t": 88,
+   "d": 6,
+   "g": 0.2
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 92,
+   "d": 6.2,
+   "g": 0.35
+  },
+  {
+   "hit": "roll",
+   "t": 96,
+   "g": 0.4
+  },
+  {
+   "luogu": "hit",
+   "t": 98.75,
+   "g": 1.3
+  },
+  {
+   "zheng": "G",
+   "t": 100,
+   "t1": 125,
+   "g": 0.55
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 100,
+   "d": 14,
+   "g": 0.2
+  },
+  {
+   "pad": "VC",
+   "n": "G2",
+   "t": 100,
+   "d": 25,
+   "g": 0.22
+  },
+  {
+   "line": "OC",
+   "g": 0.45,
+   "notes": [
+    [
+     "D5",
+     104.6,
+     1
+    ],
+    [
+     "E5",
+     105.7,
+     0.5
+    ],
+    [
+     "G5",
+     106.3,
+     1.4
+    ],
+    [
+     "E5",
+     107.9,
+     0.6
+    ],
+    [
+     "D5",
+     108.6,
+     1.6
+    ],
+    [
+     "B4",
+     110.4,
+     0.8
+    ],
+    [
+     "A4",
+     111.3,
+     0.6
+    ],
+    [
+     "G4",
+     112,
+     2
+    ]
+   ]
+  },
+  {
+   "luogu": "hit",
+   "t": 104.1,
+   "g": 1.1
+  },
+  {
+   "luogu": "hit",
+   "t": 114.1,
+   "g": 0.8
+  },
+  {
+   "luogu": "fight",
+   "t": 128.6,
+   "t1": 146.6
+  },
+  {
+   "luogu": "hit",
+   "t": 129.5,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 132.1,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 140.5,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 141,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 146.8,
+   "g": 1.5
+  },
+  {
+   "hit": "gong",
+   "t": 146.8,
+   "g": 0.8
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 148,
+   "d": 9,
+   "g": 0.35
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 150,
+   "d": 7,
+   "g": 0.35
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 153,
+   "d": 4,
+   "g": 0.3
+  },
+  {
+   "luogu": "hit",
+   "t": 157.4,
+   "g": 1.4
+  },
+  {
+   "hit": "gong",
+   "t": 157.4,
+   "g": 0.6
+  },
+  {
+   "zheng": "gliss",
+   "t": 161.2,
+   "g": 0.7
+  },
+  {
+   "pad": "HN",
+   "n": "G3",
+   "t": 162,
+   "d": 3.4,
+   "g": 0.25
+  },
+  {
+   "pad": "HN",
+   "n": "D4",
+   "t": 162.6,
+   "d": 2.8,
+   "g": 0.2
+  },
+  {
+   "luogu": "hit",
+   "t": 165.95,
+   "g": 1.5
+  },
+  {
+   "hit": "gong",
+   "t": 165.95,
+   "g": 0.7
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 167.4,
+   "d": 9,
+   "g": 0.35
+  },
+  {
+   "pad": "TB",
+   "n": "D2",
+   "t": 168,
+   "d": 8,
+   "g": 0.25
+  },
+  {
+   "luogu": "chase",
+   "t": 175.6,
+   "t1": 180.2
+  },
+  {
+   "luogu": "hit",
+   "t": 180.2,
+   "g": 1.3
+  },
+  {
+   "zheng": "Dm",
+   "t": 183,
+   "t1": 196,
+   "g": 0.45
+  },
+  {
+   "pad": "VC",
+   "n": "D2",
+   "t": 183,
+   "d": 13,
+   "g": 0.25
+  },
+  {
+   "pad": "VA",
+   "n": "A2",
+   "t": 183.5,
+   "d": 12,
+   "g": 0.2
+  },
+  {
+   "pad": "VN",
+   "n": "D4",
+   "t": 186,
+   "d": 10,
+   "g": 0.14
+  },
+  {
+   "line": "OC",
+   "g": 0.38,
+   "notes": [
+    [
+     "A4",
+     188.8,
+     1.6
+    ],
+    [
+     "C5",
+     190.6,
+     0.8
+    ],
+    [
+     "D5",
+     191.6,
+     2
+    ],
+    [
+     "C5",
+     193.8,
+     0.6
+    ],
+    [
+     "A4",
+     194.5,
+     1.6
+    ]
+   ]
+  },
+  {
+   "luogu": "fight",
+   "t": 196.4,
+   "t1": 210.2
+  },
+  {
+   "luogu": "hit",
+   "t": 197.7,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 199.1,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 200.6,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 202.2,
+   "g": 0.8
+  },
+  {
+   "luogu": "hit",
+   "t": 204,
+   "g": 0.8
+  },
+  {
+   "pad": "CB",
+   "n": "D1",
+   "t": 210.4,
+   "d": 7,
+   "g": 0.4
+  },
+  {
+   "pad": "VCt",
+   "n": "D2",
+   "t": 210.4,
+   "d": 7,
+   "g": 0.4
+  },
+  {
+   "pad": "VNt",
+   "n": "Eb5",
+   "t": 213,
+   "d": 4.2,
+   "g": 0.3
+  },
+  {
+   "hit": "roll",
+   "t": 214,
+   "g": 0.5
+  },
+  {
+   "luogu": "chase",
+   "t": 217.3,
+   "t1": 219.6
+  },
+  {
+   "luogu": "hit",
+   "t": 219.6,
+   "g": 1.3
+  },
+  {
+   "luogu": "hit",
+   "t": 224.5,
+   "g": 0.9
+  },
+  {
+   "zheng": "G",
+   "t": 225,
+   "t1": 229,
+   "g": 0.5
+  },
+  {
+   "pad": "VNt",
+   "n": "D5",
+   "t": 229,
+   "d": 4,
+   "g": 0.4
+  },
+  {
+   "pad": "VNt",
+   "n": "A5",
+   "t": 229.4,
+   "d": 3.6,
+   "g": 0.3
+  },
+  {
+   "zheng": "gliss",
+   "t": 229.1,
+   "g": 0.7
+  },
+  {
+   "hit": "susp",
+   "t": 230.6,
+   "g": 0.35
+  },
+  {
+   "luogu": "hit",
+   "t": 233.3,
+   "g": 1.8
+  },
+  {
+   "hit": "gong",
+   "t": 233.3,
+   "g": 1
+  },
+  {
+   "tutti": "D",
+   "t": 233.3,
+   "d": 4,
+   "g": 0.6,
+   "soft": true
+  },
+  {
+   "hit": "gong",
+   "t": 245.8,
+   "g": 0.5
+  },
+  {
+   "zheng": "G",
+   "t": 248,
+   "t1": 262,
+   "g": 0.4
+  },
+  {
+   "pad": "VC",
+   "n": "G2",
+   "t": 248,
+   "d": 14,
+   "g": 0.2
+  },
+  {
+   "pad": "VA",
+   "n": "D3",
+   "t": 249,
+   "d": 13,
+   "g": 0.18
+  },
+  {
+   "line": "PS",
+   "g": 0.25,
+   "notes": [
+    [
+     "B3",
+     251,
+     2.4
+    ],
+    [
+     "D4",
+     253.6,
+     1.6
+    ],
+    [
+     "E4",
+     255.4,
+     2.4
+    ],
+    [
+     "D4",
+     258,
+     3.4
+    ]
+   ]
+  },
+  {
+   "tutti": "G",
+   "t": 262.5,
+   "d": 14,
+   "g": 0.4,
+   "soft": true
+  },
+  {
+   "zheng": "G",
+   "t": 262.5,
+   "t1": 290,
+   "g": 0.45
+  },
+  {
+   "line": "OC",
+   "g": 0.4,
+   "notes": [
+    [
+     "D5",
+     263.4,
+     1.4
+    ],
+    [
+     "E5",
+     265,
+     0.8
+    ],
+    [
+     "G5",
+     266,
+     2.2
+    ],
+    [
+     "A5",
+     268.4,
+     0.8
+    ],
+    [
+     "G5",
+     269.3,
+     0.8
+    ],
+    [
+     "E5",
+     270.2,
+     1.6
+    ],
+    [
+     "D5",
+     272,
+     2
+    ],
+    [
+     "B4",
+     274.2,
+     1
+    ],
+    [
+     "A4",
+     275.4,
+     1
+    ],
+    [
+     "G4",
+     276.6,
+     3.4
+    ]
+   ]
+  },
+  {
+   "tutti": "G",
+   "t": 278,
+   "d": 14,
+   "g": 0.45,
+   "soft": true
+  },
+  {
+   "luogu": "kaitai",
+   "t": 284.5,
+   "t1": 289
+  },
+  {
+   "luogu": "hit",
+   "t": 289,
+   "g": 1.3
+  },
+  {
+   "hit": "gong",
+   "t": 289,
+   "g": 0.7
+  }
+ ]
+}
