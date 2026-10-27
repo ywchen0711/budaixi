@@ -16,7 +16,7 @@ export const CHARACTERS = {
   yan: {
     zh: '燕飛霜', en: 'Yan Feishuang', title: { zh: '紅綾', en: 'Red Silk' }, kind: 'puppet', qi: '#ff8ab0', scale: 0.94,
     voice: { zh: ['zh-TW-HsiaoChenNeural', 0, 0], en: ['en-US-AvaNeural', 0, 0], fx: 'stage' },
-    skin: '#f6e2d6', face: { brow: 'fine', iris: '#3a1a14', lip: '#c8202c', mark: 'flame', markColor: '#d81838', eyeshadow: 'rgba(220,60,90,0.5)', blush: 'rgba(240,110,130,0.45)' },
+    skin: '#f6e2d6', face: { fem: true, brow: 'fine', iris: '#3a1a14', lip: '#c8202c', mark: 'flame', markColor: '#d81838', eyeshadow: 'rgba(220,60,90,0.5)', blush: 'rgba(240,110,130,0.45)' },
     hair: { color: '#141014', len: 1.1 }, crown: { type: 'hairpin', color: '#e8c050', gem: '#ff4a6a' },
     robe: { base: '#c8263a', pattern: 'plum', ink: 'rgba(255,220,220,0.5)', trim: '#e8c050', inner: '#f4d4da', sleeve: 1.05, skirt: 0.95 },
     ribbons: { color: '#ff9ab8' }, weapons: { R: 'dagger', L: 'dagger' },

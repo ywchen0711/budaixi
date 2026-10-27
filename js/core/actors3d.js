@@ -4,8 +4,8 @@
 // the sword's tassel swings. All of it is run once over the whole film at load, so any frame stands on its own.
 // Named points for the effects and the cameras: chest, head, eye, tipR, tipL, handR, handL, shoulderR, shoulderL, root, front
 import * as THREE from '../../lib/three.module.min.js';
-import { CHARACTERS } from '../cast/characters.js?v=1';
-import { buildPuppet } from '../models/puppet.js?v=3';
+import { CHARACTERS } from '../cast/characters.js?v=2';
+import { buildPuppet } from '../models/puppet.js?v=4';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const cl = (v, a = -1, b = 1) => Math.max(a, Math.min(b, v));

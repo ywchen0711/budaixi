@@ -16,18 +16,20 @@ export const STYLES = {
   film: { zh: '3D 動畫電影', en: 'Animated feature', about: { zh: '圓潤的頭、大玻璃眼、柔軟的皮膚', en: 'a rounded head, big glass eyes, soft skin' } },
 };
 export const DEFAULT_STYLE = 'paper';
+export const lockAt = (look) => (look.p.sculpt ? [0.067, 0.165, 0.014] : [0.11, 0.2, 0.06]); // where the side locks hang from
 const fromAddress = (() => { try { const s = new URLSearchParams(location.search).get('style'); return STYLES[s] ? s : null; } catch (e) { return null; } })();
 export const styleOf = (spec) => (STYLES[spec.style] ? spec.style : fromAddress || DEFAULT_STYLE);
 
 // how each style is sculpted (0 = a plain ball) and finished
 const P = {
   paper: { sculpt: 0 },
-  pili: { sculpt: 1, socket: 0.07, brow: 0.03, nose: 1, cheek: 0.03, lip: 0.022, chin: 0.03, jaw: 0.22, temple: 0.03, eyes: 'glass', eyeR: 0.021, lidTilt: 0.18, skin: 'skin', scale: [0.93, 1.06, 0.98] },
-  wood: { sculpt: 1, socket: 0.05, brow: 0.035, nose: 0.85, cheek: 0.05, lip: 0.02, chin: 0.035, jaw: 0.22, temple: 0.02, eyes: 'glass', eyeR: 0.02, lidTilt: 0.1, skin: 'lacquer', scale: [0.96, 1.05, 1] },
-  opera: { sculpt: 1, socket: 0.06, brow: 0.025, nose: 0.9, cheek: 0.035, lip: 0.02, chin: 0.04, jaw: 0.3, temple: 0.03, eyes: 'glass', eyeR: 0.02, lidTilt: 0.32, skin: 'powder', scale: [0.93, 1.07, 0.98] },
-  anime: { sculpt: 1, socket: 0, brow: 0.004, nose: 0.25, cheek: 0, lip: 0, chin: 0.05, jaw: 0.42, temple: 0.01, eyes: 'paint', skin: 'cel', outline: true, chinW: 0.2, chinFwd: 0.06, chinDrop: 0.1, jawCorner: 0, scale: [0.98, 1.04, 0.98] },
-  film: { sculpt: 1, socket: 0.05, brow: 0.025, nose: 1.15, noseBulb: 1.8, cheek: 0.06, lip: 0.018, chin: 0.03, jaw: 0.12, temple: 0.0, eyes: 'glass', eyeR: 0.031, lidTilt: 0.06, skin: 'soft', chinW: 0.4, chinFwd: 0.08, floor: 0.78, scale: [1.0, 1.06, 1.0] },
+  pili: { sculpt: 1, eyes: 'glass', eyeK: 1.32, lidTilt: 0.12, skin: 'skin' },
+  wood: { sculpt: 1, eyes: 'glass', eyeK: 1.24, nose: 0.9, cheek: 1.3, chin: 0.9, lidTilt: 0.08, skin: 'lacquer' },
+  opera: { sculpt: 1, eyes: 'glass', eyeK: 1.28, nose: 0.95, lidTilt: 0.3, skin: 'powder' },
+  anime: { sculpt: 1, eyes: 'paint', socket: 0.15, nose: 0.35, noseBulb: 0.8, lip: 0.25, brow: 0.3, cheek: 0.3, chin: 0.7, chinPoint: 1.5, jawW: 0.88, skin: 'cel', outline: true },
+  film: { sculpt: 1, eyes: 'glass', eyeK: 1.75, socket: 1.3, nose: 1.1, noseBulb: 1.7, lip: 0.8, cheek: 1.6, chin: 0.6, jawW: 1.12, mouthW: 1.1, lidTilt: 0.04, skin: 'soft' },
 };
+const skinOf = (spec, style) => (style === 'opera' ? '#f8eeea' : style === 'film' ? '#f4d8c6' : style === 'wood' ? '#f2dcbc' : spec.skin || '#f2dccb');
 
 const CEL = (() => { const t = new THREE.DataTexture(new Uint8Array([185, 255]), 2, 1, THREE.RedFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; })(); // anime: a light and a shade
 function canvasTex(w, h, paint) {
@@ -43,69 +45,116 @@ const EYE = { lon: 0.36, lat: 0.06 }; // where the eyes are, in longitude and la
 const K = 256 / Math.PI;
 const px = (lon, lat) => [128 + lon * K, 128 - lat * K];
 
-// ---------------------------------------------------------------- the sculpt: a radius for each direction from the centre
-function radius(lon, lat, p) {
-  if (!p.sculpt) return 1;
-  const G = (a, b, sa, sb) => Math.exp(-(((lon - a) / sa) ** 2) - (((lat - b) / sb) ** 2));
-  const S = (a, b, sa, sb) => G(a, b, sa, sb) + G(-a, b, sa, sb);
-  let r = 1;
-  r -= p.socket * S(EYE.lon, EYE.lat, 0.15, 0.1);
-  r += p.brow * S(0.33, 0.21, 0.26, 0.065);
-  const ridge = Math.exp(-((lon / 0.062) ** 2)) * clamp((0.1 - lat) / 0.4) * smooth(-0.36, -0.29, lat);
-  r += p.nose * (0.07 * ridge + 0.032 * (p.noseBulb || 1) * G(0, -0.3, 0.075 * Math.sqrt(p.noseBulb || 1), 0.065) + 0.016 * S(0.08, -0.33, 0.05, 0.045));
-  r += p.cheek * S(0.47, -0.2, 0.22, 0.17);
-  r += p.lip * (G(0, -0.49, 0.15, 0.045) + 0.9 * G(0, -0.6, 0.12, 0.045)) - p.lip * 0.5 * G(0, -0.545, 0.16, 0.016) - p.lip * 0.3 * G(0, -0.41, 0.025, 0.05);
-  r += p.chin * G(0, -0.8, 0.16, 0.11);
-  r -= p.temple * S(1.15, 0.25, 0.3, 0.3);
-  r -= 0.03 * p.sculpt * Math.max(0, Math.cos(lon)) * smooth(-0.9, -0.2, lat) * (1 - smooth(0.2, 0.7, lat)) * (1 - Math.exp(-((lon / 0.5) ** 2))); // the flatter sides of a face
-  return r;
+// ---------------------------------------------------------------- the anatomy: a human head, in metres
+// The head is a skull (an egg, narrower than it is tall, the face at +z) with a face laid over its front. The face is
+// a height field: for each point (x, y) on the front, how far forward the skin is. Its profile down the middle follows
+// a real face: forehead, brow ridge, the dip at the bridge of the nose, the nose rising to its tip and turning back
+// under it, the upper lip with its groove, the mouth, the lower lip, the hollow under it, the chin, and then the
+// underside of the jaw going back to the neck. Across, it curves round to the cheeks and the jaw, the eyes set in
+// their sockets, the cheekbones standing out below them. The eye line is at y = 0, the chin at about -0.135, the
+// crown at +0.152; the eyes are 0.067 apart. Each style scales the features (p.nose, p.lip, p.eyeK...).
+const SK = { hw: 0.077, hh: 0.148, hd: 0.112, cy: 0.004, cz: -0.014 }; // the skull: half width, height, depth; centre
+export const EYE_X = 0.0335, EYE_Y = 0.0;
+// a smooth curve through points [[y, value], ...] (y descending), cubic between them
+function curve(y, pts) {
+  if (y >= pts[0][0]) return pts[0][1];
+  const n = pts.length - 1;
+  if (y <= pts[n][0]) return pts[n][1];
+  let i = 0; while (i < n && y < pts[i + 1][0]) i++;
+  const [y0, a] = pts[i], [y1, b] = pts[i + 1], t = (y - y0) / (y1 - y0);
+  const slope = (k) => { const p0 = pts[Math.max(0, k - 1)], p1 = pts[Math.min(n, k + 1)]; return (p1[1] - p0[1]) / (p1[0] - p0[0]) * (y1 - y0); };
+  const m0 = slope(i), m1 = slope(i + 1), t2 = t * t, t3 = t2 * t;
+  return (2 * t3 - 3 * t2 + 1) * a + (t3 - 2 * t2 + t) * m0 + (-2 * t3 + 3 * t2) * b + (t3 - t2) * m1;
 }
-// where the head's surface is in direction d (a unit vector): the radius above, then the jaw. The jaw narrows to the
-// chin; the chin comes forward and down; under it the head is pulled up flat back to the neck, so the jaw has an edge
-// from the chin round to the jaw's corners below the ears, the way a carved puppet's head does.
+const G2 = (x, y, x0, y0, sx, sy) => Math.exp(-(((x - x0) / sx) ** 2) - (((y - y0) / sy) ** 2));
+const G1 = (y, y0, s) => Math.exp(-(((y - y0) / s) ** 2));
+const smax = (a, b, k) => { const h = clamp(0.5 + 0.5 * (b - a) / k); return a * (1 - h) + b * h + k * h * (1 - h) * 0.5; };
+// how far forward the face is at (x, y); -1 where there is no face
+function faceZ(x, y, p) {
+  const ax = Math.abs(x);
+  const Zm = curve(y, [[0.16, -0.03], [0.12, 0.052], [0.09, 0.08], [0.05, 0.092], [0.024, 0.097], [0.0, 0.093], [-0.03, 0.094], [-0.06, 0.095], [-0.09, 0.091], [-0.11, 0.086], [-0.122, 0.077], [-0.132, 0.057], [-0.14, 0.02], [-0.155, -0.06]]);
+  const kx = curve(y, [[0.12, 6.5], [0.05, 7], [0.0, 8], [-0.04, 9.5], [-0.08, 13], [-0.105, 22 * (p.chinPoint || 1)], [-0.13, 40]]);
+  const hw = curve(y, [[0.1, 0.074], [0.0, 0.077], [-0.04, 0.073], [-0.08, 0.064 * (p.jawW || 1)], [-0.105, 0.042 * (p.jawW || 1)], [-0.135, 0.026]]);
+  let z = Zm - kx * x * x - 60 * Math.max(0, ax - 0.62 * hw) ** 2;
+  // the brow ridge, the bridge, the sockets, the cheekbones
+  z += 0.005 * (p.brow ?? 1) * G2(ax, y, 0.028, 0.024, 0.028, 0.01);
+  z -= 0.003 * G2(x, y, 0, 0.007, 0.012, 0.012);
+  z -= 0.011 * (p.socket ?? 1) * G2(ax, y, EYE_X, EYE_Y + 0.001, 0.0185, 0.0135);
+  z += 0.006 * (p.cheek ?? 1) * G2(ax, y, 0.05, -0.024, 0.02, 0.018);
+  // the nose: a ridge from the bridge down to the tip, wider as it goes, the tip, the wings, turning back under the tip
+  const N = p.nose ?? 1, NB = p.noseBulb || 1;
+  if (y < 0.012 && y > -0.06) {
+    const t = clamp((0.008 - y) / 0.048);
+    const h = y > -0.04 ? 0.003 + 0.019 * t ** 1.25 : 0.022 * (1 - clamp((-0.04 - y) / 0.013)) ** 1.6;
+    const w = 0.0055 + 0.0065 * t * NB;
+    z += N * h * Math.exp(-((x / w) ** 2));
+  }
+  z += N * 0.0035 * NB * G2(x, y, 0, -0.038, 0.009 * NB, 0.008);           // the tip
+  z += N * 0.007 * G2(ax, y, 0.0135 * Math.sqrt(NB), -0.044, 0.0075, 0.0065); // the wings of the nose
+  z -= N * 0.001 * G2(ax, y, 0.019, -0.04, 0.004, 0.012);                  // the crease beside the wings
+  // the mouth: the upper lip and its groove, the line, the lower lip, the hollow below, then the chin
+  const L = p.lip ?? 1, mw = 0.023 * (p.mouthW || 1);
+  const across = Math.exp(-((x / mw) ** 4)), across2 = Math.exp(-((x / (mw * 0.9)) ** 4));
+  z += L * 0.0055 * across * G1(y, -0.062, 0.008);
+  z -= L * 0.0016 * G2(x, y, 0, -0.057, 0.0035, 0.006);
+  z -= L * 0.0032 * Math.exp(-((x / (mw * 1.05)) ** 4)) * G1(y, -0.0705, 0.0017);
+  z += L * 0.0055 * across2 * G1(y, -0.077, 0.0055);
+  z -= 0.002 * G2(ax, y, mw * 1.05, -0.071, 0.004, 0.006);                 // the corners of the mouth
+  z -= 0.0035 * Math.exp(-((x / 0.02) ** 2)) * G1(y, -0.087, 0.006);         // the hollow above the chin
+  z += 0.006 * (p.chin ?? 1) * G2(x, y, 0, -0.106, 0.02, 0.014);            // the chin
+  return z;
+}
+// where the surface is, for a direction d from the centre of the skull
 function shapePoint(d, p) {
-  const lon = Math.atan2(d.x, d.z), lat = Math.asin(clamp(d.y, -1, 1)), r = radius(lon, lat, p) * R0;
-  let x = d.x * r, y = d.y * r, z = d.z * r;
-  if (!p.sculpt) return new THREE.Vector3(x, y, z);
-  const below = smooth(0.05, -1, d.y);
-  x *= 1 - p.jaw * below ** 1.2;
-  z *= 1 - 0.12 * below * smooth(0.3, -0.6, d.z); // the neck side of the jaw tucks in
-  const floor = -(p.floor ?? 0.8) * R0; // the underside of the jaw
-  if (y < floor) y = floor + (y - floor) * (p.under ?? 0.35);
-  const cg = Math.exp(-((lon / (p.chinW ?? 0.3)) ** 2) - (((lat + 0.8) / 0.17) ** 2)); // the chin
-  z += (p.chinFwd ?? 0.1) * R0 * cg; y -= (p.chinDrop ?? 0.07) * R0 * cg;
-  const jg = Math.exp(-(((Math.abs(lon) - 1.05) / 0.3) ** 2) - (((lat + 0.62) / 0.16) ** 2)); // the corners of the jaw
-  x += Math.sign(d.x) * (p.jawCorner ?? 0.03) * R0 * jg;
+  let x = SK.hw * d.x, y = SK.cy + SK.hh * d.y, z = SK.cz + SK.hd * d.z;
+  const low = smooth(-0.02, -0.14, y);
+  x *= 1 - 0.3 * low;                                               // the lower head narrows to the jaw and the neck
+  if (d.z > 0) z = SK.cz + (z - SK.cz) * (0.72 - 0.3 * low);        // in front the skull sits back behind the face
+  z -= 0.012 * smooth(0.05, 0.15, y) * Math.max(0, d.z);             // the forehead slopes back into the crown
+  if (d.z > 0) z = smax(z, faceZ(x, y, p), 0.014);
   return new THREE.Vector3(x, y, z);
 }
 function sculptGeo(p) {
-  const [ws, hs] = p.segs || [96, 64];
-  const geo = new THREE.SphereGeometry(R0, ws, hs);
-  if (!p.sculpt) return geo;
-  const pos = geo.attributes.position, v = new THREE.Vector3();
+  const geo = new THREE.SphereGeometry(1, 160, 112), pos = geo.attributes.position, uv = geo.attributes.uv, v = new THREE.Vector3();
   for (let i = 0; i < pos.count; i++) {
     v.fromBufferAttribute(pos, i).normalize();
-    const lon = Math.atan2(v.x, v.z), lat = Math.asin(clamp(v.y, -1, 1));
     const q = shapePoint(v, p); pos.setXYZ(i, q.x, q.y, q.z);
+    // the face texture is projected from the front; behind the ears it reads plain skin from a corner of it
+    const vv = clamp(0.5 + (q.y - PY) / (PS * 256), 0.005, 0.995);
+    uv.setXY(i, v.z > -0.3 ? clamp(0.5 + q.x / (PS * 256), 0.005, 0.995) : 0.5 + Math.sign(q.x) * 0.495, vv);
   }
-  if (p.flat) { geo.computeVertexNormals(); return geo; } // facets: the material shades flat
   geo.computeVertexNormals();
-  // the seam down the side of a sphere has its vertices twice: give both copies the same normal
-  const n = geo.attributes.normal, key = (i) => `${pos.getX(i).toFixed(5)},${pos.getY(i).toFixed(5)},${pos.getZ(i).toFixed(5)}`, seen = new Map();
+  const n = geo.attributes.normal, key = (i) => `${pos.getX(i).toFixed(6)},${pos.getY(i).toFixed(6)},${pos.getZ(i).toFixed(6)}`, seen = new Map();
   for (let i = 0; i < pos.count; i++) { const k = key(i); if (seen.has(k)) { const j = seen.get(k); const a = new THREE.Vector3().fromBufferAttribute(n, i).add(new THREE.Vector3().fromBufferAttribute(n, j)).normalize(); n.setXYZ(i, a.x, a.y, a.z); n.setXYZ(j, a.x, a.y, a.z); } else seen.set(k, i); }
   return geo;
 }
-// a point on the sculpted surface (before the head's own scale), and its direction
-function surface(lon, lat, p) {
-  const d = new THREE.Vector3(Math.sin(lon) * Math.cos(lat), Math.sin(lat), Math.cos(lon) * Math.cos(lat));
-  return { d, at: shapePoint(d, p) };
+// the hair: everywhere above the hairline, a little out from the skin. The line runs across the forehead with a point
+// in the middle, comes down at the temples in front of the ears, rises over them, and down behind them to the nape.
+function hairlineY(q) {
+  const a = Math.abs(Math.atan2(q.x, q.z - SK.cz));
+  const front = 0.079 - 0.009 * Math.exp(-((a / 0.13) ** 2)) + 0.012 * (a / 0.75) ** 2;
+  if (a < 0.75) return front;
+  if (a < 1.25) return front + (0.0 - front) * smooth(0.75, 1.25, a);
+  if (a < 1.5) return 0.0 + 0.02 * smooth(1.3, 1.5, a);
+  return 0.02 + (-0.095 - 0.02) * smooth(1.6, 2.1, a);
+}
+function hairGeo(p) {
+  const geo = new THREE.SphereGeometry(1, 120, 80), pos = geo.attributes.position, v = new THREE.Vector3(), c = new THREE.Vector3(0, SK.cy, SK.cz);
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i).normalize();
+    const q = shapePoint(v, p), h = hairlineY(q), out = q.clone().sub(c).normalize();
+    const thick = q.y >= h ? 0.004 + 0.011 * smooth(-0.05, 0.15, q.y) + 0.003 * smooth(h, h + 0.02, q.y) : -0.006;
+    q.addScaledVector(out, thick); pos.setXYZ(i, q.x, q.y, q.z);
+  }
+  geo.computeVertexNormals();
+  return geo;
 }
 
-// ---------------------------------------------------------------- the face, painted
+// ---------------------------------------------------------------- the face as it was: painted on a ball (the 'paper' style)
 const rgba = (c, a) => { const k = new THREE.Color(c); return `rgba(${Math.round(k.r * 255)},${Math.round(k.g * 255)},${Math.round(k.b * 255)},${a})`; };
-function paintFace(spec, style) {
+function paintOld(spec, style) {
   const F = spec.face || {}, p = P[style];
-  const base = style === 'opera' ? '#f8eeea' : style === 'film' ? '#f4d8c6' : style === 'wood' ? '#f2dcbc' : spec.skin || '#f2dccb';
+  const base = skinOf(spec, style);
   return canvasTex(1024, 512, (g, W, H) => {
     g.scale(2, 2);
     const soft = (x, y, rx, ry, col, rot = 0) => { g.save(); g.translate(x, y); g.rotate(rot); g.scale(1, ry / rx); const gr = g.createRadialGradient(0, 0, 0, 0, 0, rx); gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(-rx, -rx, rx * 2, rx * 2); g.restore(); };
@@ -215,6 +264,114 @@ function paintFace(spec, style) {
     g.fillStyle = spec.hair?.color || '#121014'; g.fillRect(256, 0, 256, 256); g.fillRect(0, 0, 512, 26);
   });
 }
+// ---------------------------------------------------------------- the face, made up (on the front-projected texture)
+// The texture is 256 x 256 (drawn at 4x): a point (x, y) on the face, in metres, is at (128 + x / PS, 128 - (y - PY) / PS).
+const PS = 0.0009, PY = -0.02;
+function makeUp(spec, style) {
+  const F = spec.face || {}, p = P[style], base = skinOf(spec, style);
+  return canvasTex(1024, 1024, (g) => {
+    g.scale(4, 4);
+    const X = (x) => 128 + x / PS, Y = (y) => 128 - (y - PY) / PS, L = (m) => m / PS;
+    const soft = (x, y, rx, ry, col, rot = 0) => { g.save(); g.translate(X(x), Y(y)); g.rotate(rot); g.scale(1, ry / rx); const gr = g.createRadialGradient(0, 0, 0, 0, 0, L(rx)); gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(-L(rx), -L(rx), L(rx) * 2, L(rx) * 2); g.restore(); };
+    const path = (pts, close) => { g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(X(x), Y(y)) : g.moveTo(X(x), Y(y)))); if (close) g.closePath(); };
+    const quad = (x0, y0, x1, y1, x2, y2) => { g.beginPath(); g.moveTo(X(x0), Y(y0)); g.quadraticCurveTo(X(x1), Y(y1), X(x2), Y(y2)); };
+    g.fillStyle = base; g.fillRect(0, 0, 256, 256);
+    const anime = style === 'anime';
+    // modelling in paint: a little warmth on the nose, the cheeks and the chin, cool at the temples, shade under the jaw
+    if (!anime) {
+      soft(0, -0.04, 0.012, 0.01, 'rgba(220,120,110,0.22)');
+      soft(0, -0.11, 0.02, 0.012, 'rgba(220,130,120,0.16)');
+      for (const s of [-1, 1]) soft(s * 0.072, 0.03, 0.022, 0.04, 'rgba(110,90,120,0.16)');
+      soft(0, -0.135, 0.05, 0.012, 'rgba(120,60,60,0.25)');
+    }
+    const blush = F.blush || 'rgba(230,110,120,0.32)';
+    for (const s of [-1, 1]) {
+      if (anime) { g.fillStyle = 'rgba(240,120,130,0.4)'; for (let k = 0; k < 3; k++) { g.beginPath(); g.ellipse(X(s * (0.04 + k * 0.005)), Y(-0.03), 1.1, 3.8, 0.4 * s, 0, Math.PI * 2); g.fill(); } soft(s * 0.045, -0.03, 0.016, 0.009, 'rgba(240,120,130,0.3)'); }
+      else soft(s * 0.045, -0.03, style === 'wood' ? 0.024 : 0.021, style === 'wood' ? 0.018 : 0.015, style === 'wood' ? 'rgba(235,90,110,0.55)' : blush);
+    }
+    // opera: rouge round the eyes, up to the brows, out to the temples, fading down the sides of the nose
+    if (style === 'opera') for (const s of [-1, 1]) {
+      soft(s * 0.036, 0.004, 0.028, 0.021, 'rgba(225,55,90,0.85)', s * -0.3);
+      soft(s * 0.034, 0.003, 0.016, 0.011, 'rgba(195,30,70,0.6)', s * -0.3);
+      soft(s * 0.056, 0.018, 0.018, 0.012, 'rgba(210,40,80,0.45)', s * -0.6);
+      soft(s * 0.026, -0.02, 0.014, 0.016, 'rgba(230,90,110,0.4)');
+    }
+    if (F.paint === 'demon') for (const s of [-1, 1]) { // the demon's mask: red round the eyes and down the cheek, black inside
+      g.fillStyle = 'rgba(150,10,20,0.88)'; path([[s * 0.014, 0.014], [s * 0.04, 0.022], [s * 0.064, 0.016], [s * 0.066, -0.004], [s * 0.05, -0.03], [s * 0.032, -0.05], [s * 0.03, -0.018], [s * 0.016, -0.008]], true); g.fill();
+      g.fillStyle = 'rgba(20,0,10,0.88)'; path([[s * 0.018, 0.008], [s * 0.04, 0.014], [s * 0.058, 0.01], [s * 0.054, -0.006], [s * 0.034, -0.012], [s * 0.018, -0.006]], true); g.fill();
+    }
+    if (F.shadow) for (const s of [-1, 1]) soft(s * EYE_X, 0.007, 0.018, 0.01, F.shadow);
+    if (F.eyeshadow && style !== 'opera') for (const s of [-1, 1]) soft(s * (EYE_X + 0.004), 0.006, 0.017, 0.009, F.eyeshadow, s * -0.3);
+    const er = 0.0122 * (p.eyeK || 1), line = F.line || '#140806';
+    for (const s of [-1, 1]) {
+      const ex = s * EYE_X;
+      if (!anime) {
+        // glass eyes sit in the sockets: paint the dark wing out from the outer corner and the crease above the lid
+        const wing = style === 'opera' ? 1.6 : style === 'film' ? 0.3 : style === 'wood' ? 1.2 : 1;
+        g.strokeStyle = line; g.lineCap = 'round'; g.lineWidth = 1.5 * wing;
+        quad(ex + s * er * 0.85, 0.002, ex + s * (er + 0.004 * wing), 0.0035, ex + s * (er + 0.009 * wing), 0.004 + 0.005 * wing); g.stroke();
+        g.strokeStyle = 'rgba(90,40,30,0.35)'; g.lineWidth = 0.8;
+        quad(ex - s * er * 0.95, 0.0065, ex, 0.0115 + er * 0.25, ex + s * er * 1.05, 0.007); g.stroke();
+      } else {
+        // anime: a big painted eye, its lids cutting it, a heavy upper lash line, two highlights
+        const w = 0.0175, h = 0.016, y = -0.002;
+        g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(X(ex), Y(y), L(w), L(h), 0, 0, Math.PI * 2); g.fill();
+        const gr = g.createLinearGradient(0, Y(y + h), 0, Y(y - h)); gr.addColorStop(0, '#0a0610'); gr.addColorStop(0.55, F.iris && F.iris !== '#2a1a14' ? F.iris : '#5a3424'); gr.addColorStop(1, '#d8a070');
+        g.fillStyle = gr; g.beginPath(); g.ellipse(X(ex + s * 0.001), Y(y - 0.001), L(0.0095), L(0.0135), 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = F.pupil && F.pupil !== '#050303' ? F.pupil : '#0a0408'; g.beginPath(); g.ellipse(X(ex + s * 0.001), Y(y - 0.001), L(0.0042), L(0.0062), 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(X(ex - 0.003), Y(y + 0.005), L(0.0032), L(0.004), 0, 0, Math.PI * 2); g.fill(); g.beginPath(); g.arc(X(ex + 0.004), Y(y - 0.006), L(0.0016), 0, Math.PI * 2); g.fill();
+        g.fillStyle = base;
+        g.beginPath(); g.moveTo(X(ex - w * 1.3), Y(y + h * 1.5)); g.lineTo(X(ex + w * 1.3), Y(y + h * 1.5)); g.lineTo(X(ex + s * w * 1.2), Y(y + 0.004)); g.quadraticCurveTo(X(ex), Y(y + h * 1.2), X(ex - s * w * 1.2), Y(y + 0.001)); g.fill();
+        g.beginPath(); g.moveTo(X(ex - w * 1.3), Y(y - h * 1.4)); g.lineTo(X(ex + w * 1.3), Y(y - h * 1.4)); g.lineTo(X(ex + s * w * 1.1), Y(y - 0.007)); g.quadraticCurveTo(X(ex), Y(y - h * 1.15), X(ex - s * w * 1.1), Y(y - 0.006)); g.fill();
+        g.strokeStyle = line; g.lineCap = 'round'; g.lineWidth = 2.6;
+        g.beginPath(); g.moveTo(X(ex - s * w * 1.15), Y(y + 0.0015)); g.quadraticCurveTo(X(ex), Y(y + h * 1.22), X(ex + s * w * 1.2), Y(y + 0.005)); g.lineTo(X(ex + s * w * 1.45), Y(y + 0.008)); g.stroke();
+        g.lineWidth = 0.9; quad(ex - s * w * 0.8, y - 0.011, ex + s * 0.002, y - h * 1.12, ex + s * w * 1.05, y - 0.006); g.stroke();
+      }
+      // the brows, hair by hair (or in one stroke for the painted styles): sword-blade, fine and arched, or a demon's
+      const bw = { pili: 0.8, wood: 1.4, opera: 1.2, anime: 0.8, film: 1.3 }[style] || 1;
+      const B = F.brow === 'fine' ? [[0.015, 0.02], [0.033, 0.029], [0.053, 0.022], 1.6] : F.brow === 'demon' ? [[0.013, 0.014], [0.036, 0.024], [0.062, 0.042], 3.0] : [[0.014, 0.017], [0.034, 0.025], [0.058, 0.034], 2.6];
+      const pt = (t) => { const [a, b, c] = B; return [s * ((1 - t) ** 2 * a[0] + 2 * t * (1 - t) * b[0] + t * t * c[0]), (1 - t) ** 2 * a[1] + 2 * t * (1 - t) * b[1] + t * t * c[1]]; };
+      g.strokeStyle = F.browColor || (style === 'film' ? '#3a2418' : '#100604'); g.lineCap = 'round';
+      const hairs = style === 'pili' || style === 'film' || style === 'opera';
+      for (let k = 0; k < (hairs ? 40 : 24); k++) {
+        const t = k / (hairs ? 39 : 23), a = pt(t), b = pt(Math.min(1, t + (hairs ? 0.08 : 0.05)));
+        const thick = B[3] * bw * (hairs ? 0.45 * Math.sin(Math.PI * Math.min(1, 0.15 + t * 1.2)) + 0.25 : (1 - 0.6 * t) * (0.45 + 0.55 * Math.min(1, t * 4)));
+        g.lineWidth = Math.max(0.3, thick); g.beginPath(); g.moveTo(X(a[0]), Y(a[1] - (hairs ? 0.0012 * (1 - t) : 0))); g.lineTo(X(b[0]), Y(b[1] + (hairs ? 0.0008 : 0))); g.stroke();
+      }
+    }
+    // the nose: a little shade beside the bridge, the nostrils
+    if (anime) { g.fillStyle = 'rgba(180,100,90,0.5)'; g.beginPath(); g.ellipse(X(-0.002), Y(-0.042), L(0.002), L(0.001), 0, 0, Math.PI * 2); g.fill(); }
+    else { soft(-0.008, -0.02, 0.003, 0.014, 'rgba(150,80,70,0.18)'); for (const s of [-1, 1]) soft(s * 0.0065, -0.047, 0.0028, 0.0016, 'rgba(80,25,25,0.75)', s * 0.4); }
+    // the mouth: the lips in their colour, the line between them darker, a gleam on the lower lip
+    const lip = F.lip || '#b42828', mw = 0.022 * (p.mouthW || 1);
+    if (anime) { g.strokeStyle = 'rgba(120,40,40,0.8)'; g.lineWidth = 1.2; quad(-0.009, -0.07, 0, -0.072, 0.009, -0.07); g.stroke(); }
+    else {
+      const k = style === 'film' ? 0.55 : 1;
+      const gr = g.createLinearGradient(0, Y(-0.06), 0, Y(-0.082)); gr.addColorStop(0, rgba(lip, 0.85 * k)); gr.addColorStop(0.45, rgba(lip, 1 * k)); gr.addColorStop(1, rgba(lip, 0.7 * k));
+      g.fillStyle = gr; g.beginPath(); g.moveTo(X(-mw), Y(-0.0705));
+      g.bezierCurveTo(X(-mw * 0.6), Y(-0.067), X(-mw * 0.35), Y(-0.0625), X(0), Y(-0.0645));
+      g.bezierCurveTo(X(mw * 0.35), Y(-0.0625), X(mw * 0.6), Y(-0.067), X(mw), Y(-0.0705));
+      g.bezierCurveTo(X(mw * 0.6), Y(-0.08), X(-mw * 0.6), Y(-0.08), X(-mw), Y(-0.0705)); g.fill();
+      g.strokeStyle = 'rgba(60,10,10,0.8)'; g.lineWidth = 0.9; quad(-mw, -0.0705, 0, -0.0718, mw, -0.0705); g.stroke();
+      soft(0.003, -0.0755, 0.004, 0.0015, 'rgba(255,255,255,0.3)');
+    }
+    if (F.fangs) { g.fillStyle = '#fff8ee'; for (const s of [-1, 1]) { path([[s * 0.006, -0.071], [s * 0.0075, -0.0785], [s * 0.009, -0.071]], true); g.fill(); } }
+    // a mark on the brow: a lotus, a flame, a jewel-drop
+    if (F.mark) {
+      g.fillStyle = F.markColor || '#c81828'; const my = 0.048;
+      if (F.mark === 'lotus') for (const a of [-0.5, 0, 0.5]) { g.save(); g.translate(X(0), Y(my - 0.004)); g.rotate(a); g.beginPath(); g.ellipse(0, -L(0.006), L(0.0026), L(0.0068), 0, 0, Math.PI * 2); g.fill(); g.restore(); }
+      else if (F.mark === 'drop') { g.beginPath(); g.moveTo(X(0), Y(my + 0.008)); g.quadraticCurveTo(X(0.0045), Y(my - 0.002), X(0), Y(my - 0.007)); g.quadraticCurveTo(X(-0.0045), Y(my - 0.002), X(0), Y(my + 0.008)); g.fill(); }
+      else { g.beginPath(); g.moveTo(X(0), Y(my + 0.01)); g.quadraticCurveTo(X(0.006), Y(my), X(0.0015), Y(my - 0.009)); g.quadraticCurveTo(X(-0.004), Y(my - 0.002), X(0), Y(my + 0.01)); g.fill(); }
+    }
+    if (style === 'wood') { // varnish, and fine cracks in it
+      g.fillStyle = 'rgba(200,150,60,0.1)'; g.fillRect(0, 0, 256, 256);
+      g.strokeStyle = 'rgba(90,60,30,0.16)'; g.lineWidth = 0.4; let sd = 7; const R = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+      for (let k = 0; k < 120; k++) { let x = 20 + R() * 216, y = 20 + R() * 216; g.beginPath(); g.moveTo(x, y); for (let j = 0; j < 4; j++) { x += (R() - 0.5) * 10; y += (R() - 0.5) * 10; g.lineTo(x, y); } g.stroke(); }
+    }
+    g.fillStyle = base; g.fillRect(248, 248, 8, 8); // the corner the back of the head reads
+  });
+}
+
 function irisTex(F) {
   return canvasTex(256, 128, (g) => {
     g.fillStyle = '#f6f2ec'; g.fillRect(0, 0, 256, 128);
@@ -229,8 +386,10 @@ function irisTex(F) {
 
 // ---------------------------------------------------------------- materials, then the head
 export function headLook(spec) {
-  const style = styleOf(spec), p = P[style], face = paintFace(spec, style);
-  const skinCol = style === 'opera' ? '#f8eeea' : style === 'film' ? '#f4d8c6' : style === 'wood' ? '#f2dcbc' : spec.skin || '#f2dccb';
+  const style = styleOf(spec), p0 = P[style], fem = spec.face?.fem;
+  const p = fem && p0.sculpt ? { ...p0, nose: (p0.nose ?? 1) * 0.82, brow: (p0.brow ?? 1) * 0.4, jawW: (p0.jawW ?? 1) * 0.9, chin: (p0.chin ?? 1) * 0.7, chinPoint: (p0.chinPoint ?? 1) * 1.2, mouthW: (p0.mouthW ?? 1) * 0.9, eyeK: (p0.eyeK ?? 1) * 1.05 } : p0;
+  const face = p.sculpt ? makeUp(spec, style) : paintOld(spec, style);
+  const skinCol = skinOf(spec, style);
   const toonM = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
   const mk = (o) => {
     if (p.skin === 'cel') return new THREE.MeshToonMaterial({ gradientMap: CEL, emissive: '#ffffff', emissiveIntensity: 0.35, ...o, ...(o.map ? { emissiveMap: o.map } : { emissive: o.color }) });
@@ -251,47 +410,22 @@ export function headLook(spec) {
   return { style, p, skin: mk({ color: skinCol }), face: mk({ map: face }), hair };
 }
 
-// the hair: the head's own shape a little larger, everywhere above the hairline. In front the line runs across the
-// forehead with a point in the middle, comes down at the temples in front of the ears, and behind them to the nape.
-function hairline(lon) {
-  const a = Math.abs(lon);
-  const front = 0.52 - 0.06 * Math.exp(-((lon / 0.12) ** 2)) + 0.03 * (a / 1.1) ** 2;
-  const temple = -0.25, nape = -0.75;
-  if (a < 1.1) return front;
-  if (a < 1.45) return front + (temple - front) * smooth(1.1, 1.45, a);
-  return temple + (nape - temple) * smooth(1.55, 1.9, a);
-}
-function hairGeo(p) {
-  const geo = new THREE.SphereGeometry(R0, 96, 56), pos = geo.attributes.position, v = new THREE.Vector3();
-  for (let i = 0; i < pos.count; i++) {
-    v.fromBufferAttribute(pos, i).normalize();
-    const lon = Math.atan2(v.x, v.z), lat = Math.asin(clamp(v.y, -1, 1)), h = hairline(lon);
-    const { at } = surface(lon, Math.max(lat, h), p);
-    // a little thickness, more on the crown; the swell of the hair swept back over the head; below the line it tucks in
-    const thick = lat >= h ? 0.009 + 0.012 * smooth(0.0, 1.2, lat) + 0.004 * smooth(h, h + 0.15, lat) : -0.02 * smooth(h, h - 0.06, lat);
-    const d = at.clone().normalize(); at.addScaledVector(d, thick);
-    pos.setXYZ(i, at.x, at.y, at.z);
-  }
-  geo.computeVertexNormals();
-  return geo;
-}
-
 export function addHead(head, spec, look, mesh) {
   const { p, style } = look, F = spec.face || {};
-  const sc = p.scale || [0.95, 1.15, 1.0];
-  const skull = mesh(head, sculptGeo(p), look.face, 0, 0.14, 0); skull.scale.set(...sc);
-  if (p.outline) { // anime: an inked outline round the head and hair
-    const ink = new THREE.MeshBasicMaterial({ color: '#1a0c0c', side: THREE.BackSide });
-    const o = new THREE.Mesh(skull.geometry, ink); o.scale.setScalar(1.035); skull.add(o);
+  if (!p.sculpt) { // as it was: a ball with a face painted on, a cap of hair over it
+    mesh(head, new THREE.SphereGeometry(R0, 32, 20), look.face, 0, 0.14, 0).scale.set(0.95, 1.15, 1.0);
+    mesh(head, new THREE.SphereGeometry(0.143, 24, 14, Math.PI * 0.62, Math.PI * 1.76, 0, Math.PI * 0.62), look.hair, 0, 0.15, -0.004).scale.set(0.97, 1.13, 1.04);
+    for (const s of [-1, 1]) mesh(head, new THREE.SphereGeometry(0.03, 8, 6), look.skin, s * 0.128, 0.13, -0.005).scale.set(0.4, 1, 0.7);
+    return;
   }
-  // the hair over the crown and back
-  const cap = [style === 'paper' ? new THREE.SphereGeometry(0.143, 24, 14, Math.PI * 0.62, Math.PI * 1.76, 0, Math.PI * 0.62) : hairGeo(p)];
-  for (const geo of cap) {
-    const shell = mesh(head, geo, look.hair, 0, 0.14, 0); if (style === 'paper') shell.scale.set(0.97, 1.13, 1.04); else shell.scale.set(...sc);
-    if (p.outline) { const o = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: '#1a0c0c', side: THREE.BackSide })); o.scale.setScalar(1.03); shell.add(o); }
+  look.face.map.wrapS = look.face.map.wrapT = THREE.ClampToEdgeWrapping;
+  const skull = mesh(head, sculptGeo(p), look.face, 0, 0.14, 0);
+  const hair = mesh(head, hairGeo(p), look.hair, 0, 0.14, 0);
+  if (p.outline) for (const m of [skull, hair]) { const o = new THREE.Mesh(m.geometry, new THREE.MeshBasicMaterial({ color: '#1a0c0c', side: THREE.BackSide })); o.scale.setScalar(1.03); m.add(o); }
+  mesh(head, new THREE.CylinderGeometry(0.042, 0.054, 0.13, 20, 1, true), look.skin, 0, 0.035, -0.014); // the neck, up under the jaw
+  for (const s of [-1, 1]) { // the ears
+    const ear = mesh(head, new THREE.SphereGeometry(1, 16, 12), look.skin, s * 0.0735, 0.125, -0.017, 0, s * 0.35, s * 0.1); ear.scale.set(0.006, 0.027, 0.016);
   }
-  if (p.sculpt) mesh(head, new THREE.CylinderGeometry(0.047, 0.062, 0.15, 20, 1, true), look.skin, 0, 0.02, -0.01); // the neck, up under the jaw
-  for (const s of [-1, 1]) mesh(head, new THREE.SphereGeometry(0.03, 12, 8), look.skin, s * 0.128 * sc[0] / 0.95, 0.13, -0.005).scale.set(0.4, 1, 0.7); // ears
   if (p.eyes !== 'glass') return;
   // glass eyes in their sockets, an upper and a lower lid over each, the upper one lined dark at its edge
   const eyeM = new THREE.MeshPhysicalMaterial({ map: irisTex(F), roughness: 0.15, clearcoat: 1, clearcoatRoughness: 0.03 });
@@ -299,14 +433,12 @@ export function addHead(head, spec, look, mesh) {
   const lidCol = F.paint === 'demon' ? '#6a1018' : style === 'opera' ? '#e86a88' : F.eyeshadow ? '#e8a8b0' : look.skin.color.getStyle();
   const lidM = look.skin.clone(); lidM.map = lidTex; lidM.color = new THREE.Color(lidCol); lidM.side = THREE.DoubleSide;
   const lowM = look.skin.clone(); lowM.color = new THREE.Color(lidCol).lerp(new THREE.Color(look.skin.color), 0.6); lowM.side = THREE.DoubleSide;
-  const er = p.eyeR;
   for (const s of [-1, 1]) {
-    const { d, at } = surface(s * EYE.lon, EYE.lat, p);
-    const c = at.clone().addScaledVector(d, -er * 0.55); c.multiply(new THREE.Vector3(...sc)); c.y += 0.14;
-    const eye = new THREE.Group(); eye.position.copy(c); eye.rotation.set(0, s * 0.05, 0); head.add(eye);
+    const zs = faceZ(s * EYE_X, EYE_Y, p), er = 0.0122 * (p.eyeK || 1);
+    const eye = new THREE.Group(); eye.position.set(s * EYE_X, 0.14 + EYE_Y, zs + 0.0075 * (p.eyeK || 1) - er); eye.rotation.set(0, s * 0.04, 0); head.add(eye);
     mesh(eye, new THREE.SphereGeometry(er, 32, 20), eyeM, 0, 0, 0); // the iris looks out along +z
     const tilt = s * p.lidTilt; // the outer corners lift (phoenix eyes)
-    const up = mesh(eye, new THREE.SphereGeometry(er * 1.08, 32, 10, 0, Math.PI * 2, 0, Math.PI * 0.4), lidM, 0, 0, 0); up.rotation.set(-0.08, 0, -tilt);
-    const lo = mesh(eye, new THREE.SphereGeometry(er * 1.05, 32, 8, 0, Math.PI * 2, Math.PI * 0.66, Math.PI * 0.34), lowM, 0, 0, 0); lo.rotation.set(-0.15, 0, -tilt * 0.6);
+    const up = mesh(eye, new THREE.SphereGeometry(er * 1.06, 32, 12, 0, Math.PI * 2, 0, Math.PI * 0.4), lidM, 0, 0, 0); up.rotation.set(-0.08, 0, -tilt);
+    const lo = mesh(eye, new THREE.SphereGeometry(er * 1.04, 32, 8, 0, Math.PI * 2, Math.PI * 0.64, Math.PI * 0.36), lowM, 0, 0, 0); lo.rotation.set(-0.1, 0, -tilt * 0.6);
   }
 }

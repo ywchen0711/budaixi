@@ -7,7 +7,7 @@
 // gem}, robe {base, pattern, ink, trim, inner, sleeve}, cape, ribbons, weapons {R, L}, scale
 import * as THREE from '../../lib/three.module.min.js';
 import { TOON } from '../toon.js?v=1';
-import { headLook, addHead } from './heads.js?v=2';
+import { headLook, addHead, lockAt } from './heads.js?v=4';
 
 const toon = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
 function canvasTex(w, h, paint) {
@@ -133,7 +133,7 @@ export function buildPuppet(spec) {
   };
   const hairLen = (H.len || 0.9) / 4;
   const hair = chain(head, 0, 0.12, -0.13, 4, hairLen, 0.25, M.hair, 0.82);
-  const forelocks = [-1, 1].map((s) => chain(head, s * 0.11, 0.2, 0.06, 2, 0.12, 0.035, M.hair, 0.8));
+  const LK = lockAt(look), forelocks = [-1, 1].map((s) => chain(head, s * LK[0], LK[1], LK[2], 2, 0.12, 0.035, M.hair, 0.8));
   const ribbons = spec.crownRibbon ? [-1, 1].map((s) => chain(crown, s * 0.03, 0.0, -0.04, 4, 0.13, 0.03, M.trim, 0.95)) : [];
   // ---- arms: shoulder, upper arm (in its sleeve), elbow, a wide sleeve that hangs, a small hand
   const SW = R.sleeve || 1;
