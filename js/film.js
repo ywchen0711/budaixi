@@ -11,10 +11,10 @@ import { makeClock } from './core/time.js?v=1';
 import { EPISODES } from './story/index.js?v=1';
 import { FX } from './fx.js?v=1';
 import { createRuntime } from './core/runtime.js?v=1';
-import { buildActors } from './core/actors3d.js?v=4';
+import { buildActors } from './core/actors3d.js?v=5';
 import { createDirector } from './core/director.js?v=1';
 import { createCamera } from './core/camera.js?v=1';
-import { nameOf, CHARACTERS } from './cast/characters.js?v=2';
+import { nameOf, CHARACTERS } from './cast/characters.js?v=3';
 import { seg } from './core/util.js?v=1';
 import * as score from './score.js?v=1';
 

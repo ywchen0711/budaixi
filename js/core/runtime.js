@@ -4,7 +4,7 @@
 import { ACT } from './actions.js?v=1';
 import { S, cl } from './util.js?v=1';
 import { planFeet } from '../feet.js?v=1';
-import { CHARACTERS } from '../cast/characters.js?v=2';
+import { CHARACTERS } from '../cast/characters.js?v=3';
 
 const wrap = (a) => { while (a > Math.PI) a -= Math.PI * 2; while (a < -Math.PI) a += Math.PI * 2; return a; };
 const lerpAngle = (a, b, k) => a + wrap(b - a) * k;

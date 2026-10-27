@@ -1,15 +1,15 @@
 // styles.html: the same puppet in every head style, side by side, each in its own little view of one shared canvas.
 import * as THREE from '../lib/three.module.min.js';
-import { buildPuppet } from './models/puppet.js?v=4';
-import { STYLES } from './models/heads.js?v=4';
-import { CHARACTERS } from './cast/characters.js?v=2';
+import { buildPuppet } from './models/puppet.js?v=5';
+import { STYLES } from './models/heads.js?v=5';
+import { CHARACTERS } from './cast/characters.js?v=3';
 
 const $ = (id) => document.getElementById(id);
-const ORDER = ['paper', 'pili', 'wood', 'opera', 'anime', 'film'];
-const LETTER = { paper: '現', pili: 'A', wood: 'B', opera: 'C', anime: 'D', film: 'E' };
-const WHO = ['ling', 'yan', 'ye'];
+const ORDER = ['paper', 'drama', 'pili', 'wood', 'opera', 'anime', 'film']; // F, after the drama still, next to how it was
+const LETTER = { paper: '現', pili: 'A', wood: 'B', opera: 'C', anime: 'D', film: 'E', drama: 'F' };
+const WHO = ['wanderer', 'lady', 'ling', 'yan', 'ye'];
 const params = new URLSearchParams(location.search);
-let who = WHO.includes(params.get('who')) ? params.get('who') : 'ling', shot = 'face', light = 'stage';
+let who = WHO.includes(params.get('who')) ? params.get('who') : 'wanderer', shot = 'face', light = 'stage';
 
 const canvas = $('gl');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });

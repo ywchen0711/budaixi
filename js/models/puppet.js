@@ -7,7 +7,7 @@
 // gem}, robe {base, pattern, ink, trim, inner, sleeve}, cape, ribbons, weapons {R, L}, scale
 import * as THREE from '../../lib/three.module.min.js';
 import { TOON } from '../toon.js?v=1';
-import { headLook, addHead, lockAt } from './heads.js?v=4';
+import { headLook, addHead, lockAt } from './heads.js?v=5';
 
 const toon = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
 function canvasTex(w, h, paint) {
@@ -32,6 +32,12 @@ function silkTex(R, seed) {
     } else if (R.pattern === 'plum') {
       for (let k = 0; k < 14; k++) { const x = r() * W, y = r() * H; for (let p = 0; p < 5; p++) { g.beginPath(); g.arc(x + Math.cos(p * 1.256) * 5, y + Math.sin(p * 1.256) * 5, 3.6, 0, Math.PI * 2); g.fill(); } }
       g.lineWidth = 1.5; for (let k = 0; k < 6; k++) { g.beginPath(); let x = r() * W, y = r() * H; g.moveTo(x, y); for (let j = 0; j < 4; j++) { x += (r() - 0.5) * 40; y += r() * 30; g.lineTo(x, y); } g.stroke(); }
+    }
+    else if (R.pattern === 'weave') { // rough hemp: slubbed threads both ways, mottled
+      for (let k = 0; k < 900; k++) { g.fillStyle = `rgba(${r() < 0.5 ? '255,255,255' : '0,0,0'},${0.04 + r() * 0.08})`; const x = r() * W, y = r() * H; if (r() < 0.5) g.fillRect(x, y, 6 + r() * 30, 1 + r() * 1.5); else g.fillRect(x, y, 1 + r() * 1.5, 6 + r() * 30); }
+      for (let k = 0; k < 30; k++) { g.fillStyle = `rgba(0,0,0,${0.03 + r() * 0.05})`; g.beginPath(); g.ellipse(r() * W, r() * H, 10 + r() * 30, 6 + r() * 20, r() * 3, 0, Math.PI * 2); g.fill(); }
+    } else if (R.pattern === 'plain') { // plain white silk: long soft folds
+      for (let k = 0; k < 14; k++) { const x = r() * W, gr = g.createLinearGradient(x - 12, 0, x + 12, 0); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(0.5, `rgba(120,120,140,${0.05 + r() * 0.06})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - 12, 0, 24, H); }
     }
     // a faint weave
     g.globalAlpha = 0.07; g.fillStyle = '#000'; for (let y = 0; y < H; y += 2) g.fillRect(0, y, W, 1); g.globalAlpha = 1;
@@ -101,7 +107,10 @@ export function buildPuppet(spec) {
   const torso = pivot(pelvis, 0, 0.03, 0);
   const chest = mesh(torso, new THREE.CylinderGeometry(0.21, 0.155, 0.42, 18), M.silk, 0, 0.21, 0); chest.scale.z = 0.72;
   mesh(torso, new THREE.SphereGeometry(0.21, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), M.silk, 0, 0.41, 0).scale.set(1, 0.35, 0.72);
-  for (const s of [-1, 1]) { const c = mesh(torso, new THREE.BoxGeometry(0.05, 0.3, 0.012), s < 0 ? M.silk2 : M.trim, s * 0.04, 0.3, 0.155, 0, 0, s * 0.5); void c; }
+  for (const s of [-1, 1]) { // the crossed collar: on each side a band from the neck down to below the breastbone
+    mesh(torso, new THREE.BoxGeometry(0.055, 0.27, 0.008), M.silk2, s * 0.03, 0.352, 0.148, 0.09, 0, -s * 0.36);
+    mesh(torso, new THREE.BoxGeometry(0.026, 0.28, 0.01), M.trim, s * 0.056, 0.35, 0.149, 0.09, 0, -s * 0.36);
+  }
   mesh(torso, new THREE.CylinderGeometry(0.05, 0.06, 0.07, 10), M.skin, 0, 0.47, 0);
   if (spec.armor) for (const s of [-1, 1]) mesh(torso, new THREE.SphereGeometry(0.11, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.gold, s * 0.2, 0.39, 0).scale.set(1.1, 0.6, 1);
   // ---- the head: big, carved, painted; hair over it; a crown
@@ -116,6 +125,12 @@ export function buildPuppet(spec) {
     mesh(crown, new THREE.SphereGeometry(0.06, 12, 10), M.hair, 0, -0.01, -0.06); // a bun
     mesh(crown, new THREE.CylinderGeometry(0.006, 0.006, 0.26, 6), M.gold, 0, 0.0, -0.06, 0, 0, Math.PI / 2 - 0.3);
     for (const s of [-1, 1]) mesh(crown, new THREE.SphereGeometry(0.02, 8, 6), M.gem, s * 0.12, -0.02 + s * 0.04, -0.06);
+  } else if (C.type === 'topknot') { // the hair gathered up into a knot on the crown, tied with a band
+    mesh(crown, new THREE.SphereGeometry(0.034, 16, 12), M.hair, 0, -0.012, 0.005).scale.set(1, 0.9, 1);
+    mesh(crown, new THREE.TorusGeometry(0.03, 0.007, 8, 20), toon({ color: C.color || '#2a2622' }), 0, -0.025, 0.005, Math.PI / 2);
+  } else if (C.type === 'halfup') { // the top hair tied back in a small knot with a ribbon, the rest falling loose
+    mesh(crown, new THREE.SphereGeometry(0.03, 14, 10), M.hair, 0, -0.07, -0.075);
+    for (const s of [-1, 1]) mesh(crown, new THREE.PlaneGeometry(0.02, 0.12), toon({ color: C.color || '#f2f0ec', side: THREE.DoubleSide }), s * 0.018, -0.13, -0.1, 0.2, 0, s * 0.15);
   } else if (C.type === 'hood') {
     mesh(head, new THREE.SphereGeometry(0.16, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.6), toon({ color: '#141016', side: THREE.DoubleSide }), 0, 0.14, -0.01).scale.set(1, 1.15, 1.05);
     mesh(head, new THREE.PlaneGeometry(0.2, 0.09), toon({ color: '#8a1018', side: THREE.DoubleSide }), 0, 0.09, 0.135); // the mask
@@ -126,14 +141,31 @@ export function buildPuppet(spec) {
     for (const s of [-1, 1]) mesh(crown, new THREE.BoxGeometry(0.012, 0.1, 0.012), M.gold, s * 0.12, -0.04, 0);
   }
   // long hair down the back, forelocks, ribbons from the crown: chains of segments, swung by springs (sec)
-  const chain = (parent, x, y, z, n, len, w, mat, taper = 0.75) => {
+  const chain = (parent, x, y, z, n, len, w, mat, taper = 0.75, shape = 'flat') => {
     const out = []; let p = pivot(parent, x, y, z);
-    for (let k = 0; k < n; k++) { const q = k ? pivot(p, 0, -len, 0) : p; const ww = w * Math.pow(taper, k); mesh(q, new THREE.PlaneGeometry(ww, len), mat, 0, -len / 2, 0); out.push(q); p = q; }
+    for (let k = 0; k < n; k++) {
+      const q = k ? pivot(p, 0, -len, 0) : p, w0 = w * Math.pow(taper, k), w1 = w0 * taper;
+      const geo = shape === 'tube' ? new THREE.CylinderGeometry(w0 / 2, w1 / 2, len, 9, 1, true).scale(1, 1, 0.45)
+        : shape === 'wrap' ? new THREE.CylinderGeometry(w0, w1, len, 18, 1, true, Math.PI * 0.62, Math.PI * 0.76)
+        : new THREE.PlaneGeometry(w0, len);
+      mesh(q, geo, mat, 0, -len / 2, 0); out.push(q); p = q;
+    }
     return out;
   };
+  const strands = (col) => { const c = new THREE.Color(col), t = canvasTex(64, 128, (g, W, H) => { g.fillStyle = col; g.fillRect(0, 0, W, H); for (let x = 0; x < W; x++) { const k = 0.72 + 0.5 * Math.random(); g.fillStyle = `rgb(${Math.min(255, c.r * 255 * k + 10)},${Math.min(255, c.g * 255 * k + 10)},${Math.min(255, c.b * 255 * k + 12)})`; g.fillRect(x, 0, 1, H); } }); t.repeat.set(3, 1); return t; };
   const hairLen = (H.len || 0.9) / 4;
-  const hair = chain(head, 0, 0.12, -0.13, 4, hairLen, 0.25, M.hair, 0.82);
-  const LK = lockAt(look), forelocks = [-1, 1].map((s) => chain(head, s * LK[0], LK[1], LK[2], 2, 0.12, 0.035, M.hair, 0.8));
+  const hair = look.p.sculpt ? chain(head, 0, 0.13, -0.075, 4, hairLen, 0.088, M.hair, 0.86, 'wrap') : chain(head, 0, 0.12, -0.13, 4, hairLen, 0.25, M.hair, 0.82);
+  const LK = lockAt(look), segL = look.p.sculpt ? 0.06 : 0.12, lockN = Math.max(2, Math.round((H.lockLen || 0.24) / segL));
+  const lockM = H.locks ? new THREE.MeshPhysicalMaterial({ map: strands(H.locks), roughness: 0.5, sheen: 0.6, sheenColor: '#ffffff', side: THREE.DoubleSide }) : M.hair;
+  // each side lock can be several finer strands, a little apart and of different lengths, so it reads as hair
+  const NS = look.p.sculpt ? H.lockStrands || 1 : 1, forelocks = [];
+  for (const s of [-1, 1]) for (let j = 0; j < NS; j++) {
+    const o = NS > 1 ? (j - (NS - 1) / 2) / (NS - 1) : 0, n = Math.max(2, lockN - (j % 2) * Math.round(lockN * 0.2));
+    forelocks.push(chain(head, s * (LK[0] + Math.abs(o) * 0.004), LK[1] - Math.abs(o) * 0.006, LK[2] + o * 0.026, n, segL, (H.lockW || 0.035) / Math.sqrt(NS), lockM, look.p.sculpt ? 0.95 : 0.9, look.p.sculpt ? 'tube' : 'flat'));
+  }
+  // long locks are laid forward over the front of the shoulders, so they hang down the chest, not through it
+  const lockBase = segL < 0.1 ? Array.from({ length: lockN }, (_, i) => (i === 0 ? -0.5 : i === 1 ? -0.35 : i === 2 ? 0.3 : i === 3 ? 0.3 : i === 4 ? 0.15 : 0.02 * Math.sin(i * 1.7)))
+    : lockN >= 4 ? [-0.95, 0.65, 0.2, 0, 0.02] : lockN === 3 ? [-0.55, 0.35, 0.1] : [0];
   const ribbons = spec.crownRibbon ? [-1, 1].map((s) => chain(crown, s * 0.03, 0.0, -0.04, 4, 0.13, 0.03, M.trim, 0.95)) : [];
   // ---- arms: shoulder, upper arm (in its sleeve), elbow, a wide sleeve that hangs, a small hand
   const SW = R.sleeve || 1;
@@ -157,6 +189,33 @@ export function buildPuppet(spec) {
   // ---- a cape, or silk ribbons flowing from the shoulders
   const cape = spec.cape ? chain(torso, 0, 0.42, -0.13, 4, 0.2, 0.52, M.cape, 0.98) : [];
   const ribbonsBody = spec.ribbons ? [-1, 1].map((s) => chain(torso, s * 0.2, 0.38, -0.05, 6, 0.13, 0.05, M.ribbon, 0.97)) : [];
+  // ---- what a swordsman of the dramas wears: earrings, a rough cloak over the shoulders, a sash across, a sword on the back
+  if (spec.earrings) for (const s of [-1, 1]) {
+    mesh(head, new THREE.SphereGeometry(0.0035, 8, 6), M.gold, s * 0.075, 0.097, -0.012);
+    mesh(head, new THREE.CylinderGeometry(0.0009, 0.0009, 0.012, 4), M.gold, s * 0.075, 0.089, -0.012);
+    mesh(head, new THREE.SphereGeometry(0.0055, 10, 8), new THREE.MeshPhysicalMaterial({ color: spec.earrings, roughness: 0.2, clearcoat: 1, sheen: 1, sheenColor: '#ffe8f0' }), s * 0.075, 0.08, -0.012);
+  }
+  if (spec.shawl) {
+    const sh = toon({ map: silkTex({ base: spec.shawl.color, pattern: 'weave' }, 5), side: THREE.DoubleSide });
+    const cl = mesh(torso, new THREE.CylinderGeometry(0.16, 0.3, 0.32, 28, 1, true, Math.PI * 0.17, Math.PI * 1.66), sh, 0, 0.34, -0.005, 0, 0, -0.1); cl.scale.z = 0.8; // open at the front, over the collar
+  }
+  if (spec.sash) {
+    const sm = toon({ map: silkTex({ base: spec.sash, pattern: 'weave' }, 9) });
+    mesh(torso, new THREE.BoxGeometry(0.05, 0.6, 0.014), sm, 0.0, 0.25, 0.166, -0.12, 0, -0.62);
+    mesh(torso, new THREE.BoxGeometry(0.05, 0.6, 0.014), sm, 0.0, 0.25, -0.166, 0.12, 0, 0.62);
+    mesh(torso, new THREE.TorusGeometry(0.03, 0.012, 6, 12), sm, 0.13, 0.43, 0.06, 0.4, 0.6, 0); // the knot at the shoulder
+  }
+  if (spec.back) { // the big sword on the back: the hilt up over the right shoulder, the blade down to the left hip
+    const b = new THREE.Group(); b.position.set(0.02, 0.27, -0.185); b.rotation.set(Math.PI / 2, 0, -0.62, 'ZYX'); torso.add(b);
+    const leather = toon({ color: '#1e1a1c' }), metal = toon({ color: '#3a3a40' });
+    mesh(b, new THREE.BoxGeometry(0.075, 0.03, 0.74), leather, 0, 0, 0.3);
+    for (const z of [0.0, 0.32, 0.64]) mesh(b, new THREE.BoxGeometry(0.084, 0.036, 0.04), metal, 0, 0, z);
+    mesh(b, new THREE.BoxGeometry(0.12, 0.05, 0.04), metal, 0, 0, -0.08);                       // the guard
+    mesh(b, new THREE.CylinderGeometry(0.019, 0.019, 0.2, 10), leather, 0, 0, -0.19, Math.PI / 2); // the grip
+    for (let k = 0; k < 5; k++) mesh(b, new THREE.TorusGeometry(0.021, 0.004, 6, 14), M.gold, 0, 0, -0.11 - k * 0.04);
+    mesh(b, new THREE.BoxGeometry(0.05, 0.04, 0.05), metal, 0, 0, -0.31);                       // the pommel
+    mesh(b, new THREE.SphereGeometry(0.012, 8, 6), M.gold, 0, 0.022, -0.31);
+  }
   // ---- weapons
   const weap = {};
   for (const [s, type] of Object.entries(spec.weapons || {})) { if (!type) continue; const A = s === 'R' ? armR : armL; const w = weapon(type, M, A.side); A.hand.add(w.group); weap[s] = w; }
@@ -190,7 +249,7 @@ export function buildPuppet(spec) {
     for (const [A, c, k] of [[armR, ch.R, 'R'], [armL, ch.L, 'L']]) if (c) A.drop.rotation.set(-(c.s + c.e) * 0.85 + (sec['drop' + k] || 0), 0, 0);
     const chainPose = (ch2, ax, az) => ch2.forEach((q, i) => q.rotation.set(ax[i] ?? ax[ax.length - 1] ?? 0, 0, az[i] ?? az[az.length - 1] ?? 0));
     chainPose(hair, sec.hairX || [0], sec.hairZ || [0]);
-    for (const f of forelocks) chainPose(f, sec.lockX || [0], [0]);
+    const lx = sec.lockX || [0]; for (const f of forelocks) chainPose(f, lockBase.map((b, i) => b + (lx[i] ?? lx[lx.length - 1] ?? 0)), [0]);
     for (const r of ribbons) chainPose(r, sec.ribX || [0], sec.ribZ || [0]);
     chainPose(cape, sec.capeX || [0], sec.capeZ || [0]);
     ribbonsBody.forEach((r, i) => chainPose(r, sec.ribX || [0], (sec.ribZ || [0]).map((v) => v * (i ? 1 : -1))));

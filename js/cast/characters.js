@@ -37,6 +37,23 @@ export const CHARACTERS = {
     robe: { base: '#1a1418', pattern: 'scales', ink: 'rgba(160,30,40,0.35)', trim: '#7a1018', inner: '#2a1a1e', sleeve: 0.9 },
     weapons: { R: 'saber' },
   },
+  // two in the look of a live-action wuxia drama: a wanderer in grey with a sword on his back, a lady in white
+  wanderer: {
+    zh: '江湖浪子', en: 'The Wanderer', title: { zh: '背劍的灰衣客', en: 'the grey-cloaked swordsman' }, kind: 'puppet', qi: '#c8d0e0', style: 'drama', scale: 1.03,
+    voice: { zh: ['zh-CN-YunxiNeural', -8, -4], en: ['en-US-AndrewNeural', -8, -4], fx: 'stage' },
+    skin: '#e4c0a4', face: { male: true, brow: 'thick', iris: '#24160e', lip: '#b0645a', line: '#1a0e0a' },
+    hair: { color: '#141012', len: 0.7, locks: '#e2ded6', lockLen: 0.4, lockW: 0.06, lockStrands: 4 }, crown: { type: 'topknot', color: '#3a342e' },
+    robe: { base: '#6c6862', pattern: 'weave', trim: '#5a564f', inner: '#ecebe6', belt: '#4a443c', sleeve: 1.05 },
+    shawl: { color: '#77736c' }, sash: '#b49a6e', back: 'greatsword', weapons: {},
+  },
+  lady: {
+    zh: '白衣女俠', en: 'The Lady in White', title: { zh: '古墓中人', en: 'from the old tomb' }, kind: 'puppet', qi: '#e8f0ff', style: 'drama', scale: 0.95,
+    voice: { zh: ['zh-TW-HsiaoChenNeural', -2, -6], en: ['en-US-AvaNeural', -2, -6], fx: 'stage' },
+    skin: '#f2dccc', face: { fem: true, brow: 'fine', iris: '#22140e', lip: '#c83a3e', line: '#140a08', blush: 'rgba(230,120,120,0.2)' },
+    hair: { color: '#0c0a0c', len: 1.5, lockLen: 0.6, lockW: 0.04, lockStrands: 3 }, crown: { type: 'halfup', color: '#f4f2ee' }, earrings: '#f6f2ea',
+    robe: { base: '#f4f3f0', pattern: 'plain', trim: '#e6e3de', inner: '#f2c4c8', belt: '#e8e4de', sleeve: 1.12 },
+    weapons: {},
+  },
   narrator: { zh: '口白', en: 'Narrator', kind: 'voice', voice: { zh: ['zh-CN-YunjianNeural', -16, -10], en: ['en-US-ChristopherNeural', -10, -10], fx: 'narrator' } },
 };
 export const nameOf = (id, lang) => CHARACTERS[id]?.[lang] || id;
