@@ -7,7 +7,7 @@
 // gem}, robe {base, pattern, ink, trim, inner, sleeve}, cape, ribbons, weapons {R, L}, scale
 import * as THREE from '../../lib/three.module.min.js';
 import { TOON } from '../toon.js?v=1';
-import { headLook, addHead } from './heads.js?v=1';
+import { headLook, addHead } from './heads.js?v=2';
 
 const toon = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
 function canvasTex(w, h, paint) {

@@ -1,7 +1,7 @@
 // styles.html: the same puppet in every head style, side by side, each in its own little view of one shared canvas.
 import * as THREE from '../lib/three.module.min.js';
-import { buildPuppet } from './models/puppet.js?v=2';
-import { STYLES } from './models/heads.js?v=1';
+import { buildPuppet } from './models/puppet.js?v=3';
+import { STYLES } from './models/heads.js?v=2';
 import { CHARACTERS } from './cast/characters.js?v=1';
 
 const $ = (id) => document.getElementById(id);
@@ -84,4 +84,4 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
-window.LAB = { views, build, set: (o) => { if (o.who) { who = o.who; build(); } if (o.shot) shot = o.shot; if (o.light) { light = o.light; lights(); } } };
+window.LAB = { views, build, set: (o) => { if (o.who) { who = o.who; build(); } if (o.shot) shot = o.shot; if (o.yaw != null) views.forEach((v) => { v.yaw = o.yaw; }); if (o.light) { light = o.light; lights(); } } };

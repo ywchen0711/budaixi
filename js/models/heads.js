@@ -25,8 +25,8 @@ const P = {
   pili: { sculpt: 1, socket: 0.07, brow: 0.03, nose: 1, cheek: 0.03, lip: 0.022, chin: 0.03, jaw: 0.22, temple: 0.03, eyes: 'glass', eyeR: 0.021, lidTilt: 0.18, skin: 'skin', scale: [0.93, 1.06, 0.98] },
   wood: { sculpt: 1, socket: 0.05, brow: 0.035, nose: 0.85, cheek: 0.05, lip: 0.02, chin: 0.035, jaw: 0.22, temple: 0.02, eyes: 'glass', eyeR: 0.02, lidTilt: 0.1, skin: 'lacquer', scale: [0.96, 1.05, 1] },
   opera: { sculpt: 1, socket: 0.06, brow: 0.025, nose: 0.9, cheek: 0.035, lip: 0.02, chin: 0.04, jaw: 0.3, temple: 0.03, eyes: 'glass', eyeR: 0.02, lidTilt: 0.32, skin: 'powder', scale: [0.93, 1.07, 0.98] },
-  anime: { sculpt: 1, socket: 0, brow: 0.004, nose: 0.25, cheek: 0, lip: 0, chin: 0.05, jaw: 0.42, temple: 0.01, eyes: 'paint', skin: 'cel', outline: true, scale: [0.98, 1.04, 0.98] },
-  film: { sculpt: 1, socket: 0.05, brow: 0.025, nose: 1.15, noseBulb: 1.8, cheek: 0.06, lip: 0.018, chin: 0.03, jaw: 0.12, temple: 0.0, eyes: 'glass', eyeR: 0.031, lidTilt: 0.06, skin: 'soft', scale: [1.0, 1.06, 1.0] },
+  anime: { sculpt: 1, socket: 0, brow: 0.004, nose: 0.25, cheek: 0, lip: 0, chin: 0.05, jaw: 0.42, temple: 0.01, eyes: 'paint', skin: 'cel', outline: true, chinW: 0.2, chinFwd: 0.06, chinDrop: 0.1, jawCorner: 0, scale: [0.98, 1.04, 0.98] },
+  film: { sculpt: 1, socket: 0.05, brow: 0.025, nose: 1.15, noseBulb: 1.8, cheek: 0.06, lip: 0.018, chin: 0.03, jaw: 0.12, temple: 0.0, eyes: 'glass', eyeR: 0.031, lidTilt: 0.06, skin: 'soft', chinW: 0.4, chinFwd: 0.08, floor: 0.78, scale: [1.0, 1.06, 1.0] },
 };
 
 const CEL = (() => { const t = new THREE.DataTexture(new Uint8Array([185, 255]), 2, 1, THREE.RedFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; })(); // anime: a light and a shade
@@ -60,6 +60,24 @@ function radius(lon, lat, p) {
   r -= 0.03 * p.sculpt * Math.max(0, Math.cos(lon)) * smooth(-0.9, -0.2, lat) * (1 - smooth(0.2, 0.7, lat)) * (1 - Math.exp(-((lon / 0.5) ** 2))); // the flatter sides of a face
   return r;
 }
+// where the head's surface is in direction d (a unit vector): the radius above, then the jaw. The jaw narrows to the
+// chin; the chin comes forward and down; under it the head is pulled up flat back to the neck, so the jaw has an edge
+// from the chin round to the jaw's corners below the ears, the way a carved puppet's head does.
+function shapePoint(d, p) {
+  const lon = Math.atan2(d.x, d.z), lat = Math.asin(clamp(d.y, -1, 1)), r = radius(lon, lat, p) * R0;
+  let x = d.x * r, y = d.y * r, z = d.z * r;
+  if (!p.sculpt) return new THREE.Vector3(x, y, z);
+  const below = smooth(0.05, -1, d.y);
+  x *= 1 - p.jaw * below ** 1.2;
+  z *= 1 - 0.12 * below * smooth(0.3, -0.6, d.z); // the neck side of the jaw tucks in
+  const floor = -(p.floor ?? 0.8) * R0; // the underside of the jaw
+  if (y < floor) y = floor + (y - floor) * (p.under ?? 0.35);
+  const cg = Math.exp(-((lon / (p.chinW ?? 0.3)) ** 2) - (((lat + 0.8) / 0.17) ** 2)); // the chin
+  z += (p.chinFwd ?? 0.1) * R0 * cg; y -= (p.chinDrop ?? 0.07) * R0 * cg;
+  const jg = Math.exp(-(((Math.abs(lon) - 1.05) / 0.3) ** 2) - (((lat + 0.62) / 0.16) ** 2)); // the corners of the jaw
+  x += Math.sign(d.x) * (p.jawCorner ?? 0.03) * R0 * jg;
+  return new THREE.Vector3(x, y, z);
+}
 function sculptGeo(p) {
   const [ws, hs] = p.segs || [96, 64];
   const geo = new THREE.SphereGeometry(R0, ws, hs);
@@ -68,11 +86,7 @@ function sculptGeo(p) {
   for (let i = 0; i < pos.count; i++) {
     v.fromBufferAttribute(pos, i).normalize();
     const lon = Math.atan2(v.x, v.z), lat = Math.asin(clamp(v.y, -1, 1));
-    const r = radius(lon, lat, p) * R0;
-    let x = v.x * r, y = v.y * r, z = v.z * r;
-    const below = smooth(0.05, -1, v.y); x *= 1 - p.jaw * below ** 1.2; // the jaw narrows to the chin
-    z *= 1 - 0.12 * below * smooth(0.3, -0.6, v.z); // the neck side of the jaw tucks in
-    pos.setXYZ(i, x, y, z);
+    const q = shapePoint(v, p); pos.setXYZ(i, q.x, q.y, q.z);
   }
   if (p.flat) { geo.computeVertexNormals(); return geo; } // facets: the material shades flat
   geo.computeVertexNormals();
@@ -84,8 +98,7 @@ function sculptGeo(p) {
 // a point on the sculpted surface (before the head's own scale), and its direction
 function surface(lon, lat, p) {
   const d = new THREE.Vector3(Math.sin(lon) * Math.cos(lat), Math.sin(lat), Math.cos(lon) * Math.cos(lat));
-  const r = radius(lon, lat, p) * R0, below = p.sculpt ? smooth(0.05, -1, d.y) : 0;
-  return { d, at: new THREE.Vector3(d.x * r * (1 - (p.jaw || 0) * below ** 1.2), d.y * r, d.z * r) };
+  return { d, at: shapePoint(d, p) };
 }
 
 // ---------------------------------------------------------------- the face, painted
@@ -277,6 +290,7 @@ export function addHead(head, spec, look, mesh) {
     const shell = mesh(head, geo, look.hair, 0, 0.14, 0); if (style === 'paper') shell.scale.set(0.97, 1.13, 1.04); else shell.scale.set(...sc);
     if (p.outline) { const o = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: '#1a0c0c', side: THREE.BackSide })); o.scale.setScalar(1.03); shell.add(o); }
   }
+  if (p.sculpt) mesh(head, new THREE.CylinderGeometry(0.047, 0.062, 0.15, 20, 1, true), look.skin, 0, 0.02, -0.01); // the neck, up under the jaw
   for (const s of [-1, 1]) mesh(head, new THREE.SphereGeometry(0.03, 12, 8), look.skin, s * 0.128 * sc[0] / 0.95, 0.13, -0.005).scale.set(0.4, 1, 0.7); // ears
   if (p.eyes !== 'glass') return;
   // glass eyes in their sockets, an upper and a lower lid over each, the upper one lined dark at its edge
