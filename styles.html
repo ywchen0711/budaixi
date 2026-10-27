@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>臉部風格 Face Styles</title>
+  <meta name="description" content="《掌中劍》戲偶的臉部風格比較：同一個角色，六種做法並排，可以轉動，也可以直接用那個風格看整部片。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎎%3C/text%3E%3C/svg%3E">
+  <style>
+    :root { --bg: #140a0c; --card: #1e1214; --ink: #f6eee0; --dim: #b8a898; --gold: #e8c060; --red: #9a1418; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 'Noto Sans TC', system-ui, sans-serif; }
+    #gl { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1; }
+    header { padding: 18px 16px 6px; max-width: 1500px; margin: 0 auto; }
+    h1 { margin: 0 0 4px; font-size: 1.5em; color: var(--gold); letter-spacing: 0.08em; }
+    header p { margin: 0 0 10px; color: var(--dim); }
+    .bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0; }
+    .bar span { color: var(--dim); margin-right: 4px; }
+    button { font: inherit; color: var(--ink); background: #2a1a1c; border: 1px solid #4a3034; border-radius: 6px; padding: 4px 12px; cursor: pointer; }
+    button.on { background: var(--red); border-color: var(--gold); }
+    main { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; padding: 8px 16px 32px; max-width: 1500px; margin: 0 auto; }
+    .card { background: var(--card); border: 1px solid #3a2428; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+    .view { aspect-ratio: 3 / 4; touch-action: none; cursor: grab; position: relative; }
+    .view b { position: absolute; left: 10px; top: 8px; font-size: 1.6em; color: var(--gold); z-index: 2; text-shadow: 0 0 6px #000; }
+    .info { padding: 8px 10px 10px; }
+    .info h2 { margin: 0; font-size: 1.05em; }
+    .info h2 small { color: var(--dim); font-weight: normal; margin-left: 6px; }
+    .info p { margin: 2px 0 8px; color: var(--dim); font-size: 0.9em; min-height: 2.8em; }
+    .info a { color: var(--gold); text-decoration: none; font-size: 0.9em; }
+    .info a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <canvas id="gl"></canvas>
+  <header>
+    <h1>臉部風格比較 · Face styles</h1>
+    <p>同一個角色、六種做法並排。拖曳可以轉動，點「看整部片」就用那個風格播放《掌中劍・月下決》。決定好告訴我代號（A–E）就可以。<br>
+      The same puppet made six ways. Drag to turn it; "watch the film" plays the whole short in that style.</p>
+    <div class="bar"><span>角色</span><span id="who"></span></div>
+    <div class="bar"><span>鏡頭</span><button data-shot="face" class="on">臉部特寫</button><button data-shot="bust">半身</button><button data-shot="full">全身</button>
+      <span style="margin-left:12px">燈光</span><button data-light="stage" class="on">戲台燈</button><button data-light="moon">月夜</button></div>
+  </header>
+  <main id="cards"></main>
+  <script src="/hub.js" defer data-pos="top-right"></script>
+  <script type="module" src="js/lab.js?v=1"></script>
+</body>
+</html>

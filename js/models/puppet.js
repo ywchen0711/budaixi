@@ -2,10 +2,12 @@
 // silk robes with embroidered patterns and gold trim, wide sleeves, small hands holding a sword, a fan or claws.
 // No legs: the robe reaches the ground and the puppet glides, bobbing as the puppeteer's hand steps.
 //   buildPuppet(spec) -> { group, parts, points, pose(ch, sec) }
+// The head is made in js/models/heads.js, in one of its styles.
 // spec (js/cast/characters.js): skin, face {brow, eye, lip, paint, mark}, hair {color, len, white}, crown {type, color,
 // gem}, robe {base, pattern, ink, trim, inner, sleeve}, cape, ribbons, weapons {R, L}, scale
 import * as THREE from '../../lib/three.module.min.js';
 import { TOON } from '../toon.js?v=1';
+import { headLook, addHead } from './heads.js?v=1';
 
 const toon = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
 function canvasTex(w, h, paint) {
@@ -14,56 +16,6 @@ function canvasTex(w, h, paint) {
 }
 const rnd = (s) => () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
 
-// ---------------------------------------------------------------- the painted face (on a sphere: the face is centred at u = 0.25)
-function faceTex(spec) {
-  const F = spec.face || {};
-  return canvasTex(512, 256, (g, W, H) => {
-    g.fillStyle = spec.skin || '#f2dccb'; g.fillRect(0, 0, W, H);
-    const cx = 128, ey = 122;
-    // a soft blush and a little shading under the cheekbones
-    const blush = (x, y, r, col) => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); };
-    blush(cx - 34, ey + 30, 26, F.blush || 'rgba(230,120,120,0.35)'); blush(cx + 34, ey + 30, 26, F.blush || 'rgba(230,120,120,0.35)');
-    if (F.paint === 'demon') { // a demon's mask of red and black round the eyes, down to the cheek
-      for (const s of [-1, 1]) { g.fillStyle = 'rgba(150,10,20,0.9)'; g.beginPath(); g.moveTo(cx + s * 8, ey - 26); g.quadraticCurveTo(cx + s * 60, ey - 34, cx + s * 66, ey - 2); g.quadraticCurveTo(cx + s * 56, ey + 34, cx + s * 30, ey + 50); g.quadraticCurveTo(cx + s * 34, ey + 14, cx + s * 10, ey + 6); g.fill();
-        g.fillStyle = 'rgba(20,0,10,0.9)'; g.beginPath(); g.moveTo(cx + s * 14, ey - 10); g.quadraticCurveTo(cx + s * 52, ey - 22, cx + s * 58, ey - 4); g.quadraticCurveTo(cx + s * 40, ey + 6, cx + s * 16, ey + 2); g.fill(); }
-    }
-    if (F.shadow) for (const s of [-1, 1]) blush(cx + s * 28, ey - 6, 22, F.shadow);
-    // the eyes: almond shapes with a heavy upper line swept out at the corner
-    for (const s of [-1, 1]) {
-      const ex = cx + s * 30;
-      g.fillStyle = '#fbf6ef'; g.beginPath(); g.moveTo(ex - s * 16, ey + 2); g.quadraticCurveTo(ex, ey - 13, ex + s * 17, ey - 4); g.quadraticCurveTo(ex + s * 4, ey + 9, ex - s * 16, ey + 2); g.fill();
-      g.fillStyle = F.iris || '#2a1a14'; g.beginPath(); g.arc(ex + s * 1, ey - 2, 7.5, 0, Math.PI * 2); g.fill();
-      g.fillStyle = F.pupil || '#050303'; g.beginPath(); g.arc(ex + s * 1, ey - 2, 3.6, 0, Math.PI * 2); g.fill();
-      g.fillStyle = '#ffffff'; g.beginPath(); g.arc(ex + s * 3 - 2, ey - 5, 1.8, 0, Math.PI * 2); g.fill();
-      g.strokeStyle = F.line || '#140806'; g.lineCap = 'round';
-      g.lineWidth = 4.5; g.beginPath(); g.moveTo(ex - s * 17, ey + 1); g.quadraticCurveTo(ex, ey - 15, ex + s * 19, ey - 6); g.lineTo(ex + s * 27, ey - 12); g.stroke();
-      g.lineWidth = 1.6; g.beginPath(); g.moveTo(ex - s * 12, ey + 5); g.quadraticCurveTo(ex + s * 4, ey + 10, ex + s * 16, ey - 1); g.stroke();
-      if (F.eyeshadow) { g.strokeStyle = F.eyeshadow; g.lineWidth = 5; g.beginPath(); g.moveTo(ex - s * 12, ey - 14); g.quadraticCurveTo(ex + s * 6, ey - 22, ex + s * 22, ey - 12); g.stroke(); }
-      // the brows: swept up like sword blades, or fine and arched, or a demon's spikes
-      g.fillStyle = F.browColor || '#100604';
-      g.beginPath();
-      if (F.brow === 'fine') { g.moveTo(ex - s * 14, ey - 22); g.quadraticCurveTo(ex + s * 4, ey - 33, ex + s * 24, ey - 25); g.quadraticCurveTo(ex + s * 4, ey - 29, ex - s * 14, ey - 20); }
-      else if (F.brow === 'demon') { g.moveTo(ex - s * 16, ey - 16); g.lineTo(ex + s * 6, ey - 26); g.lineTo(ex + s * 30, ey - 40); g.lineTo(ex + s * 12, ey - 22); g.closePath(); }
-      else { g.moveTo(ex - s * 18, ey - 18); g.lineTo(ex + s * 2, ey - 26); g.lineTo(ex + s * 28, ey - 36); g.lineTo(ex + s * 26, ey - 31); g.lineTo(ex + s * 2, ey - 21); g.closePath(); }
-      g.fill();
-    }
-    // the nose: a fine line and a shadow; the mouth: small and red
-    g.strokeStyle = 'rgba(120,70,50,0.55)'; g.lineWidth = 1.6; g.beginPath(); g.moveTo(cx - 2, ey + 8); g.quadraticCurveTo(cx + 1, ey + 22, cx - 5, ey + 28); g.stroke();
-    g.fillStyle = 'rgba(120,70,50,0.35)'; g.beginPath(); g.ellipse(cx - 4, ey + 30, 5, 2, 0, 0, Math.PI * 2); g.fill();
-    g.fillStyle = F.lip || '#b42828'; g.beginPath(); g.moveTo(cx - 11, ey + 44); g.quadraticCurveTo(cx - 4, ey + 38, cx, ey + 41); g.quadraticCurveTo(cx + 4, ey + 38, cx + 11, ey + 44); g.quadraticCurveTo(cx, ey + 51, cx - 11, ey + 44); g.fill();
-    g.strokeStyle = 'rgba(60,10,10,0.7)'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(cx - 11, ey + 44); g.quadraticCurveTo(cx, ey + 46, cx + 11, ey + 44); g.stroke();
-    if (F.fangs) { g.fillStyle = '#fff8ee'; for (const s of [-1, 1]) { g.beginPath(); g.moveTo(cx + s * 6, ey + 45); g.lineTo(cx + s * 8, ey + 52); g.lineTo(cx + s * 10, ey + 45); g.fill(); } }
-    // a mark on the brow: a lotus, a flame, a jewel-drop
-    if (F.mark) {
-      g.fillStyle = F.markColor || '#c81828';
-      if (F.mark === 'lotus') { for (const a of [-0.5, 0, 0.5]) { g.save(); g.translate(cx, ey - 40); g.rotate(a); g.beginPath(); g.ellipse(0, -8, 3.5, 9, 0, 0, Math.PI * 2); g.fill(); g.restore(); } }
-      else if (F.mark === 'drop') { g.beginPath(); g.moveTo(cx, ey - 52); g.quadraticCurveTo(cx + 6, ey - 40, cx, ey - 34); g.quadraticCurveTo(cx - 6, ey - 40, cx, ey - 52); g.fill(); }
-      else { g.beginPath(); g.moveTo(cx, ey - 54); g.quadraticCurveTo(cx + 8, ey - 44, cx + 2, ey - 32); g.quadraticCurveTo(cx - 6, ey - 40, cx, ey - 54); g.fill(); }
-    }
-    // the back of the head and the top are under the hair, but paint them dark in case
-    g.fillStyle = spec.hair?.color || '#121014'; g.fillRect(256, 0, 256, H); g.fillRect(0, 0, W, 28);
-  });
-}
 // ---------------------------------------------------------------- silk: a base colour with an embroidered pattern
 function silkTex(R, seed) {
   return canvasTex(256, 256, (g, W, H) => {
@@ -85,7 +37,6 @@ function silkTex(R, seed) {
     g.globalAlpha = 0.07; g.fillStyle = '#000'; for (let y = 0; y < H; y += 2) g.fillRect(0, y, W, 1); g.globalAlpha = 1;
   });
 }
-const hairTex = (col) => canvasTex(64, 256, (g, W, H) => { g.fillStyle = col; g.fillRect(0, 0, W, H); const c = new THREE.Color(col); for (let x = 0; x < W; x += 2) { const k = 0.75 + 0.5 * Math.random(); g.fillStyle = `rgb(${Math.min(255, c.r * 255 * k)},${Math.min(255, c.g * 255 * k)},${Math.min(255, c.b * 255 * k)})`; g.fillRect(x, 0, 1, H); } });
 
 // ---------------------------------------------------------------- weapons (along the hand's +z, as a fist holds them)
 function weapon(type, M, side) {
@@ -121,11 +72,12 @@ function weapon(type, M, side) {
 // ---------------------------------------------------------------- the puppet
 export function buildPuppet(spec) {
   const R = spec.robe || {}, H = spec.hair || {}, K = spec.scale || 1;
+  const look = headLook(spec);
   const M = {
-    skin: toon({ color: spec.skin || '#f2dccb' }), face: toon({ map: faceTex(spec) }),
+    skin: look.skin, face: look.face,
     silk: toon({ map: silkTex(R, 1), side: THREE.DoubleSide }), silk2: toon({ color: R.inner || '#e8e8ee' }), trim: toon({ color: R.trim || '#c8a040' }),
     gold: toon({ color: (spec.crown?.color) || '#d4a840', emissive: '#2a1a00' }), gem: new THREE.MeshBasicMaterial({ color: spec.crown?.gem || '#40a0ff' }),
-    hair: toon({ map: hairTex(H.color || '#101014'), side: THREE.DoubleSide }), belt: toon({ color: R.belt || R.trim || '#8a6a2a' }), jade: toon({ color: '#5ab08a', emissive: '#082014' }),
+    hair: look.hair, belt: toon({ color: R.belt || R.trim || '#8a6a2a' }), jade: toon({ color: '#5ab08a', emissive: '#082014' }),
     cape: spec.cape ? toon({ color: spec.cape.color, side: THREE.DoubleSide, map: silkTex({ base: spec.cape.color, pattern: spec.cape.pattern, ink: spec.cape.ink }, 3) }) : null,
     ribbon: spec.ribbons ? toon({ color: spec.ribbons.color, side: THREE.DoubleSide }) : null, tassel: R.tassel,
     hole: toon({ color: '#120c0e', side: THREE.DoubleSide }),
@@ -154,9 +106,7 @@ export function buildPuppet(spec) {
   if (spec.armor) for (const s of [-1, 1]) mesh(torso, new THREE.SphereGeometry(0.11, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.gold, s * 0.2, 0.39, 0).scale.set(1.1, 0.6, 1);
   // ---- the head: big, carved, painted; hair over it; a crown
   const neck = pivot(torso, 0, 0.5, 0), head = pivot(neck, 0, 0.0, 0);
-  const skull = mesh(head, new THREE.SphereGeometry(0.135, 32, 20), M.face, 0, 0.14, 0, 0, 0, 0); skull.scale.set(0.95, 1.15, 1.0);
-  mesh(head, new THREE.SphereGeometry(0.143, 24, 14, Math.PI * 0.62, Math.PI * 1.76, 0, Math.PI * 0.62), M.hair, 0, 0.15, -0.004).scale.set(0.97, 1.13, 1.04); // the hair over the crown and back
-  for (const s of [-1, 1]) mesh(head, new THREE.SphereGeometry(0.03, 8, 6), M.skin, s * 0.128, 0.13, -0.005).scale.set(0.4, 1, 0.7); // ears
+  addHead(head, spec, look, mesh); // the skull, the face, the eyes, the hair over it: js/models/heads.js, in the chosen style
   const crown = pivot(head, 0, 0.29, -0.03), C = spec.crown || {};
   if (C.type === 'horns') {
     mesh(crown, new THREE.CylinderGeometry(0.07, 0.09, 0.06, 12), M.gold, 0, -0.01, 0.02);
