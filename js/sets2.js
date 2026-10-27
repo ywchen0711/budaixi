@@ -137,13 +137,13 @@ function temple(scene) {
   add(new THREE.SphereGeometry(0.9, 16, 12), B, 21, 5.9, 0);           // the head
   add(new THREE.SphereGeometry(0.35, 10, 8), B, 21, 6.85, 0);          // the crown of the head
   add(new THREE.CircleGeometry(2.6, 30), new THREE.MeshBasicMaterial({ color: '#ffd870', transparent: true, opacity: 0.35 }), 22.2, 5.6, 0, 0, -Math.PI / 2, 0, false); // the halo
-  const glow = light('#ffc060', 10, 17, 4.5, 0);
+  const glow = light('#ffc060', 10, 17, 4.5, 0); // the incense cauldron stands aside, at (2, 9): the middle of the courtyard is for the actors
   // the incense cauldron in the middle of the courtyard, the bell tower, lanterns, pines
   const bronze = mat({ color: '#4a3a24' });
-  add(new THREE.CylinderGeometry(0.9, 0.7, 1.0, 14), bronze, 4.5, 1.0, 0); for (const a of [0, 2.1, 4.2]) add(new THREE.CylinderGeometry(0.08, 0.08, 0.6, 6), bronze, 4.5 + Math.cos(a) * 0.6, 0.3, Math.sin(a) * 0.6);
-  add(new THREE.BoxGeometry(2.2, 0.3, 2.2), bronze, 4.5, 1.6, 0);
+  add(new THREE.CylinderGeometry(0.9, 0.7, 1.0, 14), bronze, 2.0, 1.0, 9); for (const a of [0, 2.1, 4.2]) add(new THREE.CylinderGeometry(0.08, 0.08, 0.6, 6), bronze, 2.0 + Math.cos(a) * 0.6, 0.3, 9 + Math.sin(a) * 0.6);
+  add(new THREE.BoxGeometry(2.2, 0.3, 2.2), bronze, 2.0, 1.6, 9);
   const smoke = [];
-  for (let k = 0; k < 8; k++) { const m = add(new THREE.SphereGeometry(0.35, 8, 6), new THREE.MeshBasicMaterial({ color: '#c8c4c0', transparent: true, opacity: 0.18, depthWrite: false }), 4.5, 2, 0, 0, 0, 0, false); smoke.push({ m, s: k / 8 }); }
+  for (let k = 0; k < 8; k++) { const m = add(new THREE.SphereGeometry(0.35, 8, 6), new THREE.MeshBasicMaterial({ color: '#c8c4c0', transparent: true, opacity: 0.18, depthWrite: false }), 2.0, 2, 9, 0, 0, 0, false); smoke.push({ m, s: k / 8 }); }
   const tower = new THREE.Group(); tower.position.set(-6, 0, -9); add(new THREE.BoxGeometry(3, 0.4, 3), stone, -6, 0.2, -9);
   for (const [x, z] of [[-1.2, -1.2], [1.2, -1.2], [-1.2, 1.2], [1.2, 1.2]]) add(new THREE.CylinderGeometry(0.15, 0.15, 4.6, 8), mat({ color: '#6a1a12' }), -6 + x, 2.5, -9 + z);
   add(new THREE.CylinderGeometry(0.55, 0.75, 1.4, 14), bronze, -6, 3.2, -9);
@@ -155,7 +155,7 @@ function temple(scene) {
   for (let k = 0; k < 12; k++) { const a = R() * 6.28, r = 100 + R() * 60, h = 30 + R() * 40; add(new THREE.ConeGeometry(18 + R() * 12, h, 5), new THREE.MeshBasicMaterial({ color: '#3a4258', fog: true }), Math.cos(a) * r, h / 2 - 4, Math.sin(a) * r, 0, R() * 3, 0, false); }
   return {
     update: (t, sk) => {
-      for (const S of smoke) { const k = (t * 0.12 + S.s) % 1; S.m.position.set(4.5 + Math.sin(t * 0.5 + S.s * 9) * 0.3 * k, 1.9 + k * 4, Math.cos(t * 0.4 + S.s * 7) * 0.3 * k); S.m.scale.setScalar(0.6 + k * 2.2); S.m.material.opacity = 0.2 * (1 - k); }
+      for (const S of smoke) { const k = (t * 0.12 + S.s) % 1; S.m.position.set(2.0 + Math.sin(t * 0.5 + S.s * 9) * 0.3 * k, 1.9 + k * 4, 9 + Math.cos(t * 0.4 + S.s * 7) * 0.3 * k); S.m.scale.setScalar(0.6 + k * 2.2); S.m.material.opacity = 0.2 * (1 - k); }
       glow.intensity = 9 + Math.sin(t * 2) * 0.5; lamps.forEach((l) => { l.intensity = 3 * (sk?.lamps ?? 1); });
     },
   };
