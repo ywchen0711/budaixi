@@ -18,9 +18,44 @@ swinging after them.
 Play: https://ywchen0711.github.io/budaixi/ (space to play or pause, ← → to skip, Chinese or English subtitles and
 voices; `?t=60` starts at second 60, `?lang=en` in English).
 
-Also: [styles.html](https://ywchen0711.github.io/budaixi/styles.html) compares the head styles side by side, and
-[creator.html](https://ywchen0711.github.io/budaixi/creator.html) makes characters in the anime style: 50 faces (10
-outlines × 5 kinds of eyes) on 20 builds (4 heights × 5 frames), in any of the cast's costumes (`js/models/looks.js`).
+## 天機策 · The Celestial Stratagem (a series, 10 episodes × 10 minutes)
+
+After the prologue, the series: an original martial world built from the classic figures of Taiwanese glove puppetry —
+the smiling strategist who is always three moves ahead (洛無塵), the stern Buddha of the peak (無涯), the swordsman who
+never speaks (孤鴻), the proud rival (魏無憂), the comic informant paid by every side (錢不二), the refined lord of the
+Confucians with a fan and a secret (殷九霄), the drunken Taoist sword immortal (白鶴子), the lord of a thousand faces
+(千面鏡王), the gentleman in black and white who laughs at others' pain (陰陽郎君), the Cold Moon Fairy (月清寒), and the
+Netherworld Emperor below the world (幽冥帝君) — with Ling Yunxiao, Yan Feishuang and Ye Wuji back from the prologue.
+Poisoned cups and borrowed faces, framed murders, a staged death in a lotus pond turning red, blank pages, grand
+entrances with their poems and names in calligraphy. All of it in the anime style, every character with a face from
+the 50 and a build from the 20.
+
+- [world.html](https://ywchen0711.github.io/budaixi/world.html): the world — the Stratagem, the Three Teachings, the places, everyone, the ten episodes
+- Episodes: `?ep=s1` … `?ep=s10` (the start screen lists them)
+- [creator.html](https://ywchen0711.github.io/budaixi/creator.html): 50 faces (10 outlines × 5 eyes) on 20 builds (4 heights × 5 frames), any costume
+- [styles.html](https://ywchen0711.github.io/budaixi/styles.html): the head styles side by side
+
+The episodes are written as beats and compiled into film by `js/story/compose.js`:
+
+```js
+const E = episode({ id: 's1', title, end, cast: ['luo', 'yin', ...] });
+E.open('hall', { sky: 'dusk', mood: 'tense', place: { yin: [7, 0, -90] } });  // a place, everyone on their marks
+E.say('yin', '……', '...', { to: 'wei', act: 'fan' });                       // a line to someone: over the shoulder, a gesture
+E.enter('luo', { how: 'lotus', at: [0, 0], poem });                           // arrival, the pose, the poem, the name card, the theme
+E.duel('ling', 'wei', { d: 18, end: 'apart' });                               // exchanges: clashes, leaps, crescents, palms, passes
+E.strike('luo', 'yin', { kind: 'array', name: ['蓮華劍氣', 'Lotus Sword Light'], result: 'down' });
+E.reveal('huiming', 'jingwang');                                              // the mask comes off
+export default E.done();
+```
+
+It keeps the camera on one side of the line between speakers, cuts to the listener in a long speech, frames each
+puppet by its size, lays a bed of music under each scene by its mood (the zither, trembling strings, the dark, the
+sad psaltery, the grand), the gongs and drums under every fight, each master's theme under his poem, slow motion
+through every named technique. The places: the bamboo, the mountain top, the Dragon Abyss Pavilion, the Lotus Heart
+Retreat, the Peak of Ten Thousand Buddhas, the Netherworld (`js/sets.js`, `js/sets2.js`), with rain.
+
+To remake an episode's sound: `node tools/cues.mjs s1 > tools/cues_s1.json`, `python tools/voices.py cues_s1.json`,
+`python -P tools/mix.py RAW KN VSCO VCSL cues_s1.json`.
 
 ## How it is built
 
