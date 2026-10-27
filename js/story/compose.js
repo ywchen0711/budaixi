@@ -22,6 +22,11 @@ const LOC = {
   temple: { o: [1200, 0], key: 'D', est: [[[-18, 7, 2], [-9, 3.5, 3]], [[16, 4.5, 0], [12, 3, 0]], 52], wide: [[-8, 3.0, 7], [4, 1.4, 0], 48], scenic: [[[0, 1.4, -14], [6, 2.0, -12]], [[21, 5, 0], [21, 5.5, 0]], 44] },
   abyss: { o: [1500, 0], key: 'Dm', est: [[[-20, 4, -10], [-9, 2.2, -4]], [[10, 3, 0], [8, 2.5, 0]], 50], wide: [[-10, 3.4, 6], [3, 1.4, 0], 50], scenic: [[[-16, 9, 12], [-10, 6, 8]], [[10, 4, 0], [10, 5, 0]], 48] },
 };
+const OBST = {
+  hall: [...[-8, -4, 0, 4, 8].flatMap((x) => [[x, 6, 0.55], [x, -6, 0.55]]), [8.9, 0, 1.0], [8.9, 2, 1.0], [8.9, -2, 1.0]],
+  lotus: [[-4.6, -4.6, 0.4], [4.6, -4.6, 0.4], [-4.6, 4.6, 0.4], [4.6, 4.6, 0.4]],
+  temple: [[14.4, -6, 0.5], [14.4, -2, 0.5], [14.4, 2, 0.5], [14.4, 6, 0.5], [2, 9, 1.3], [-6, -9, 1.8]],
+};
 // each master's theme: [instrument, [note, beat length]...] played over the entrance poem
 const THEME = {
   luo: ['OC', [['G4', 1], ['A4', 1], ['D5', 2], ['E5', 1], ['D5', 1], ['B4', 1], ['A4', 1], ['G4', 3]]],
@@ -72,7 +77,21 @@ class Episode {
   size(id) { const C = CHARACTERS[this.who[id]] || {}; return (C.scale || 1) * (C.anime ? bodyOf(C.anime.body).scale : 1); } // how big the puppet is
   // an offset round an actor in its own frame: x to its right, y up, z ahead
   rel(id, [x, y, z]) { const [fx, fz] = this.dir(id), rx = -fz, rz = fx; return [r3(rx * x + fx * z), y, r3(rz * x + fz * z)]; }
-  shot(s) { const prev = this.shots[this.shots.length - 1]; if (prev && Math.abs(prev.t - s.t) < 0.25) this.shots.pop(); this.shots.push({ ...s, t: r3(s.t) }); }
+  // a camera placed round an actor is pulled in towards it until nothing stands between them
+  clear(s) {
+    const ob = OBST[this.loc]; if (!ob || !s.pos || Array.isArray(s.pos) || !s.pos.off) return s;
+    const base = s.pos.at ? this.pos[s.pos.at] : s.pos.mid ? [(this.pos[s.pos.mid[0]][0] + this.pos[s.pos.mid[1]][0]) / 2, (this.pos[s.pos.mid[0]][1] + this.pos[s.pos.mid[1]][1]) / 2] : null;
+    if (!base) return s;
+    const O = this.O(), bx = base[0] - O[0], bz = base[1] - O[1], [ox, oy, oz] = s.pos.off;
+    const hits = (k) => { const cx = bx + ox * k, cz = bz + oz * k; for (const [x, z, r] of ob) { // the segment from the camera to the subject passes within r + 0.3 of the obstacle?
+      const dx = bx - cx, dz = bz - cz, l2 = dx * dx + dz * dz || 1, u = Math.max(0, Math.min(1, ((x - cx) * dx + (z - cz) * dz) / l2)), px = cx + dx * u - x, pz = cz + dz * u - z;
+      if (px * px + pz * pz < (r + 0.3) ** 2 && u < 0.92) return true; } return false; };
+    let k = 1; while (k > 0.35 && hits(k)) k -= 0.08;
+    if (k >= 1) return s;
+    if (k <= 0.35) { const side = [-oz, ox]; return { ...s, pos: { ...s.pos, off: [r3(side[0]), oy, r3(side[1])] } }; } // crowded: from the side instead
+    return { ...s, pos: { ...s.pos, off: [r3(ox * k), oy, r3(oz * k)] }, fov: s.fov ? Math.min(60, s.fov / Math.max(0.6, k)) : s.fov };
+  }
+  shot(s) { s = this.clear(s); const prev = this.shots[this.shots.length - 1]; if (prev && Math.abs(prev.t - s.t) < 0.25) this.shots.pop(); this.shots.push({ ...s, t: r3(s.t) }); }
   face(id, to, t = this.t) { // to: an actor id or a heading in degrees
     const tr = this.tracks[id], last = tr.lastFace; if (last) last.t1 = r3(t);
     const a = typeof to === 'string' ? { do: 'face', t: r3(t), t1: 1e4, to, blend: 0.35 } : { do: 'face', t: r3(t), t1: 1e4, yaw: rad(to), blend: 0.35 };
@@ -87,7 +106,7 @@ class Episode {
     const n = [...zh].filter((c) => /[㐀-鿿]/.test(c)).length, w = en.split(/\s+/).length;
     return Math.max(1.5, Math.max((0.45 + n * 0.25) * rate, (0.4 + w * 0.33) / 1.3));
   }
-  line(id, zh, en, t, d) { this.L.push([r3(t), r3(t + d), this.who[id] || id, zh, en]); }
+  line(id, zh, en, t, d, emo) { this.L.push([r3(t), r3(t + d), this.who[id] || id, zh, en, emo || null]); }
   theme(id, t0, t1, g = 0.4) {
     const T = THEME[this.who[id]] || THEME.ling, beats = T[1].reduce((s, n) => s + n[1], 0), k = (t1 - t0) / beats; let t = t0;
     this.music.push({ line: T[0], g, notes: T[1].map(([n, b]) => { const e = [n, r3(t), r3(b * k * 0.95)]; t += b * k; return e; }) });
@@ -147,7 +166,7 @@ class Episode {
       const P = Array.isArray(p[0]) ? p : [p, p], Lk = Array.isArray(l[0]) ? l : [l, l];
       this.shot(o.on ? { t, pos: { at: o.on, off: this.rel(o.on, [2.6, 1.3, 3.2]) }, look: { at: o.on, off: [0, 1.1, 0] }, fov: 34 } : { t, pos: [w(P[0]), w(P[1])], look: [w(Lk[0]), w(Lk[1])], fov: f });
     }
-    this.line('narrator', zh, en, t + 0.2, d - 0.3);
+    this.line('narrator', zh, en, t + 0.2, d - 0.3, o.emo || 'calm');
     this.t = t + d; return this;
   }
   // ---------------------------------------------------------------- words, said to someone, with a gesture
@@ -166,7 +185,10 @@ class Episode {
     if (to && d > 5.5 && o.react !== false) this.camOn('ots', to, id, t + d * 0.62, d * 0.38, C.side);
     this.gesture(id, o.act, t, d);
     if (to && this.shown(to)) this.A(to, { do: 'lookat', t: r3(t), t1: r3(t + d), to: id });
-    this.line(id, zh, en, t + 0.12, d - 0.2);
+    const EMO = { angry: 'angry', shock: 'shock', laugh: 'laugh', think: 'think', bow: 'bow', fan: 'tease', whisk: 'calm', point: null, none: null };
+    this.line(id, zh, en, t + 0.12, d - 0.2, o.emo || EMO[o.act] || null);
+    // speaking: the head nods on the stresses, the body leans into it
+    if (o.act !== 'none') for (let k = 0.4; k < d - 0.6; k += 1.1 + this.R() * 0.9) this.A(id, { do: 'p', t: r3(t + k), t1: r3(t + k + 0.5), set: { headKick: -0.12 - this.R() * 0.1 }, shape: 'bump' });
     this.t = t + d; return this;
   }
   camOn(kind, id, to, t, d, side = 1) {
@@ -191,7 +213,7 @@ class Episode {
     else if (act === 'shock') A({ do: 'p', t: r3(t), t1: r3(t + 1.4), set: { lean: -0.22, headX: -0.1 }, shape: 'bump' });
     else if (act === 'think') A({ do: 'p', t: r3(t + 0.2), t1: r3(t + Math.min(d, 3)), set: { headX: 0.18, look: 0.2 }, shape: 'bump' }, { do: 'arm', side: 'L', keys: [[r3(t + 0.4), -1.5, -2.0, 0.3], [r3(t + Math.min(d, 2.8)), -1.5, -2.0, 0.3]] });
     else if (act === 'none') { /* still */ }
-    else if (R < 0.45) A({ do: 'arm', side: R < 0.25 ? 'L' : 'R', keys: [[r3(t + 0.4), -0.9, -1.1, 0.2], [r3(t + Math.min(d, 2.0)), -0.75, -0.9, 0]] });
+    else if (R < 0.5) { const sd = R < 0.25 ? 'L' : 'R'; A({ do: 'arm', side: sd, keys: [[r3(t + 0.35), -0.55, -1.25, 0.25, 0.1], [r3(t + 1.0), -0.7, -1.0, 0.1, 0.2], [r3(t + Math.min(d, 1.9)), -0.5, -1.1, 0.2, 0.1]] }); } // an open hand turned out on the words
     else nod();
   }
   // ---------------------------------------------------------------- a master's entrance: the arrival, the pose, the poem, the name
@@ -243,12 +265,13 @@ class Episode {
         if (i === 0) this.shot({ t: tp, pos: { at: id, off: this.rel(id, [2.0 * side, 0.35, 1.4]) }, look: { actor: id, part: 'head', off: [0, 0.15, 0] }, fov: 34 });
         else if (i === 1) { const c = this.pos[id], [fx, fz] = this.dir(id), a0 = Math.atan2(fz, fx); this.shot({ t: tp, orbit: { c: { at: id, off: [0, 1.15, 0] }, r: 2.8, h: 0.3, a: [r3(a0 - 0.5 * side), r3(a0 + 0.5 * side)] }, fov: 34 }); void c; }
         else this.camOn('close', id, null, tp, d, side);
-        this.line(v, zh, en, tp + 0.15, d - 0.25); tp += d;
+        this.line(v, zh, en, tp + 0.15, d - 0.25, 'shout'); tp += d;
       });
       this.theme(id, p0, tp, 0.42);
       this.camOn('close', id, null, tp - 1.6, 1.6, side);
       this.music.push({ luogu: 'hit', t: r3(tp), g: 0.9 });
     } else this.theme(id, land, land + 6, 0.36);
+    this.A(id, { do: 'stance', t: r3(tp), t1: r3(tp + 1.4), k: 0 });
     this.t = tp + 0.3; return this;
   }
   // ---------------------------------------------------------------- moving, leaving, small acts
@@ -274,7 +297,7 @@ class Episode {
     else if (kind === 'fall') A({ do: 'fall', t: r3(t), t1: r3(t + 0.8) });
     else if (kind === 'die') A({ do: 'fall', t: r3(t), t1: r3(t + 0.8) }, { do: 'die', t: r3(t) });
     else if (kind === 'qi') A({ do: 'qi', t: r3(t), t1: r3(t + d), k: o.k ?? 1, col: o.col || CHARACTERS[this.who[id]]?.qi });
-    else if (kind === 'stance') A({ do: 'stance', t: r3(t), t1: r3(t + 0.6) });
+    else if (kind === 'stance') A({ do: 'stance', t: r3(t), t1: r3(t + 0.6) }, { do: 'stance', t: r3(t + d + 0.8), t1: r3(t + d + 2), k: 0 });
     else if (kind === 'turn') this.face(id, o.to, t);
     else if (kind === 'hit') A({ do: 'react', t: r3(t), part: 'body', k: o.k ?? 1.2 });
     else if (kind === 'stagger') { A({ do: 'react', t: r3(t), part: 'body', k: o.k ?? 1.4 }); const [lx, lz] = this.local(id), [fx, fz] = this.dir(id); this.goto(id, lx - fx * 1.4, lz - fz * 1.4, t, t + 0.6, { e: 'out' }); }
@@ -287,6 +310,7 @@ class Episode {
   sfx(kind, o = {}) { this.cues.push({ t: r3(this.t + (o.dt || 0)), kind, ...o }); return this; }
   hit(t = this.t, g = 1.2) { this.music.push({ luogu: 'hit', t: r3(t), g }); return this; }
   // ---------------------------------------------------------------- a duel: d seconds of exchanges between a and b
+  guard(ids, t0, t1) { for (const id of ids) this.A(id, { do: 'stance', t: r3(t0), t1: r3(t0 + 0.5), k: 1 }, { do: 'stance', t: r3(t1), t1: r3(t1 + 1.2), k: 0 }); }
   duel(a, b, o = {}) {
     const t0 = this.t, d = o.d ?? 16, k = o.k ?? 1, ca = CHARACTERS[this.who[a]]?.qi, cb = CHARACTERS[this.who[b]]?.qi;
     this.face(a, b, t0); this.face(b, a, t0);
@@ -366,7 +390,7 @@ class Episode {
       this.shot({ t: t + 0.2, pos: { at: w, off: this.rel(w, [1.4, 0.6, 1.8]) }, look: { mid: [a, b], off: [0, 1.0, 0] }, fov: 44 }); this.hit(t + 0.52, 1.5); this.music.push({ hit: 'gong', t: r3(t + 0.52), g: 0.6 });
       t += 2.0;
     } else if (end.startsWith('flee')) { const f = end === 'flee:a' ? a : b; blow(f === a ? b : a, f, t + 0.4, 'clash', 'over'); this.A(f, { do: 'jump', t: r3(t + 0.8), t1: r3(t + 1.9), h: 4, d: [-2, 0], land: 0 }, { do: 'flip', t: r3(t + 0.85), t1: r3(t + 1.7) }); this.hide(f, t + 1.7); this.shot({ t: t + 0.6, pos: { at: f, off: this.rel(f, [2.4, 0.5, 2.6]) }, look: { at: f, off: [0, 2.5, 0] }, fov: 50 }); t += 2.2; }
-    this.t = t; this.conv = null; return this;
+    this.guard([a, b], t0, t); this.t = t; this.conv = null; return this;
   }
   // one against many: the foes come in turn, the hero turns from one to the next
   skirmish(hero, foes, o = {}) {
@@ -388,7 +412,7 @@ class Episode {
       if (fin || o.kill) { this.A(f, { do: 'fall', t: r3(t + 1.7), t1: r3(t + 2.4) }, { do: 'die', t: r3(t + 1.7) }); down.add(f); }
       this.hit(t + 1.35, 0.8); t += 2.1; if (i % 2 === 0) side = -side;
     }
-    void col; this.t = t; this.conv = null; return this;
+    this.guard([hero, ...foes], t0, t); void col; this.t = t; this.conv = null; return this;
   }
   // ---------------------------------------------------------------- a named technique: the power gathered, the name cried out, the blow
   strike(a, b, o = {}) {
@@ -399,7 +423,7 @@ class Episode {
     this.shot({ t, pos: { at: a, off: this.rel(a, [-1.6, 0.35, 1.4]) }, look: { actor: a, part: 'head', off: [0, 0.1, 0] }, fov: 38 });
     this.music.push({ pad: 'VNt', n: 'D5', t: r3(t), d: 2.8, g: 0.3 }, { hit: 'roll', t: r3(t + 0.4), g: 0.45 });
     let ti = t + 2.4;
-    if (o.name) { const [zh, en] = o.name, d = this.dur(a, zh, en); this.camOn('close', a, null, t + 1.0, d, 1); this.line(a, zh, en, t + 1.1, d); ti = Math.max(ti, t + 1.1 + d); }
+    if (o.name) { const [zh, en] = o.name, d = this.dur(a, zh, en); this.camOn('close', a, null, t + 1.0, d, 1); this.line(a, zh, en, t + 1.1, d, 'shout'); ti = Math.max(ti, t + 1.1 + d); }
     // the release, seen wide; the slow motion through it
     const tr = ti;
     this.shot({ t: tr - 0.3, pos: { mid: [a, b], off: (() => { const [ax, az] = this.pos[a], [bx, bz] = this.pos[b], dx = bx - ax, dz = bz - az, l = Math.hypot(dx, dz) || 1; return [r3(-dz / l * 5), 1.3, r3(dx / l * 5)]; })() }, look: { mid: [a, b], off: [0, 1.0, 0] }, fov: 50 });
@@ -419,7 +443,7 @@ class Episode {
       if (res === 'kill') this.A(b, { do: 'fall', t: r3(hitT + 0.7), t1: r3(hitT + 1.5) }, { do: 'die', t: r3(hitT + 0.7) });
       else if (res === 'down') this.A(b, { do: 'kneel', t: r3(hitT + 0.8), t1: r3(hitT + (o.hold ?? 8)) }); }
     this.shot({ t: hitT + 0.5, pos: { at: b, off: this.rel(b, [1.8, 0.6, 2.2]) }, look: { at: b, off: [0, 0.9, 0] }, fov: 40 });
-    this.t = hitT + 2.0; this.conv = null; return this;
+    this.guard([a, b], t, hitT + 1.6); this.t = hitT + 2.0; this.conv = null; return this;
   }
   // one turns into another: the mask lifts, the face beneath (the two are different actors at the same place)
   reveal(from, to, o = {}) {
@@ -444,7 +468,7 @@ class Episode {
       if (last < 1e4) hides.push({ do: 'hide', t: r3(last), t1: 1e4 });
       if (!v.length) hides.push({ do: 'hide', t: 0, t1: 1e4 });
       const start = tr.find((a) => a.do === 'goto')?.to || [0, 0];
-      return { id, who: this.who[id], start, track: [...hides, ...tr.map((a) => { const { lastFace, ...rest } = a; void lastFace; return rest; })] };
+      return { id, who: this.who[id], start, stance0: 0, track: [...hides, ...tr.map((a) => { const { lastFace, ...rest } = a; void lastFace; return rest; })] };
     });
     const lines = this.L.sort((x, y) => x[0] - y[0]);
     // a line that would run into the next one is cut back a little (its voice is sped up to fit, tools/voices.py)
@@ -455,7 +479,7 @@ class Episode {
       warp: this.warp.sort((x, y) => x[0] - y[0]).filter((w, i, W) => i === 0 || w[0] >= W[i - 1][1]), blacks: this.blacks, cards: this.cards, scenes: this.scenes,
       set: { kinds: [...new Set(['stage', ...this.scenes.map((s) => s[2])])], curtain: [1.2, 3.6], stageUntil: 4.4, plaque: this.m.plaque || '天機策', couplet: this.m.couplet || ['一策天機藏萬象', '半笑江湖定風雲'], sky: this.sky, rain: this.rain.length ? this.rain : undefined, ...(this.m.set || {}), embers: 0, fires: [], columns: [] },
       actors, shots,
-      lines: { zh: lines.map(([a, b, w, z]) => [a, b, w, z]), en: lines.map(([a, b, w, , e]) => [a, b, w, e]) },
+      lines: { zh: lines.map(([a, b, w, z, , m]) => [a, b, w, z, m]), en: lines.map(([a, b, w, , e, m]) => [a, b, w, e, m]) },
       cues: this.cues, music: this.music.sort((x, y) => (x.t ?? x.notes?.[0]?.[1] ?? 0) - (y.t ?? y.notes?.[0]?.[1] ?? 0)),
     };
   }

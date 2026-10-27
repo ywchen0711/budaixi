@@ -460,6 +460,12 @@ export function addHead(head, spec, look, mesh) {
   for (const s of [-1, 1]) { // the ears
     const ear = mesh(head, new THREE.SphereGeometry(1, 16, 12), look.skin, s * 0.083, 0.125, -0.017, 0, s * 0.35, s * 0.1); ear.scale.set(0.006, 0.027, 0.016);
   }
+  // the mouth: dark inside, opened by the voice (look.mouth(k), k from 0 shut to 1 wide)
+  { const lowY = p.lowY || 1, my = -0.0712 * lowY, mz = faceZ(0, my, p) + 0.0022, mw = 0.0105 * (p.mouthW || 1) * (spec.face?.male ? 1.08 : 1);
+    const inner = new THREE.MeshBasicMaterial({ color: '#3a0c10', transparent: true, depthWrite: false, opacity: 0.95 });
+    const m = new THREE.Mesh(new THREE.CircleGeometry(1, 20), inner); m.position.set(0, 0.14 + my, mz); m.scale.set(mw, 0.0001, 1); m.renderOrder = 2; head.add(m);
+    const teeth = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.35), new THREE.MeshBasicMaterial({ color: '#f4eee6', transparent: true, depthWrite: false })); teeth.position.set(0, 0.62, 0.0005); m.add(teeth);
+    look.mouth = (k) => { const o = Math.max(0, Math.min(1, k)); m.visible = o > 0.03; m.scale.set(mw * (1 - 0.25 * o), 0.0001 + 0.0068 * o, 1); }; }
   if (p.eyes !== 'glass') return;
   // glass eyes in their sockets, an upper and a lower lid over each, the upper one lined dark at its edge
   const eyeM = new THREE.MeshPhysicalMaterial({ map: irisTex(F), roughness: 0.15, clearcoat: 1, clearcoatRoughness: 0.03 });

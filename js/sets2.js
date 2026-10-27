@@ -48,10 +48,10 @@ function hall(scene) {
   for (let i = 0; i < 5; i++) for (const s of [-1, 1]) { const x = -8 + i * 4; add(new THREE.CylinderGeometry(0.28, 0.32, 6, 14), red, x, 3, s * 6); add(new THREE.CylinderGeometry(0.42, 0.42, 0.3, 14), stone, x, 0.15, s * 6); add(new THREE.BoxGeometry(0.7, 0.4, 0.7), gold, x, 6.1, s * 6); }
   add(new THREE.BoxGeometry(19, 0.5, 13), dark, 0, 6.45, 0); roof((g, m, x, y, z, rx, ry, rz) => add(g, m, x, y, z, rx, ry, rz), 19, 13, 6.8, tile, gold);
   // the dais and throne at the back (+x), the plaque above, banners
-  add(new THREE.BoxGeometry(3, 0.5, 6), red, 7.5, 0.25, 0); add(new THREE.BoxGeometry(3.2, 0.08, 6.2), gold, 7.5, 0.52, 0);
-  add(new THREE.BoxGeometry(1.2, 0.6, 1.4), gold, 8.0, 0.85, 0); add(new THREE.BoxGeometry(0.3, 1.8, 1.6), gold, 8.55, 1.5, 0);
-  add(new THREE.BoxGeometry(0.1, 1.0, 3.4), mat({ map: words('龍淵閣', 320, 96, 64, '#1a0c08', '#f0c858') }), 8.9, 4.6, 0, 0, -Math.PI / 2, 0);
-  for (const s of [-1, 1]) add(new THREE.PlaneGeometry(0.9, 3.4), mat({ map: words(s < 0 ? '仁義禮智信' : '天地君親師', 64, 320, 44, '#7a1012', '#f0c858', true), side: THREE.DoubleSide }), 8.8, 3.6, s * 2.4, 0, -Math.PI / 2, 0);
+  add(new THREE.BoxGeometry(1.6, 0.5, 5), red, 8.9, 0.25, 0); add(new THREE.BoxGeometry(1.8, 0.08, 5.2), gold, 8.9, 0.52, 0); // the dais at the back, behind where its master stands
+  add(new THREE.BoxGeometry(1.0, 0.6, 1.4), gold, 9.1, 0.85, 0); add(new THREE.BoxGeometry(0.3, 1.8, 1.6), gold, 9.55, 1.5, 0);
+  add(new THREE.BoxGeometry(0.1, 1.0, 3.4), mat({ map: words('龍淵閣', 320, 96, 64, '#1a0c08', '#f0c858') }), 9.7, 4.6, 0, 0, -Math.PI / 2, 0);
+  for (const s of [-1, 1]) add(new THREE.PlaneGeometry(0.9, 3.4), mat({ map: words(s < 0 ? '仁義禮智信' : '天地君親師', 64, 320, 44, '#7a1012', '#f0c858', true), side: THREE.DoubleSide }), 9.6, 3.6, s * 2.4, 0, -Math.PI / 2, 0);
   // the banquet: low tables down both sides with cups and dishes
   const wood = mat({ color: '#4a2416' }), cup = mat({ color: '#e8e0d0' });
   for (let i = 0; i < 4; i++) for (const s of [-1, 1]) { const x = -5 + i * 3; add(new THREE.BoxGeometry(1.6, 0.4, 0.8), wood, x, 0.2, s * 3.6); for (let k = 0; k < 3; k++) add(new THREE.CylinderGeometry(0.05, 0.04, 0.08, 8), cup, x - 0.5 + k * 0.5, 0.44, s * 3.6); }

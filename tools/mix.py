@@ -343,12 +343,21 @@ LANGS = json.load(open(VOICES, encoding='utf-8')) if os.path.exists(VOICES) else
 out = os.path.join(HERE, '..', 'audio'); os.makedirs(out, exist_ok=True)
 # how long each line really takes to say, so the player keeps its subtitle up until it has been said
 json.dump({lang: [[round(L['t'] - 0.04, 3), round(L['dur'], 3)] for L in lines] for lang, lines in LANGS.items()}, open(os.path.join(out, f'{EP}.lines.json'), 'w'))
+# the mouths: each line's loudness, 30 times a second, 0..100, from when it starts in film time
+def envelope(path):
+    x = load(path).mean(axis=1); hop = SR // 30; n = len(x) // hop
+    e = np.sqrt(np.array([np.mean(x[i * hop:(i + 1) * hop] ** 2) for i in range(n)]) + 1e-9)
+    e = e / max(1e-6, np.percentile(e, 95)); e = np.clip((e - 0.12) / 0.75, 0, 1) ** 0.8
+    return [int(v * 100) for v in e]
+json.dump({lang: [[round(to_film(L['t']), 3), L['who'], envelope(L['file'])] for L in lines] for lang, lines in LANGS.items()}, open(os.path.join(out, f'{EP}.mouth.json'), 'w'), separators=(',', ':'))
 for lang, lines in LANGS.items():
     dlg = np.zeros((N, 2), np.float32)
     for L in lines:
         x = load(L['file']); x = x / max(1e-6, float(np.sqrt((x ** 2).mean()))) * 0.11 * (1.25 if L['loud'] else 1.0)
         x = voice_fx(x, L['fx'])
         dry = 0.5 if L['fx'] == 'narrator' else 0.2  # the storyteller close, the puppets out on the stage
+        if L.get('emo') == 'inner': x = filt(x, 'lowpass', 6000) * 0.8; x = x + reverb(x, 1.2, 0.03) * 0.35; dry = 0.8
+        if L.get('emo') in ('angry', 'shout'): x = np.tanh(x * 2.2) / 2.2 * 1.25  # a raised voice: driven, a little louder
         x = room(x) * (1 - dry) + x * dry; start = to_film(L['t'])
         i = max(0, int(start * SR)); n = min(len(x), N - i)
         dlg[i:i + n] += pan(x[:n], 0.0)

@@ -284,5 +284,5 @@ export function buildPuppet(spec) {
     ribbonsBody.forEach((r, i) => chainPose(r, sec.ribX || [0], (sec.ribZ || [0]).map((v) => v * (i ? 1 : -1))));
     for (const w of Object.values(weap)) w.tassels.forEach((q, i) => { q.rotation.x = (sec.tassel || 0) * (i + 1) * 0.6; });
   }
-  return { group: root, body, parts, points, weap, pose, M };
+  return { group: root, body, parts, points, weap, pose, M, mouth: (k) => look.mouth?.(k) };
 }

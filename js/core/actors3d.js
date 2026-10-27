@@ -15,6 +15,8 @@ const HZ = 60;
 // fingers raised before the chest (劍指); relaxed, the hands rest lower
 const REST = { R: { s: -0.35, e: -0.6, w: 0.25, a: 0.1 }, L: { s: -0.15, e: -0.4, w: 0, a: 0.05 } };
 const GUARD = { R: { s: -0.75, e: -0.85, w: 0.65, a: 0.18 }, L: { s: -0.55, e: -1.95, w: 0, a: 0.08 } };
+// at ease, talking: the sword hand hangs at the side, the other rests at the waist
+const EASE = { R: { s: -0.1, e: -0.28, w: 0.35, a: 0.05 }, L: { s: -0.28, e: -0.95, w: 0.1, a: 0.02 } };
 const mix = (a, b, k) => ({ s: a.s + (b.s - a.s) * k, e: a.e + (b.e - a.e) * k, w: (a.w || 0) + ((b.w || 0) - (a.w || 0)) * k, a: (a.a || 0) + ((b.a || 0) - (a.a || 0)) * k });
 
 // a damped spring run over an array of targets
@@ -31,15 +33,17 @@ function puppet(scene, A, C, rt) {
   // the joint values for a state: arms from the story, or the rest / guard stance
   function raw(s) {
     const p = s.pose, st = p.stance ?? 1, g = Math.max(st * 0.8, p.guard || 0);
-    const arm = (k) => { const base = mix(REST[k], GUARD[k], Math.min(1, g)); const set = p['arm' + k]; const a = set ? { s: set.s, e: set.e, w: p['wrist' + k] ?? 0, a: p['abd' + k] ?? base.a } : base; a.s += (p['kick' + k] || 0) * 0.8; return a; };
-    return { lean: (p.lean || 0) + 0.06 * (p.crouch || 0) + 0.25 * (s.kneel || 0), twist: (p.twist || 0) - 0.2, roll: (p.roll || 0) + (p.sway || 0) * 0.03, crouch: Math.min(1.3, (p.crouch || 0) + 0.8 * (s.kneel || 0)), headX: -(p.headKick || 0) * 0.5, headY: p.look || 0, R: arm('R'), L: arm('L') };
+    // stance 0: at ease; 0.5: the rest pose (the sword held low and ready); 1: on guard
+    const arm = (k) => { const base = st < 0.5 && !(p.guard > st) ? mix(EASE[k], REST[k], Math.min(1, g / 0.4)) : mix(REST[k], GUARD[k], Math.min(1, g)); const set = p['arm' + k]; const a = set ? { s: set.s, e: set.e, w: p['wrist' + k] ?? 0, a: p['abd' + k] ?? base.a } : base; a.s += (p['kick' + k] || 0) * 0.8; return a; };
+    const br = Math.sin(s.t * 1.6 + A.i * 1.3), ease = 1 - Math.min(1, g); // breathing, and a slow shift of weight at ease
+    return { lean: (p.lean || 0) + 0.06 * (p.crouch || 0) + 0.25 * (s.kneel || 0) + 0.012 * br * ease, twist: (p.twist || 0) - 0.2, roll: (p.roll || 0) + (p.sway || 0) * 0.03, crouch: Math.min(1.3, (p.crouch || 0) + 0.8 * (s.kneel || 0)), headX: -(p.headKick || 0) * 0.5, headY: p.look || 0, R: arm('R'), L: arm('L') };
   }
   function bake() {
     const keys = ['lean', 'twist', 'roll', 'crouch', 'headX', 'headY'], armK = ['s', 'e', 'w', 'a'];
     const T = {}; for (const k of keys) T[k] = new Float32Array(N); for (const s of ['R', 'L']) for (const k of armK) T[s + k] = new Float32Array(N);
     const pos = [], yaw = [];
     for (let i = 0; i < N; i++) {
-      const t = i / HZ, s = rt.state(A.id, t), r = raw(s);
+      const t = i / HZ, s = rt.state(A.id, t); s.t = t; const r = raw(s);
       for (const k of keys) T[k][i] = r[k]; for (const sd of ['R', 'L']) for (const k of armK) T[sd + k][i] = r[sd][k];
       pos.push(rt.pos(A.id, t)); yaw.push(rt.yaw(A.id, t) + (s.spin || 0));
     }
@@ -84,6 +88,7 @@ function puppet(scene, A, C, rt) {
     kind: 'puppet', A, C, P, points: P.points, frames, weap: Object.fromEntries(Object.entries(P.weap).map(([k, w]) => ['w' + k, w])), m: { head: P.parts.head, torso: P.parts.torso },
     looseOf: (what) => (what === 'wR' ? P.weap.R?.group : what === 'wL' ? P.weap.L?.group : what === 'armR' ? P.parts.armR.sh : what === 'armL' ? P.parts.armL.sh : null),
     bake,
+    mouth: (k) => P.mouth?.(k),
     pose(t, s, other, aimAt, resolve) {
       const p = rt.pos(A.id, t);
       P.group.visible = !s.hidden; P.group.position.set(p.x, p.y - (s.sink || 0), p.z); P.group.rotation.y = rt.yaw(A.id, t) + (s.spin || 0);

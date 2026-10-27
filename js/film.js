@@ -78,7 +78,7 @@ function frame(tf) {
   sun.color.copy(sky.sunCol); sun.intensity = sky.sunI; hemi.color.copy(sky.hemiSky); hemi.groundColor.copy(sky.hemiGround); hemi.intensity = sky.hemiI; rim.intensity = sky.rimI;
   scene.fog.color.copy(sky.fog); for (const c of [fx.smoke, fx.glow]) c.uni.uFogC.value.copy(sky.fog);
   SET.update(t, sky);
-  poseAll(t);
+  poseAll(t); talk(tf);
   const c = debugCam ? debugCam(t) : cam.at(t);
   const flashes = director.render(t, c.look);
   // light from the fires and the brightest flashes
@@ -103,6 +103,13 @@ function frame(tf) {
 // ---------------------------------------------------------------- words and fades over the picture
 // a subtitle stays up until its line has been spoken (audio/<ep>.lines.json, from the sound mix), but never into the next
 let spoken = null; fetch(`audio/${story.id}.lines.json?v=1`).then((r) => r.json()).then((j) => { spoken = j; }).catch(() => {});
+// how open each speaker's mouth is: the loudness of its own recorded voice, 30 times a second (audio/<ep>.mouth.json)
+let mouths = null; fetch(`audio/${story.id}.mouth.json?v=1`).then((r) => r.json()).then((j) => { mouths = j; }).catch(() => {});
+function talk(tf) {
+  const M = mouths?.[lang]; const open = {};
+  if (M) for (const [f0, who, env] of M) { const i = Math.floor((tf - f0) * 30); if (i >= 0 && i < env.length) open[who] = Math.max(open[who] || 0, env[i] / 100); }
+  for (const v of Object.values(views)) if (v.mouth) v.mouth(open[v.A.who] || 0);
+}
 function endOf(a, b) {
   const said = spoken?.[lang]?.find(([s]) => Math.abs(s - a) < 0.01); if (!said) return b;
   const next = story.lines[lang].find(([n]) => n > a + 0.01); return Math.max(b, Math.min(said[0] + said[1] + 0.25, next ? next[0] - 0.05 : 1e9));
