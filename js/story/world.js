@@ -60,4 +60,24 @@ export const WORLD = {
     { n: 10, zh: '萬劍歸蓮', en: 'Ten Thousand Swords Return to the Lotus', about: { zh: '決戰幽冥魔域。三教與群俠聯手，陰陽郎君在最後一刻倒戈。月光、佛光、劍光與蓮光，一同封印帝君。天亮時，洛無塵燒了天機策。', en: 'The last battle, in the Netherworld. The Three Teachings and the free swords fight together, and the Yin-Yang Gentleman changes sides at the last moment. Moonlight, Buddha light, sword light and lotus light seal the Emperor away. At dawn, Luo Wuchen burns the Stratagem.' } },
   ],
 };
+// each master's great techniques: what is cried out, and how it looks (compose.js strike kinds: wave, array, palm,
+// dash, rain — swords falling from the sky, ring — blades round the caster flying in, pillar — a column of light
+// from heaven, dragon — a spiral of power)
+export const MOVES = {
+  luo: [['蓮華劍氣・三千界', 'Lotus Sword Light: Three Thousand Worlds', 'array'], ['清蓮渡劫', 'The Clear Lotus Crosses the Trial', 'dragon'], ['一蓮天下靜', 'One Lotus, and the World Is Still', 'pillar']],
+  wuya: [['大日佛印', 'Seal of the Great Sun', 'palm'], ['金剛伏魔', 'Vajra Subdues the Demon', 'pillar'], ['萬佛朝宗', 'Ten Thousand Buddhas Gather', 'ring']],
+  guhong: [['孤鴻一線', 'A Single Line of the Lone Goose', 'dash'], ['寒鴻落雪', 'Cold Geese Bring the Snow', 'rain']],
+  wei: [['狂龍斷天', 'Mad Dragon Severs Heaven', 'wave'], ['赤焰焚城', 'Red Flame Burns the City', 'dragon'], ['狂刀亂舞', 'Wild Blades Dance', 'array']],
+  yin: [['九霄扇風', 'Wind of the Nine Heavens', 'wave'], ['龍淵吞日', 'The Dragon Abyss Swallows the Sun', 'dragon'], ['扇裡乾坤', 'Heaven and Earth in a Fan', 'ring']],
+  baihe: [['太虛劍陣', 'Sword Formation of the Void', 'array'], ['醉劍・西來', 'Drunken Sword from the West', 'rain'], ['太極歸元', 'The Great Ultimate Returns', 'ring']],
+  jingwang: [['萬象鏡光', 'Mirror Light of Ten Thousand Forms', 'array'], ['千面鏡殺', 'Death in a Thousand Mirrors', 'ring'], ['鏡花水月', 'Flowers in a Mirror, the Moon in Water', 'dragon']],
+  yinyang: [['陰陽逆亂', 'Yin and Yang in Chaos', 'array'], ['黑白無常', 'The Black and White Reapers', 'dragon'], ['天地反覆', 'Heaven and Earth Overturned', 'pillar']],
+  youming: [['幽冥滅世', 'The Netherworld Ends the World', 'array'], ['九幽天降', 'The Nine Hells Fall from Heaven', 'rain'], ['帝魔吞天', 'The Demon Emperor Devours Heaven', 'pillar']],
+  yue: [['寒月九折', 'Nine Folds of the Cold Moon', 'array'], ['冷月葬花', 'The Cold Moon Buries the Flowers', 'rain'], ['月落鏡湖', 'The Moon Sets in the Mirror Lake', 'ring']],
+  ling: [['霜天一劍', 'Frost Sky, One Sword', 'wave'], ['雪落千山', 'Snow on a Thousand Mountains', 'rain'], ['一劍・月華', 'One Sword: Moonlight', 'wave']],
+  yan: [['紅綾雙刃', 'Twin Blades of Red Silk', 'dash'], ['飛霜漫天', 'Flying Frost Fills the Sky', 'rain']],
+  ye: [['幽冥九掌', 'Nine Palms of the Netherworld', 'palm'], ['血蓮萬骨', 'Blood Lotus of Ten Thousand Bones', 'dragon'], ['九幽血海', 'Sea of Blood of the Nine Hells', 'pillar']],
+  envoy: [['血蓮刀', 'Blood Lotus Blade', 'wave']],
+  elder: [['青松劍氣', 'Green Pine Sword Light', 'wave']],
+};
 export const poemOf = (id) => WORLD.people[id]?.poem;

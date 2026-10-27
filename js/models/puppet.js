@@ -118,14 +118,30 @@ export function buildPuppet(spec0) {
   else { mesh(pelvis, new THREE.CylinderGeometry(0.17, 0.17, 0.07, 18), M.belt, 0, 0, 0).scale.set(B.W, 1, B.W * B.G); mesh(pelvis, new THREE.CylinderGeometry(0.04, 0.04, 0.012, 14), M.jade, 0.0, -0.06, 0.17, Math.PI / 2); }
   const skirtU = pivot(pelvis, 0, -0.02, 0), skirtL = pivot(skirtU, 0, -0.3, 0); skirtU.scale.set(B.Hp, B.L, B.Hp * B.G);
   const sU = mesh(skirtU, tube(0.29 * (R.skirt || 1), 0.165, 0.3), M.skirt, 0, -0.15, 0); sU.material.side = THREE.DoubleSide;
-  mesh(skirtL, tube(0.42 * (R.skirt || 1), 0.29 * (R.skirt || 1), 0.32), M.skirt, 0, -0.16, 0);
+  // the lower skirt: one piece on a puppet; on a body with legs, four panels that open as the legs move
+  const panels = [];
+  if (human) for (const [k, th] of [['front', -Math.PI / 4], ['right', Math.PI / 4], ['back', Math.PI * 0.75], ['left', -Math.PI * 0.75]]) {
+    const pv = pivot(skirtL, 0, 0, 0), r0 = 0.42 * (R.skirt || 1), r1 = 0.29 * (R.skirt || 1);
+    mesh(pv, new THREE.CylinderGeometry(r1, r0, 0.32, 10, 1, true, th, Math.PI / 2 + 0.05), M.skirt, 0, -0.16, 0).material.side = THREE.DoubleSide;
+    mesh(pv, new THREE.CylinderGeometry(r0 + 0.004, r0 + 0.004, 0.02, 10, 1, true, th, Math.PI / 2 + 0.05), M.trim, 0, -0.31, 0).material.side = THREE.DoubleSide;
+    panels.push({ k, pv });
+  } else mesh(skirtL, tube(0.42 * (R.skirt || 1), 0.29 * (R.skirt || 1), 0.32), M.skirt, 0, -0.16, 0);
   if (human) { // the sash ends and a jade pendant with its tassel, hanging down the front of the skirt
     const sash = toon({ color: R.belt || R.trim || '#8a6a2a', side: THREE.DoubleSide });
     for (const sx of [-1, 1]) mesh(skirtU, new THREE.PlaneGeometry(0.026, 0.46), sash, sx * 0.03, -0.23, 0.226, -0.4, 0, sx * 0.04);
     mesh(skirtU, new THREE.CylinderGeometry(0.026, 0.026, 0.008, 16), M.jade, 0, -0.08, 0.2, Math.PI / 2 - 0.4);
     mesh(skirtU, new THREE.CylinderGeometry(0.004, 0.012, 0.12, 6), toon({ color: R.tassel || '#c81e2a' }), 0, -0.16, 0.232, -0.4);
   }
-  mesh(skirtL, new THREE.TorusGeometry(0.42 * (R.skirt || 1), 0.012, 6, 28), M.trim, 0, -0.31, 0, Math.PI / 2);
+  if (!human) mesh(skirtL, new THREE.TorusGeometry(0.42 * (R.skirt || 1), 0.012, 6, 28), M.trim, 0, -0.31, 0, Math.PI / 2);
+  // legs, under the skirt: hip, knee, ankle, boots; set by two-bone IK to where the feet should be (pose: ch.legs)
+  const legs = human ? [1, -1].map((sd) => {
+    const trou = toon({ color: R.trousers || '#2a2428' }), bootM = toon({ color: R.boots || '#18141a' }), LL = P0 - 0.07, a = LL * 0.5, b = LL * 0.5;
+    const hip = pivot(body, sd * 0.085 * B.Hp, P0, 0), th = pivot(hip, 0, 0, 0);
+    mesh(th, new THREE.CylinderGeometry(0.062 * B.G, 0.046 * B.G, a, 10), trou, 0, -a / 2, 0);
+    const kn = pivot(th, 0, -a, 0); mesh(kn, new THREE.CylinderGeometry(0.046 * B.G, 0.038, b, 10), trou, 0, -b / 2, 0);
+    const an = pivot(kn, 0, -b, 0); mesh(an, new THREE.BoxGeometry(0.075, 0.07, 0.18), bootM, 0, -0.035, 0.04); mesh(an, new THREE.CylinderGeometry(0.043, 0.04, 0.13, 10), bootM, 0, 0.03, 0);
+    return { sd, hip, th, kn, an, a, b };
+  }) : [];
   const apron = pivot(pelvis, 0, -0.03, 0.17 * B.Hp * B.G); apron.scale.set(1, B.L, 1); mesh(apron, new THREE.PlaneGeometry(0.16, 0.5), M.silk2, 0, -0.25, 0.02).material.side = THREE.DoubleSide;
   mesh(apron, new THREE.PlaneGeometry(0.17, 0.03), M.trim, 0, -0.5, 0.025); apron.visible = !human;
   // ---- the chest: a tapered robe, the collar crossed right over left, shoulders
@@ -296,7 +312,7 @@ export function buildPuppet(spec0) {
   const weap = {};
   for (const [s, type] of Object.entries(spec.weapons || {})) { if (!type) continue; const A = s === 'R' ? armR : armL; const w = weapon(type, M, A.side); A.hand.add(w.group); weap[s] = w; }
 
-  const parts = { pelvis, skirtU, skirtL, torso, neck, head, armR, armL, hair, forelocks, ribbons, cape, ribbonsBody, apron };
+  const parts = { legs, pelvis, skirtU, skirtL, torso, neck, head, armR, armL, hair, forelocks, ribbons, cape, ribbonsBody, apron };
   const tmp = new THREE.Vector3();
   const world = (o, x = 0, y = 0, z = 0) => { o.updateWorldMatrix(true, false); return new THREE.Vector3(x, y, z).applyMatrix4(o.matrixWorld); };
   const points = {
@@ -310,7 +326,26 @@ export function buildPuppet(spec0) {
   function pose(ch, sec = {}) {
     pelvis.position.y = P0 - 0.16 * B.L * (ch.crouch || 0) + (ch.bob || 0);
     pelvis.rotation.set((ch.lean || 0) * 0.35, (ch.twist || 0) * 0.3, (ch.roll || 0) * 0.4);
-    torso.rotation.set((ch.lean || 0) * 0.65, (ch.twist || 0) * 0.7, (ch.roll || 0) * 0.6);
+    torso.rotation.set((ch.leanC ?? ch.lean ?? 0) * 0.65, (ch.twistC ?? ch.twist ?? 0) * 0.7, (ch.roll || 0) * 0.6);
+    const thighs = {};
+    for (const L of legs) { // two-bone IK in the body's frame: the hip at the pelvis, the foot where ch.legs puts it
+      const f = ch.legs?.[L.sd > 0 ? 'R' : 'L'] || [0.09, 0, 0];
+      L.hip.position.y = pelvis.position.y;
+      const vx = L.sd * f[0] - L.hip.position.x, vy = 0.07 + f[2] - L.hip.position.y, vz = f[1];
+      const d = Math.min(L.a + L.b - 0.001, Math.max(0.15, Math.hypot(vx, vy, vz)));
+      const th = Math.atan2(vz, -vy), ph = Math.atan2(vx, Math.hypot(vy, vz));
+      const be = Math.acos(Math.max(-1, Math.min(1, (L.a * L.a + d * d - L.b * L.b) / (2 * L.a * d)))), ga = Math.acos(Math.max(-1, Math.min(1, (L.b * L.b + d * d - L.a * L.a) / (2 * L.b * d))));
+      L.th.rotation.set(-(th + be), 0, ph, 'ZXY'); L.kn.rotation.set(be + ga, 0, 0); L.an.rotation.set(-(L.th.rotation.x + L.kn.rotation.x), 0, 0);
+      thighs[L.sd > 0 ? 'R' : 'L'] = { fwd: -L.th.rotation.x, side: ph };
+    }
+    if (panels.length) {
+      const fr = Math.max(thighs.R?.fwd || 0, thighs.L?.fwd || 0), bk = Math.max(0, -Math.min(thighs.R?.fwd || 0, thighs.L?.fwd || 0)), sp = Math.abs((thighs.R?.side || 0) - (thighs.L?.side || 0));
+      for (const P of panels) {
+        if (P.k === 'front') P.pv.rotation.set(-Math.max(0, fr - 0.1) * 0.9, 0, 0);
+        else if (P.k === 'back') P.pv.rotation.set(Math.max(0, bk - 0.05) * 0.9, 0, 0);
+        else P.pv.rotation.set(0, 0, (P.k === 'right' ? 1 : -1) * Math.max(0, sp - 0.1) * 0.5);
+      }
+    }
     head.rotation.set(ch.headX || 0, ch.headY || 0, ch.headZ || 0);
     for (const [A, c] of [[armR, ch.R], [armL, ch.L]]) {
       if (!c) continue;

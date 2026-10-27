@@ -36,20 +36,24 @@ function puppet(scene, A, C, rt) {
     // stance 0: at ease; 0.5: the rest pose (the sword held low and ready); 1: on guard
     const arm = (k) => { const base = st < 0.5 && !(p.guard > st) ? mix(EASE[k], REST[k], Math.min(1, g / 0.4)) : mix(REST[k], GUARD[k], Math.min(1, g)); const set = p['arm' + k]; const a = set ? { s: set.s, e: set.e, w: p['wrist' + k] ?? 0, a: p['abd' + k] ?? base.a } : base; a.s += (p['kick' + k] || 0) * 0.8; return a; };
     const br = Math.sin(s.t * 1.6 + A.i * 1.3), ease = 1 - Math.min(1, g); // breathing, and a slow shift of weight at ease
+    s._g = Math.min(1, g); // how much on guard: the feet set themselves by it
     return { lean: (p.lean || 0) + 0.06 * (p.crouch || 0) + 0.25 * (s.kneel || 0) + 0.012 * br * ease, twist: (p.twist || 0) - 0.2, roll: (p.roll || 0) + (p.sway || 0) * 0.03, crouch: Math.min(1.3, (p.crouch || 0) + 0.8 * (s.kneel || 0)), headX: -(p.headKick || 0) * 0.5, headY: p.look || 0, R: arm('R'), L: arm('L') };
   }
   function bake() {
     const keys = ['lean', 'twist', 'roll', 'crouch', 'headX', 'headY'], armK = ['s', 'e', 'w', 'a'];
     const T = {}; for (const k of keys) T[k] = new Float32Array(N); for (const s of ['R', 'L']) for (const k of armK) T[s + k] = new Float32Array(N);
-    const pos = [], yaw = [];
+    const pos = [], yaw = [], LG = { g: new Float32Array(N), c: new Float32Array(N), lean: new Float32Array(N), kneel: new Float32Array(N), dead: new Float32Array(N) };
     for (let i = 0; i < N; i++) {
       const t = i / HZ, s = rt.state(A.id, t); s.t = t; const r = raw(s);
       for (const k of keys) T[k][i] = r[k]; for (const sd of ['R', 'L']) for (const k of armK) T[sd + k][i] = r[sd][k];
       pos.push(rt.pos(A.id, t)); yaw.push(rt.yaw(A.id, t) + (s.spin || 0));
+      LG.g[i] = s._g || 0; LG.c[i] = s.pose.crouch || 0; LG.lean[i] = s.pose.lean || 0; LG.kneel[i] = s.kneel || 0; LG.dead[i] = s.dead || s.hidden ? 1 : 0;
     }
     // springs: the body quick, the head slower; the arms quickest, with a little overshoot
     const W = { lean: [14, 0.7], twist: [14, 0.65], roll: [12, 0.6], crouch: [16, 0.8], headX: [10, 0.55], headY: [9, 0.6] };
-    CH = {}; for (const k of keys) CH[k] = spring(T[k], ...W[k]); for (const sd of ['R', 'L']) for (const k of armK) CH[sd + k] = spring(T[sd + k], 24, 0.6);
+    CH = {}; for (const k of keys) CH[k] = spring(T[k], ...W[k]); for (const sd of ['R', 'L']) for (const k of armK) CH[sd + k] = spring(T[sd + k], 20, 0.5);
+    // the kinetic chain: the hips turn first, the chest after them, the arm last, overshooting a little
+    CH.twistC = spring(T.twist, 9, 0.42); CH.leanC = spring(T.lean, 10, 0.5);
     // the cloth and hair: from the puppet's motion in its own frame (forward, sideways, up) and the arms' movement
     const vf = new Float32Array(N), vs = new Float32Array(N), vy = new Float32Array(N), af = new Float32Array(N), dist = new Float32Array(N);
     for (let i = 1; i < N - 1; i++) {
@@ -59,6 +63,18 @@ function puppet(scene, A, C, rt) {
     }
     const spin = new Float32Array(N); for (let i = 1; i < N - 1; i++) { let d = yaw[i + 1] - yaw[i - 1]; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; spin[i] = d * HZ / 2; }
     const map = (f) => { const o = new Float32Array(N); for (let i = 0; i < N; i++) o[i] = f(i); return o; };
+    // the feet: wider and front-to-back on guard (the bow stance), the front foot lunging into a cut, stepping as it
+    // moves (a stride every 0.55 m), tucked up in the air, a knee down when kneeling
+    const F = { Rx: new Float32Array(N), Rz: new Float32Array(N), Ry: new Float32Array(N), Lx: new Float32Array(N), Lz: new Float32Array(N), Ly: new Float32Array(N) };
+    for (let i = 0; i < N; i++) {
+      const g = LG.g[i], c = LG.c[i], ln = Math.max(0, LG.lean[i]), amp = Math.min(1, Math.abs(vf[i]) / 0.9) * (1 - 0.4 * g), ph = dist[i] * Math.PI / 0.55, sg = Math.sign(vf[i]) || 1;
+      const air = Math.min(1, Math.max(0, (pos[i].y || 0) - 0.05) * 3), kn = LG.kneel[i];
+      F.Rx[i] = 0.08 + 0.07 * g + 0.04 * c; F.Lx[i] = F.Rx[i];
+      F.Rz[i] = 0.05 + 0.22 * g + 0.1 * c + 0.55 * ln * g + Math.sin(ph) * 0.24 * amp * sg + 0.12 * air + 0.25 * kn;
+      F.Lz[i] = -0.03 - 0.2 * g - 0.08 * c - Math.sin(ph) * 0.24 * amp * sg + 0.05 * air - 0.3 * kn;
+      F.Ry[i] = Math.max(0, Math.cos(ph)) * 0.09 * amp + 0.3 * air; F.Ly[i] = Math.max(0, -Math.cos(ph)) * 0.09 * amp + 0.22 * air;
+    }
+    for (const k of Object.keys(F)) CH['foot' + k] = spring(F[k], 18, 0.7);
     const wind = (i, k) => Math.sin(i / HZ * (1.3 + k * 0.4) + A.i + k) * 0.05;
     const lift = (i) => cl(vy[i] * 0.25, -0.6, 1.2);
     SEC = {
@@ -93,7 +109,7 @@ function puppet(scene, A, C, rt) {
       const p = rt.pos(A.id, t);
       P.group.visible = !s.hidden; P.group.position.set(p.x, p.y - (s.sink || 0), p.z); P.group.rotation.y = rt.yaw(A.id, t) + (s.spin || 0);
       P.body.rotation.x = (s.flip || 0) + (s.tilt || 0); P.body.position.y = s.flip ? 0.6 * Math.sin(Math.abs(s.flip) / 2) : 0;
-      const ch = { lean: at(CH.lean, t), twist: at(CH.twist, t), roll: at(CH.roll, t), crouch: at(CH.crouch, t), headX: at(CH.headX, t), headY: at(CH.headY, t), bob: at(SEC.bob, t),
+      const ch = { leanC: at(CH.leanC, t), twistC: at(CH.twistC, t), legs: { R: [at(CH.footRx, t), at(CH.footRz, t), at(CH.footRy, t)], L: [at(CH.footLx, t), at(CH.footLz, t), at(CH.footLy, t)] }, lean: at(CH.lean, t), twist: at(CH.twist, t), roll: at(CH.roll, t), crouch: at(CH.crouch, t), headX: at(CH.headX, t), headY: at(CH.headY, t), bob: at(SEC.bob, t),
         R: { s: at(CH.Rs, t), e: at(CH.Re, t), w: at(CH.Rw, t), a: at(CH.Ra, t) }, L: { s: at(CH.Ls, t), e: at(CH.Le, t), w: at(CH.Lw, t), a: at(CH.La, t) } };
       const sec = { skirtX: at(SEC.skirtX, t), skirtZ: at(SEC.skirtZ, t), dropR: at(SEC.dropR, t), dropL: at(SEC.dropL, t), tassel: at(SEC.tassel, t),
         hairX: SEC.hair.map((a) => at(a, t)), hairZ: SEC.hairZ.map((a) => at(a, t)), lockX: [SEC.hair[0] ? at(SEC.hair[0], t) * 0.5 : 0], capeX: SEC.cape.map((a) => at(a, t)), capeZ: [at(SEC.skirtZ, t)],

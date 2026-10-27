@@ -13,6 +13,7 @@
 // Places are given in the location's own coordinates (its centre at 0, 0); angles in degrees.
 import { CHARACTERS } from '../cast/characters.js?v=12';
 import { bodyOf } from '../models/looks.js?v=12';
+import { MOVES } from './world.js?v=12';
 
 const LOC = {
   bamboo: { o: [0, 0], key: 'Dm', est: [[[-14, 1.8, 3], [-5, 1.3, 2]], [[6, 2.4, 0], [4, 1.4, 0]], 46], wide: [[-9, 2.2, 6], [2, 1.0, 0], 44], scenic: [[[-20, 1.2, -6], [-8, 1.4, -3]], [[4, 3.5, 2], [2, 4.5, 0]], 50] },
@@ -319,8 +320,7 @@ class Episode {
     let ux = bx - ax, uz = bz - az; const ul = Math.hypot(ux, uz) || 1; ux /= ul; uz /= ul;
     const put = (id, x, z, t, t1, e) => this.goto(id, r3(x), r3(z), t, t1, { e: e || 'ss' });
     put(a, mx - ux * 0.65, mz - uz * 0.65, t0, t0 + 0.7, 'in'); put(b, mx + ux * 0.65, mz + uz * 0.65, t0, t0 + 0.7, 'in');
-    this.music.push({ luogu: 'fight', t: r3(t0), t1: r3(t0 + d) });
-    let t = t0 + 0.9, side = 1, centre = [mx, mz];
+    let t = t0 + 0.9, side = 1, centre = [mx, mz], bigs = 0, nextBig = t0 + Math.min(7, d * 0.45);
     const two = (t1, kind) => {
       const [px, pz] = [-uz * side, ux * side], C = this.abs(centre[0], centre[1]);
       if (kind === 'orbit') { const a0 = Math.atan2(pz, px); this.shot({ t: t1, orbit: { c: { mid: [a, b], off: [0, 1.25, 0] }, r: 3.0, h: 0.4, a: [r3(a0), r3(a0 + 1.1 * side)] }, fov: 40, hand: 0.3 }); }
@@ -333,8 +333,16 @@ class Episode {
     const blow = (who, tgt, tt, res, style, kk = k) => this.A(who, { do: 'blow', t: r3(tt), style: style || this.pick(['side', 'over', 'thrust', 'side', 'upper']), arm: 'R', result: res, target: tgt, against: 'tipR', close: false, k: kk });
     const units = ['clash3', 'leap', 'wave', 'palm', 'pass', 'spin', 'circle', 'lock', 'clash3', 'leap'];
     let n = 0;
-    while (t < t0 + d - 2.4) {
-      const u = n === 0 ? 'clash3' : this.pick(units), A_ = this.R() < 0.5 ? [a, b] : [b, a], [p, q] = A_, cp = p === a ? ca : cb;
+    while (t < t0 + d + bigs * 6 - 2.4) {
+      const A_ = this.R() < 0.5 ? [a, b] : [b, a], [p, q] = A_, cp = p === a ? ca : cb;
+      if (o.big !== false && t >= nextBig && (MOVES[this.who[p]] || MOVES[this.who[q]])) { // a great technique, called out, met
+        const [x, y] = MOVES[this.who[p]] ? [p, q] : [q, p];
+        this.t = t; this.strike(x, y, { result: this.R() < 0.45 ? 'clash' : 'blocked', power: 0.9, inDuel: true }); t = this.t; bigs++; nextBig = t + 9 + this.R() * 4;
+        const [px1, pz1] = this.local(a), [qx1, qz1] = this.local(b), l1 = Math.hypot(qx1 - px1, qz1 - pz1) || 1; ux = (qx1 - px1) / l1; uz = (qz1 - pz1) / l1;
+        const mx1 = (px1 + qx1) / 2, mz1 = (pz1 + qz1) / 2; put(a, mx1 - ux * 0.65, mz1 - uz * 0.65, t - 0.6, t, 'in'); put(b, mx1 + ux * 0.65, mz1 + uz * 0.65, t - 0.6, t, 'in'); centre = [mx1, mz1];
+        this.face(a, b, t); this.face(b, a, t); n++; continue;
+      }
+      const u = n === 0 ? 'clash3' : this.pick(units);
       two(t, ['side', 'orbit', 'otsA', 'low', 'otsB', 'high', 'side'][n % 7]);
       if (u === 'clash3') { blow(p, q, t + 0.3, 'clash'); blow(q, p, t + 0.85, 'clash'); blow(p, q, t + 1.4, 'clash'); this.hit(t + 1.4, 0.7); t += 2.0; }
       else if (u === 'leap') { // over the other's head, turning, and a cut on the way down
@@ -390,6 +398,7 @@ class Episode {
       this.shot({ t: t + 0.2, pos: { at: w, off: this.rel(w, [1.4, 0.6, 1.8]) }, look: { mid: [a, b], off: [0, 1.25, 0] }, fov: 44 }); this.hit(t + 0.52, 1.5); this.music.push({ hit: 'gong', t: r3(t + 0.52), g: 0.6 });
       t += 2.0;
     } else if (end.startsWith('flee')) { const f = end === 'flee:a' ? a : b; blow(f === a ? b : a, f, t + 0.4, 'clash', 'over'); this.A(f, { do: 'jump', t: r3(t + 0.8), t1: r3(t + 1.9), h: 4, d: [-2, 0], land: 0 }, { do: 'flip', t: r3(t + 0.85), t1: r3(t + 1.7) }); this.hide(f, t + 1.7); this.shot({ t: t + 0.6, pos: { at: f, off: this.rel(f, [2.4, 0.5, 2.6]) }, look: { at: f, off: [0, 2.5, 0] }, fov: 50 }); t += 2.2; }
+    this.music.push({ luogu: 'fight', t: r3(t0), t1: r3(t) });
     this.guard([a, b], t0, t); this.t = t; this.conv = null; return this;
   }
   // one against many: the foes come in turn, the hero turns from one to the next
@@ -416,6 +425,8 @@ class Episode {
   }
   // ---------------------------------------------------------------- a named technique: the power gathered, the name cried out, the blow
   strike(a, b, o = {}) {
+    // every great technique is cried out before it is thrown: given, or the next of the master's own
+    if (!o.name || !o.kind) { const ms = MOVES[this.who[a]]; if (ms) { this.mi = this.mi || {}; const i = this.mi[a] = ((this.mi[a] ?? -1) + 1) % ms.length, m = ms[o.name ? ms.findIndex((x) => x[0] === o.name[0].replace(/[！!—\-]/g, '')) : i] || ms[i]; o = { ...o, name: o.name || [m[0] + '！', m[1] + '!'], kind: o.kind || m[2] }; } }
     const t = this.t, ca = o.col || CHARACTERS[this.who[a]]?.qi, kind = o.kind || 'wave', k = o.k ?? 1.4, res = o.result || 'hit';
     this.face(a, b, t);
     // gathering: low, the aura rising; then the face, the name cried out
@@ -423,7 +434,7 @@ class Episode {
     this.shot({ t, pos: { at: a, off: this.rel(a, [-1.6, 0.35, 1.4]) }, look: { actor: a, part: 'head', off: [0, 0.1, 0] }, fov: 38 });
     this.music.push({ pad: 'VNt', n: 'D5', t: r3(t), d: 2.8, g: 0.3 }, { hit: 'roll', t: r3(t + 0.4), g: 0.45 });
     let ti = t + 2.4;
-    if (o.name) { const [zh, en] = o.name, d = this.dur(a, zh, en); this.camOn('close', a, null, t + 1.0, d, 1); this.line(a, zh, en, t + 1.1, d, 'shout'); ti = Math.max(ti, t + 1.1 + d); }
+    if (o.name) { const v = CHARACTERS[this.who[a]]?.voice ? a : 'narrator', [zh, en] = o.name, d = this.dur(v, zh, en) + 0.2; this.camOn('close', a, null, t + 1.0, d, 1); this.line(v, zh, en, t + 1.1, d, 'shout'); ti = Math.max(ti, t + 1.1 + d); }
     // the release, seen wide; the slow motion through it
     const tr = ti;
     this.shot({ t: tr - 0.3, pos: { mid: [a, b], off: (() => { const [ax, az] = this.pos[a], [bx, bz] = this.pos[b], dx = bx - ax, dz = bz - az, l = Math.hypot(dx, dz) || 1; return [r3(-dz / l * 5), 1.3, r3(dx / l * 5)]; })() }, look: { mid: [a, b], off: [0, 1.25, 0] }, fov: 50 });
@@ -432,6 +443,27 @@ class Episode {
     else if (kind === 'palm') { this.A(a, { do: 'palm', t: r3(tr), target: b, col: ca, k }); hitT = tr + 0.3; }
     else if (kind === 'dash') { const [bx, bz] = this.local(b), [ax, az] = this.local(a), l = Math.hypot(bx - ax, bz - az) || 1; this.goto(a, bx + (bx - ax) / l * 1.6, bz + (bz - az) / l * 1.6, tr - 0.1, tr + 0.25, { e: 'in' }); this.A(a, { do: 'blow', t: r3(tr + 0.12), style: 'side', arm: 'R', result: res === 'blocked' ? 'clash' : 'hit', target: b, part: 'chest', close: false, k: 1.6 }); hitT = tr + 0.12; this.face(a, b, tr + 0.9); }
     else if (kind === 'array') { for (let i = 0; i < 5; i++) this.A(a, { do: 'wave', t: r3(tr + i * 0.12), at: r3(tr + 0.5 + i * 0.12), target: b, col: ca, k: k * 0.7, tilt: (i - 2) * 0.4 }); hitT = tr + 0.9; }
+    else {
+      const P = this.pos[a], Q = this.pos[b], TQ = [Q[0], 1.25, Q[1]];
+      this.A(a, { do: 'blow', t: r3(tr), style: kind === 'rain' || kind === 'pillar' ? 'upper' : 'side', arm: 'R', result: 'miss', target: b, close: false, k: 1.4 });
+      if (kind === 'rain') { // the sword raised, and blades of light falling out of the sky onto the other
+        for (let i = 0; i < 18; i++) { const ox = (this.R() - 0.5) * 2.4, oz = (this.R() - 0.5) * 2.4, t1 = tr + 0.3 + i * 0.045; this.cues.push({ t: r3(t1), t1: r3(t1 + 0.35), kind: 'wave', from: [r3(Q[0] + ox * 1.6), 7, r3(Q[1] + oz * 1.6)], to: [r3(Q[0] + ox * 0.3), 0.3 + this.R() * 1.2, r3(Q[1] + oz * 0.3)], col: ca, k: 0.45, tilt: this.R() * 3, burst: i % 4 === 0 }); }
+        this.shot({ t: tr + 0.2, pos: [r3(Q[0] + 3.4), 0.5, r3(Q[1] + 3.0)], look: [Q[0], 2.6, Q[1]], fov: 58 }); hitT = tr + 1.1;
+      } else if (kind === 'ring') { // blades of light appear in a ring round the caster, then fly in one after another
+        for (let i = 0; i < 10; i++) { const an = (i / 10) * Math.PI * 2, R0 = 1.4, fx = P[0] + Math.cos(an) * R0, fz = P[1] + Math.sin(an) * R0, t0 = tr - 1.0 + i * 0.06;
+          this.cues.push({ t: r3(t0), kind: 'qiburst', at: [r3(fx), 1.4, r3(fz)], k: 0.35, col: ca }, { t: r3(tr + i * 0.07), t1: r3(tr + 0.45 + i * 0.07), kind: 'wave', from: [r3(fx), 1.4, r3(fz)], to: TQ, col: ca, k: 0.6, tilt: an, burst: i === 9 }); }
+        this.shot({ t: tr - 1.1, orbit: { c: { at: a, off: [0, 1.3, 0] }, r: 3.6, h: 0.9, a: [0, 1.4] }, fov: 46 }); hitT = tr + 1.1;
+      } else if (kind === 'pillar') { // a column of light out of heaven onto the other
+        for (let i = 0; i < 9; i++) this.cues.push({ t: r3(tr + 0.25 + i * 0.04), kind: 'qiburst', at: [Q[0], r3(9 - i), Q[1]], k: 1.0 + i * 0.12, col: ca });
+        this.cues.push({ t: r3(tr + 0.25), kind: 'flash', k: 0.6 });
+        this.shot({ t: tr + 0.1, pos: [r3(Q[0] + 5.5), 1.0, r3(Q[1] + 4.0)], look: [Q[0], 4, Q[1]], fov: 60 }); hitT = tr + 0.65;
+      } else if (kind === 'dragon') { // a spiral of power coiling out from the caster to the other
+        const n = 28; for (let i = 0; i < n; i++) { const u = i / (n - 1), x = P[0] + (Q[0] - P[0]) * u, z = P[1] + (Q[1] - P[1]) * u, an = u * Math.PI * 5, rr = 0.6 * Math.sin(Math.PI * u) + 0.15;
+          const dx = Q[0] - P[0], dz = Q[1] - P[1], L0 = Math.hypot(dx, dz) || 1, px = -dz / L0, pz = dx / L0;
+          this.cues.push({ t: r3(tr + u * 0.7), kind: 'qiburst', at: [r3(x + px * Math.cos(an) * rr), r3(1.3 + Math.sin(an) * rr), r3(z + pz * Math.cos(an) * rr)], k: 0.55, col: ca }); }
+        this.shot({ t: tr - 0.1, pos: { mid: [a, b], off: (() => { const [ax, az] = this.pos[a], [bx, bz] = this.pos[b], dx = bx - ax, dz = bz - az, l = Math.hypot(dx, dz) || 1; return [r3(-dz / l * 4.5), 2.0, r3(dx / l * 4.5)]; })() }, look: { mid: [a, b], off: [0, 1.2, 0] }, fov: 52 }); hitT = tr + 0.8;
+      }
+    }
     this.warp.push([r3(hitT - 0.35), r3(hitT + 0.45), 0.28]);
     this.cues.push({ t: r3(hitT), kind: 'qiburst', at: { actor: b, part: 'chest' }, k: 1.8 * (o.power ?? 1), col: ca }, { t: r3(hitT), kind: 'flash', k: 0.5 }, { t: r3(hitT), kind: 'shake', k: 0.14 });
     this.music.push({ luogu: 'hit', t: r3(hitT), g: 1.6 }, { hit: 'gong', t: r3(hitT), g: 0.8 });
