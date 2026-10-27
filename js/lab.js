@@ -74,8 +74,9 @@ function frame(now) {
     if (!v.drag) v.yaw += 0.0;
     v.puppet.group.rotation.y = v.yaw;
     const breathe = Math.sin(now / 900) * 0.006; v.puppet.parts.head.rotation.set(0.05 + breathe, 0, 0);
-    target.set(0, s.y * K, 0);
-    v.camera.position.set(0, s.y * K + 0.05, s.d * K); v.camera.fov = s.fov; v.camera.aspect = r.width / r.height; v.camera.updateProjectionMatrix(); v.camera.lookAt(target);
+    v.puppet.group.updateMatrixWorld(true); const hy = v.puppet.points.head().y, ty = shot === 'face' ? hy - 0.01 : shot === 'bust' ? hy - 0.22 : hy * 0.55;
+    target.set(0, ty, 0);
+    v.camera.position.set(0, ty + 0.05, (shot === 'full' ? hy * 2.6 : s.d) * K); v.camera.fov = s.fov; v.camera.aspect = r.width / r.height; v.camera.updateProjectionMatrix(); v.camera.lookAt(target);
     v.scene.background = new THREE.Color(light === 'moon' ? '#0c1220' : '#2a1618');
     const y = H - r.bottom;
     renderer.setViewport(r.left, y, r.width, r.height); renderer.setScissor(r.left, y, r.width, r.height);

@@ -14,11 +14,11 @@ export const CHARACTERS = {
     weapons: { R: 'jian' },
   },
   yan: {
-    zh: '燕飛霜', en: 'Yan Feishuang', title: { zh: '紅綾', en: 'Red Silk' }, kind: 'puppet', qi: '#ff8ab0', scale: 0.94, anime: { face: 26, body: 8 },
+    zh: '燕飛霜', en: 'Yan Feishuang', title: { zh: '紅綾', en: 'Red Silk' }, kind: 'puppet', qi: '#ff8ab0', scale: 0.98, anime: { face: 26, body: 12 },
     voice: { zh: ['zh-TW-HsiaoChenNeural', 0, 0], en: ['en-US-AvaNeural', 0, 0], fx: 'stage' },
     skin: '#f6e2d6', face: { fem: true, brow: 'fine', iris: '#3a1a14', lip: '#c8202c', mark: 'flame', markColor: '#d81838', eyeshadow: 'rgba(220,60,90,0.5)', blush: 'rgba(240,110,130,0.45)' },
     hair: { color: '#141014', len: 1.1 }, crown: { type: 'hairpin', color: '#e8c050', gem: '#ff4a6a' },
-    robe: { base: '#c8263a', pattern: 'plum', ink: 'rgba(255,220,220,0.5)', trim: '#e8c050', inner: '#f4d4da', sleeve: 1.05, skirt: 0.95 },
+    robe: { base: '#c8263a', pattern: 'plum', ink: 'rgba(255,220,220,0.5)', trim: '#e8c050', inner: '#f4d4da', sleeve: 1.05, skirt: 0.95, skirtBase: '#8a1426', belt: '#e8c050' },
     ribbons: { color: '#ff9ab8' }, weapons: { R: 'dagger', L: 'dagger' },
   },
   ye: {
@@ -51,7 +51,7 @@ export const CHARACTERS = {
     voice: { zh: ['zh-TW-HsiaoChenNeural', -2, -6], en: ['en-US-AvaNeural', -2, -6], fx: 'stage' },
     skin: '#f2dccc', face: { fem: true, brow: 'fine', iris: '#22140e', lip: '#c83a3e', line: '#140a08', blush: 'rgba(230,120,120,0.2)' },
     hair: { color: '#0c0a0c', len: 1.5, lockLen: 0.6, lockW: 0.04, lockStrands: 3 }, crown: { type: 'halfup', color: '#f4f2ee' }, earrings: '#f6f2ea',
-    robe: { base: '#f4f3f0', pattern: 'plain', trim: '#e6e3de', inner: '#f2c4c8', belt: '#e8e4de', sleeve: 1.12 },
+    robe: { base: '#f4f3f0', pattern: 'plain', trim: '#e6e3de', inner: '#f2c4c8', belt: '#d8a0a8', sleeve: 1.12, skirtBase: '#f6e4e6', pibo: '#fbf6f2' },
     weapons: {},
   },
   // ---------------------------------------------------------------- 《天機策》: the series cast (anime style; face / body from js/models/looks.js)
@@ -147,7 +147,7 @@ export const CHARACTERS = {
     voice: { zh: ['zh-CN-XiaoyiNeural', -4, -6], en: ['en-US-EmmaNeural', -2, -6], fx: 'stage' },
     skin: '#f4e2d8', face: { fem: true, brow: 'fine', iris: '#3a4a6a', lip: '#c03a4a', blush: 'rgba(230,120,140,0.3)' },
     hair: { color: '#0c0a10', len: 1.5, lockLen: 0.6, lockW: 0.04, lockStrands: 3 }, crown: { type: 'halfup', color: '#c8d8f0' }, earrings: '#e8f0ff',
-    robe: { base: '#eef2f8', pattern: 'plain', trim: '#a8b8d8', inner: '#c8d4ec', belt: '#a8b8d8', sleeve: 1.12 },
+    robe: { base: '#eef2f8', pattern: 'plain', trim: '#a8b8d8', inner: '#c8d4ec', belt: '#8a9ac8', sleeve: 1.12, skirtBase: '#c8d6f0', pibo: '#f4f6fc' },
     weapons: { R: 'dagger' },
   },
   elder: {

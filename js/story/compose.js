@@ -193,9 +193,9 @@ class Episode {
   }
   camOn(kind, id, to, t, d, side = 1) {
     if (kind === 'two' && to) { const [ax, az] = this.pos[id], [bx, bz] = this.pos[to], dx = bx - ax, dz = bz - az, l = Math.hypot(dx, dz) || 1, px = -dz / l * side, pz = dx / l * side, dist = Math.max(3.2, l * 1.5);
-      this.shot({ t, pos: { mid: [id, to], off: [r3(px * dist), 1.25, r3(pz * dist)] }, look: { mid: [id, to], off: [0, 1.05, 0] }, fov: 38 }); }
+      this.shot({ t, pos: { mid: [id, to], off: [r3(px * dist), 1.5, r3(pz * dist)] }, look: { mid: [id, to], off: [0, 1.3, 0] }, fov: 38 }); }
     else if (kind === 'ots' && to) { const [ax, az] = this.pos[id], [bx, bz] = this.pos[to], dx = ax - bx, dz = az - bz, l = Math.hypot(dx, dz) || 1, ux = dx / l, uz = dz / l, px = -uz * side, pz = ux * side;
-      this.shot({ t, pos: { at: to, off: [r3(-ux * 1.15 + px * 0.8), 1.5, r3(-uz * 1.15 + pz * 0.8)] }, look: { actor: id, part: 'head', off: [0, -0.08, 0] }, fov: l > 3 ? 20 : 26 }); }
+      this.shot({ t, pos: { at: to, off: [r3(-ux * 1.15 + px * 0.8), 1.7, r3(-uz * 1.15 + pz * 0.8)] }, look: { actor: id, part: 'head', off: [0, -0.08, 0] }, fov: l > 3 ? 20 : 26 }); }
     else if (kind === 'close') this.shot({ t, pos: { actor: id, part: 'head', local: true, off: [0.1 * side, 0.06, 0.95 * this.size(id)] }, look: { actor: id, part: 'head', local: true, off: [0, 0.03, 0] }, fov: 28 });
     else if (kind === 'low') { const k = this.size(id) ** 1.5; this.shot({ t, pos: { at: id, off: this.rel(id, [1.6 * side * k, 0.35, 1.8 * k]) }, look: { actor: id, part: 'head', off: [0, 0.1, 0] }, fov: 36 }); }
     else if (kind === 'wide') { const [p, l, f] = LOC[this.loc].wide, O = this.O(); this.shot({ t, pos: [r3(O[0] + p[0]), p[1], r3(O[1] + p[2])], look: [r3(O[0] + l[0]), l[1], r3(O[1] + l[2])], fov: f }); }
@@ -231,7 +231,7 @@ class Episode {
     } else if (how === 'glide') { // across the ground from far off, the robes streaming
       const from = this.abs(x + (o.from?.[0] ?? -10), z + (o.from?.[1] ?? 0));
       this.A(id, { do: 'goto', t: r3(t - 0.05), t1: r3(t), to: from }); this.pos[id] = from; this.goto(id, x, z, t + 0.2, t + 2.4, { hover: 0.6, e: 'out' }); land = t + 2.4;
-      this.shot({ t, pos: [r3(this.pos[id][0] - 3), 0.5, r3(this.pos[id][1] + 3.2)], look: { at: id, off: [0, 1.0, 0] }, fov: 44 });
+      this.shot({ t, pos: [r3(this.pos[id][0] - 3), 0.5, r3(this.pos[id][1] + 3.2)], look: { at: id, off: [0, 1.25, 0] }, fov: 44 });
     } else if (how === 'walk') { // a slow walk in, the camera at the feet then up
       const from = this.abs(x + (o.from?.[0] ?? -6), z + (o.from?.[1] ?? 0));
       this.A(id, { do: 'goto', t: r3(t - 0.05), t1: r3(t), to: from }); this.pos[id] = from; this.goto(id, x, z, t + 0.2, t + 4.0, { e: 'in' }); land = t + 4.0;
@@ -281,7 +281,7 @@ class Episode {
     const d = o.d ?? Math.max(1.2, Math.hypot(this.local(id)[0] - x, this.local(id)[1] - z) / (o.speed ?? 1.4)), t = this.t;
     if (o.face) this.face(id, o.face, t);
     this.goto(id, x, z, t, t + d, { hover: o.glide ? 0.4 : 0, e: o.glide ? 'out' : 'ss' });
-    if (o.shot !== false) this.shot({ t, pos: { at: id, off: this.rel(id, [2.6, 1.2, 1.2]) }, look: { at: id, off: [0, 1.0, 0] }, fov: 38 });
+    if (o.shot !== false) this.shot({ t, pos: { at: id, off: this.rel(id, [2.6, 1.2, 1.2]) }, look: { at: id, off: [0, 1.25, 0] }, fov: 38 });
     if (o.wait !== false) this.t = t + d; return this;
   }
   exit(id, o = {}) {
@@ -323,12 +323,12 @@ class Episode {
     let t = t0 + 0.9, side = 1, centre = [mx, mz];
     const two = (t1, kind) => {
       const [px, pz] = [-uz * side, ux * side], C = this.abs(centre[0], centre[1]);
-      if (kind === 'orbit') { const a0 = Math.atan2(pz, px); this.shot({ t: t1, orbit: { c: { mid: [a, b], off: [0, 1.0, 0] }, r: 3.0, h: 0.4, a: [r3(a0), r3(a0 + 1.1 * side)] }, fov: 40, hand: 0.3 }); }
+      if (kind === 'orbit') { const a0 = Math.atan2(pz, px); this.shot({ t: t1, orbit: { c: { mid: [a, b], off: [0, 1.25, 0] }, r: 3.0, h: 0.4, a: [r3(a0), r3(a0 + 1.1 * side)] }, fov: 40, hand: 0.3 }); }
       else if (kind === 'low') this.shot({ t: t1, pos: { mid: [a, b], off: [r3(px * 2.4 - ux * 1.2), 0.3, r3(pz * 2.4 - uz * 1.2)] }, look: { mid: [a, b], off: [0, 1.3, 0] }, fov: 46 });
       else if (kind === 'high') this.shot({ t: t1, pos: [r3(C[0] + px * 4.5), 3.8, r3(C[1] + pz * 4.5)], look: { mid: [a, b], off: [0, 0.6, 0] }, fov: 44 });
-      else if (kind === 'otsA') this.shot({ t: t1, pos: { at: a, off: [r3(-ux * 0.9 + px * 0.6), 1.35, r3(-uz * 0.9 + pz * 0.6)] }, look: { at: b, off: [0, 1.05, 0] }, fov: 34, hand: 0.3 });
-      else if (kind === 'otsB') this.shot({ t: t1, pos: { at: b, off: [r3(ux * 0.9 + px * 0.6), 1.35, r3(uz * 0.9 + pz * 0.6)] }, look: { at: a, off: [0, 1.05, 0] }, fov: 34, hand: 0.3 });
-      else this.shot({ t: t1, pos: { mid: [a, b], off: [r3(px * 3.6), 1.15, r3(pz * 3.6)] }, look: { mid: [a, b], off: [0, 1.0, 0] }, fov: 40, hand: 0.4 });
+      else if (kind === 'otsA') this.shot({ t: t1, pos: { at: a, off: [r3(-ux * 0.9 + px * 0.6), 1.6, r3(-uz * 0.9 + pz * 0.6)] }, look: { at: b, off: [0, 1.3, 0] }, fov: 34, hand: 0.3 });
+      else if (kind === 'otsB') this.shot({ t: t1, pos: { at: b, off: [r3(ux * 0.9 + px * 0.6), 1.6, r3(uz * 0.9 + pz * 0.6)] }, look: { at: a, off: [0, 1.3, 0] }, fov: 34, hand: 0.3 });
+      else this.shot({ t: t1, pos: { mid: [a, b], off: [r3(px * 3.6), 1.15, r3(pz * 3.6)] }, look: { mid: [a, b], off: [0, 1.25, 0] }, fov: 40, hand: 0.4 });
     };
     const blow = (who, tgt, tt, res, style, kk = k) => this.A(who, { do: 'blow', t: r3(tt), style: style || this.pick(['side', 'over', 'thrust', 'side', 'upper']), arm: 'R', result: res, target: tgt, against: 'tipR', close: false, k: kk });
     const units = ['clash3', 'leap', 'wave', 'palm', 'pass', 'spin', 'circle', 'lock', 'clash3', 'leap'];
@@ -348,7 +348,7 @@ class Episode {
         put(p, px - (qx - px) * 0.0 - (p === a ? ux : -ux) * back, pz - (p === a ? uz : -uz) * back, t, t + 0.5, 'out');
         this.A(p, { do: 'wave', t: r3(t + 0.9), at: r3(t + 1.3), target: q, col: cp, k: 1.0 * k }); this.A(q, { do: 'wave', t: r3(t + 0.95), at: r3(t + 1.3), target: p, col: p === a ? cb : ca, k: 0.9 * k });
         const P = this.pos[p], Q = this.pos[q]; this.cues.push({ t: r3(t + 1.3), kind: 'qiburst', at: [r3((P[0] + Q[0]) / 2), 1.1, r3((P[1] + Q[1]) / 2)], k: 1.2, col: '#ffffff' }); this.hit(t + 1.3, 1.0);
-        this.shot({ t: t + 0.7, pos: { mid: [a, b], off: [r3(-uz * side * 5), 1.4, r3(ux * side * 5)] }, look: { mid: [a, b], off: [0, 1.0, 0] }, fov: 52 });
+        this.shot({ t: t + 0.7, pos: { mid: [a, b], off: [r3(-uz * side * 5), 1.4, r3(ux * side * 5)] }, look: { mid: [a, b], off: [0, 1.25, 0] }, fov: 52 });
         t += 2.2; put(p, qx - (qx - px) * 0.35, qz - (qz - pz) * 0.35, t - 0.6, t, 'in');
       } else if (u === 'palm') {
         this.A(p, { do: 'qi', t: r3(t), t1: r3(t + 1.2), k: 0.7, col: cp }, { do: 'palm', t: r3(t + 0.9), target: q, col: cp, k: 0.8 * k, both: this.R() < 0.5 });
@@ -361,7 +361,7 @@ class Episode {
         const [px, pz] = this.local(p), [qx, qz] = this.local(q), dx = qx - px, dz = qz - pz;
         put(p, qx + dx * 0.6, qz + dz * 0.6, t + 0.3, t + 0.75, 'in'); put(q, px - dx * 0.6, pz - dz * 0.6, t + 0.3, t + 0.75, 'in');
         blow(p, q, t + 0.52, 'clash', 'side', 1.3 * k); this.warp.push([r3(t + 0.45), r3(t + 0.75), 0.25]); this.hit(t + 0.52, 1.3);
-        this.shot({ t: t + 0.2, pos: { mid: [a, b], off: [r3(-uz * side * 3.2), 0.6, r3(ux * side * 3.2)] }, look: { mid: [a, b], off: [0, 1.0, 0] }, fov: 48 });
+        this.shot({ t: t + 0.2, pos: { mid: [a, b], off: [r3(-uz * side * 3.2), 0.6, r3(ux * side * 3.2)] }, look: { mid: [a, b], off: [0, 1.25, 0] }, fov: 48 });
         this.face(p, q, t + 0.9); this.face(q, p, t + 0.9); ux = -ux; uz = -uz; t += 2.4;
         const [px2, pz2] = this.local(p), [qx2, qz2] = this.local(q); put(p, px2 + (qx2 - px2) * 0.3, pz2 + (qz2 - pz2) * 0.3, t - 0.7, t - 0.2); put(q, qx2 - (qx2 - px2) * 0.3, qz2 - (qz2 - pz2) * 0.3, t - 0.7, t - 0.2);
       } else if (u === 'spin') { this.A(p, { do: 'spin', t: r3(t + 0.2), t1: r3(t + 0.8), turns: 2 }); blow(p, q, t + 0.85, 'clash', 'side'); blow(q, p, t + 1.35, 'clash', 'upper'); t += 1.9; }
@@ -387,7 +387,7 @@ class Episode {
       this.goto(l, lx + (lx - wx) / dl * 2.4, lz + (lz - wz) / dl * 2.4, t + 0.52, t + 1.2, { e: 'out' });
       this.A(l, { do: 'kneel', t: r3(t + 1.2), t1: r3(t + (o.hold ?? 8)) }); this.warp.push([r3(t + 0.4), r3(t + 0.8), 0.25]);
       this.cues.push({ t: r3(t + 0.52), kind: 'qiburst', at: { actor: l, part: 'chest' }, k: 1.2, col: CHARACTERS[this.who[w]]?.qi });
-      this.shot({ t: t + 0.2, pos: { at: w, off: this.rel(w, [1.4, 0.6, 1.8]) }, look: { mid: [a, b], off: [0, 1.0, 0] }, fov: 44 }); this.hit(t + 0.52, 1.5); this.music.push({ hit: 'gong', t: r3(t + 0.52), g: 0.6 });
+      this.shot({ t: t + 0.2, pos: { at: w, off: this.rel(w, [1.4, 0.6, 1.8]) }, look: { mid: [a, b], off: [0, 1.25, 0] }, fov: 44 }); this.hit(t + 0.52, 1.5); this.music.push({ hit: 'gong', t: r3(t + 0.52), g: 0.6 });
       t += 2.0;
     } else if (end.startsWith('flee')) { const f = end === 'flee:a' ? a : b; blow(f === a ? b : a, f, t + 0.4, 'clash', 'over'); this.A(f, { do: 'jump', t: r3(t + 0.8), t1: r3(t + 1.9), h: 4, d: [-2, 0], land: 0 }, { do: 'flip', t: r3(t + 0.85), t1: r3(t + 1.7) }); this.hide(f, t + 1.7); this.shot({ t: t + 0.6, pos: { at: f, off: this.rel(f, [2.4, 0.5, 2.6]) }, look: { at: f, off: [0, 2.5, 0] }, fov: 50 }); t += 2.2; }
     this.guard([a, b], t0, t); this.t = t; this.conv = null; return this;
@@ -402,7 +402,7 @@ class Episode {
       const [hx, hz] = this.local(hero), [fx, fz] = this.local(f), dl = Math.hypot(fx - hx, fz - hz) || 1;
       this.face(hero, f, t); this.face(f, hero, t);
       this.goto(f, hx + (fx - hx) / dl * 1.2, hz + (fz - hz) / dl * 1.2, t, t + 0.6, { e: 'in' });
-      this.shot({ t, pos: { at: hero, off: [r3(-(fz - hz) / dl * 3 * side), 1.2, r3((fx - hx) / dl * 3 * side)] }, look: { mid: [hero, f], off: [0, 1.0, 0] }, fov: 42, hand: 0.4 });
+      this.shot({ t, pos: { at: hero, off: [r3(-(fz - hz) / dl * 3 * side), 1.2, r3((fx - hx) / dl * 3 * side)] }, look: { mid: [hero, f], off: [0, 1.25, 0] }, fov: 42, hand: 0.4 });
       this.A(f, { do: 'blow', t: r3(t + 0.7), style: this.pick(['over', 'side', 'thrust']), arm: 'R', result: 'clash', target: hero, against: 'tipR', close: false });
       const fin = i > foes.length && this.R() < 0.6;
       if (this.R() < 0.4) this.A(hero, { do: 'spin', t: r3(t + 0.85), t1: r3(t + 1.3) });
@@ -426,7 +426,7 @@ class Episode {
     if (o.name) { const [zh, en] = o.name, d = this.dur(a, zh, en); this.camOn('close', a, null, t + 1.0, d, 1); this.line(a, zh, en, t + 1.1, d, 'shout'); ti = Math.max(ti, t + 1.1 + d); }
     // the release, seen wide; the slow motion through it
     const tr = ti;
-    this.shot({ t: tr - 0.3, pos: { mid: [a, b], off: (() => { const [ax, az] = this.pos[a], [bx, bz] = this.pos[b], dx = bx - ax, dz = bz - az, l = Math.hypot(dx, dz) || 1; return [r3(-dz / l * 5), 1.3, r3(dx / l * 5)]; })() }, look: { mid: [a, b], off: [0, 1.0, 0] }, fov: 50 });
+    this.shot({ t: tr - 0.3, pos: { mid: [a, b], off: (() => { const [ax, az] = this.pos[a], [bx, bz] = this.pos[b], dx = bx - ax, dz = bz - az, l = Math.hypot(dx, dz) || 1; return [r3(-dz / l * 5), 1.3, r3(dx / l * 5)]; })() }, look: { mid: [a, b], off: [0, 1.25, 0] }, fov: 50 });
     let hitT = tr + 0.45;
     if (kind === 'wave') this.A(a, { do: 'blow', t: r3(tr), style: 'side', arm: 'R', result: 'miss', target: b, close: false, k: 1.4 }, { do: 'wave', t: r3(tr), at: r3(hitT), target: b, col: ca, k });
     else if (kind === 'palm') { this.A(a, { do: 'palm', t: r3(tr), target: b, col: ca, k }); hitT = tr + 0.3; }

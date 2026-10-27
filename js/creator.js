@@ -31,7 +31,7 @@ function frame(cam, P, shot, aspect) {
   cam.aspect = aspect;
   if (shot === 'face' || shot === 'tile') { cam.fov = shot === 'tile' ? 14 : 18; cam.position.set(head.x, head.y, head.z + 0.95); cam.lookAt(head.x, head.y - 0.012, head.z); }
   else if (shot === 'bust') { const y = head.y - 0.2; cam.fov = 22; cam.position.set(head.x, y + 0.05, 2.0); cam.lookAt(head.x, y, 0); }
-  else { cam.fov = 26; cam.position.set(0, 0.86, 4.1); cam.lookAt(0, 0.82, 0); } // the same camera for every build, so heights compare
+  else { cam.fov = 26; cam.position.set(0, 1.0, 5.0); cam.lookAt(0, 0.96, 0); } // the same camera for every build, so heights compare
   cam.updateProjectionMatrix();
 }
 const dispose = (o) => o.traverse((m) => { if (m.geometry) m.geometry.dispose(); const ms = m.material ? [].concat(m.material) : []; for (const x of ms) { for (const k of ['map', 'emissiveMap']) x[k]?.dispose?.(); x.dispose(); } });
