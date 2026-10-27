@@ -1,7 +1,7 @@
 // styles.html: the same puppet in every head style, side by side, each in its own little view of one shared canvas.
 import * as THREE from '../lib/three.module.min.js';
-import { buildPuppet } from './models/puppet.js?v=5';
-import { STYLES } from './models/heads.js?v=5';
+import { buildPuppet } from './models/puppet.js?v=6';
+import { STYLES } from './models/heads.js?v=6';
 import { CHARACTERS } from './cast/characters.js?v=3';
 
 const $ = (id) => document.getElementById(id);

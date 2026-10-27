@@ -7,7 +7,7 @@
 // gem}, robe {base, pattern, ink, trim, inner, sleeve}, cape, ribbons, weapons {R, L}, scale
 import * as THREE from '../../lib/three.module.min.js';
 import { TOON } from '../toon.js?v=1';
-import { headLook, addHead, lockAt } from './heads.js?v=5';
+import { headLook, addHead, lockAt } from './heads.js?v=6';
 
 const toon = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
 function canvasTex(w, h, paint) {
@@ -164,7 +164,8 @@ export function buildPuppet(spec) {
     forelocks.push(chain(head, s * (LK[0] + Math.abs(o) * 0.004), LK[1] - Math.abs(o) * 0.006, LK[2] + o * 0.026, n, segL, (H.lockW || 0.035) / Math.sqrt(NS), lockM, look.p.sculpt ? 0.95 : 0.9, look.p.sculpt ? 'tube' : 'flat'));
   }
   // long locks are laid forward over the front of the shoulders, so they hang down the chest, not through it
-  const lockBase = segL < 0.1 ? Array.from({ length: lockN }, (_, i) => (i === 0 ? -0.5 : i === 1 ? -0.35 : i === 2 ? 0.3 : i === 3 ? 0.3 : i === 4 ? 0.15 : 0.02 * Math.sin(i * 1.7)))
+  // down beside the jaw to the shoulder, forward over it, then down the chest
+  const lockBase = segL < 0.1 ? Array.from({ length: lockN }, (_, i) => [-0.1, 0, 0, -0.9, 0, 0.6, 0.25, 0.05][i] ?? 0.02 * Math.sin(i * 1.7))
     : lockN >= 4 ? [-0.95, 0.65, 0.2, 0, 0.02] : lockN === 3 ? [-0.55, 0.35, 0.1] : [0];
   const ribbons = spec.crownRibbon ? [-1, 1].map((s) => chain(crown, s * 0.03, 0.0, -0.04, 4, 0.13, 0.03, M.trim, 0.95)) : [];
   // ---- arms: shoulder, upper arm (in its sleeve), elbow, a wide sleeve that hangs, a small hand
@@ -191,9 +192,9 @@ export function buildPuppet(spec) {
   const ribbonsBody = spec.ribbons ? [-1, 1].map((s) => chain(torso, s * 0.2, 0.38, -0.05, 6, 0.13, 0.05, M.ribbon, 0.97)) : [];
   // ---- what a swordsman of the dramas wears: earrings, a rough cloak over the shoulders, a sash across, a sword on the back
   if (spec.earrings) for (const s of [-1, 1]) {
-    mesh(head, new THREE.SphereGeometry(0.0035, 8, 6), M.gold, s * 0.075, 0.097, -0.012);
-    mesh(head, new THREE.CylinderGeometry(0.0009, 0.0009, 0.012, 4), M.gold, s * 0.075, 0.089, -0.012);
-    mesh(head, new THREE.SphereGeometry(0.0055, 10, 8), new THREE.MeshPhysicalMaterial({ color: spec.earrings, roughness: 0.2, clearcoat: 1, sheen: 1, sheenColor: '#ffe8f0' }), s * 0.075, 0.08, -0.012);
+    mesh(head, new THREE.SphereGeometry(0.0035, 8, 6), M.gold, s * 0.084, 0.097, -0.012);
+    mesh(head, new THREE.CylinderGeometry(0.0009, 0.0009, 0.012, 4), M.gold, s * 0.084, 0.089, -0.012);
+    mesh(head, new THREE.SphereGeometry(0.0055, 10, 8), new THREE.MeshPhysicalMaterial({ color: spec.earrings, roughness: 0.2, clearcoat: 1, sheen: 1, sheenColor: '#ffe8f0' }), s * 0.084, 0.08, -0.012);
   }
   if (spec.shawl) {
     const sh = toon({ map: silkTex({ base: spec.shawl.color, pattern: 'weave' }, 5), side: THREE.DoubleSide });

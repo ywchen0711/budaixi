@@ -17,7 +17,7 @@ export const STYLES = {
   drama: { zh: '武俠劇真人感', en: 'Live-action wuxia', about: { zh: '照古裝武俠劇：自然膚色、淡妝、濃直的劍眉、紅唇', en: 'like a costume drama: natural skin, light make-up, straight brows, red lips' } },
 };
 export const DEFAULT_STYLE = 'paper';
-export const lockAt = (look) => (look.p.sculpt ? [0.076, 0.165, 0.016] : [0.11, 0.2, 0.06]); // where the side locks hang from
+export const lockAt = (look) => (look.p.sculpt ? [0.09, 0.165, -0.002] : [0.11, 0.2, 0.06]); // where the side locks hang from
 const fromAddress = (() => { try { const s = new URLSearchParams(location.search).get('style'); return STYLES[s] ? s : null; } catch (e) { return null; } })();
 export const styleOf = (spec) => (STYLES[spec.style] ? spec.style : fromAddress || DEFAULT_STYLE);
 
@@ -27,7 +27,7 @@ const P = {
   pili: { sculpt: 1, eyes: 'glass', eyeK: 1.32, lidTilt: 0.12, skin: 'skin' },
   wood: { sculpt: 1, eyes: 'glass', eyeK: 1.24, nose: 0.9, cheek: 1.3, chin: 0.9, lidTilt: 0.08, skin: 'lacquer' },
   opera: { sculpt: 1, eyes: 'glass', eyeK: 1.28, nose: 0.95, lidTilt: 0.3, skin: 'powder' },
-  anime: { sculpt: 1, eyes: 'paint', socket: 0.15, nose: 0.35, noseBulb: 0.8, lip: 0.25, brow: 0.3, cheek: 0.3, chin: 0.7, chinPoint: 1.5, jawW: 0.88, skin: 'cel', outline: true },
+  anime: { sculpt: 1, eyes: 'paint', socket: 0.15, nose: 0.35, noseBulb: 0.8, lip: 0.25, brow: 0.3, cheek: 0.3, chin: 0.7, chinPoint: 1.2, jawW: 0.92, skin: 'cel', outline: true },
   drama: { sculpt: 1, eyes: 'glass', eyeK: 1.12, lidTilt: 0.05, skin: 'skin' },
   film: { sculpt: 1, eyes: 'glass', eyeK: 1.75, socket: 1.3, nose: 1.1, noseBulb: 1.7, lip: 0.8, cheek: 1.6, chin: 0.6, jawW: 1.12, mouthW: 1.1, lidTilt: 0.04, skin: 'soft' },
 };
@@ -75,8 +75,8 @@ const smax = (a, b, k) => { const h = clamp(0.5 + 0.5 * (b - a) / k); return a *
 function faceZ(x, y, p) {
   const ax = Math.abs(x);
   const Zm = curve(y, [[0.16, -0.03], [0.12, 0.052], [0.09, 0.08], [0.05, 0.092], [0.024, 0.097], [0.0, 0.093], [-0.03, 0.094], [-0.06, 0.095], [-0.09, 0.091], [-0.11, 0.086], [-0.122, 0.077], [-0.132, 0.057], [-0.14, 0.02], [-0.155, -0.06]]);
-  const kx = curve(y, [[0.12, 5.6], [0.05, 6], [0.0, 6.8], [-0.04, 8.2], [-0.08, 11.5], [-0.105, 22 * (p.chinPoint || 1)], [-0.13, 40]]);
-  const hw = curve(y, [[0.1, 0.082], [0.0, 0.085], [-0.04, 0.08], [-0.08, 0.069 * (p.jawW || 1)], [-0.105, 0.045 * (p.jawW || 1)], [-0.135, 0.027]]);
+  const kx = curve(y, [[0.12, 5.6], [0.05, 6], [0.0, 6.8], [-0.04, 8.2], [-0.08, 10], [-0.105, 15 * (p.chinPoint || 1)], [-0.13, 26]]);
+  const hw = curve(y, [[0.1, 0.082], [0.0, 0.085], [-0.04, 0.08], [-0.08, 0.072 * (p.jawW || 1)], [-0.105, 0.056 * (p.jawW || 1)], [-0.135, 0.038]]);
   let z = Zm - kx * x * x - 60 * Math.max(0, ax - 0.62 * hw) ** 2;
   // the brow ridge, the bridge, the sockets, the cheekbones
   z += 0.005 * (p.brow ?? 1) * G2(ax, y, 0.028, 0.024, 0.028, 0.01);
@@ -103,14 +103,14 @@ function faceZ(x, y, p) {
   z += L * 0.0055 * across2 * G1(y, -0.077, 0.0055);
   z -= 0.002 * G2(ax, y, mw * 1.05, -0.071, 0.004, 0.006);                 // the corners of the mouth
   z -= 0.0035 * Math.exp(-((x / 0.02) ** 2)) * G1(y, -0.087, 0.006);         // the hollow above the chin
-  z += 0.006 * (p.chin ?? 1) * G2(x, y, 0, -0.106, 0.02, 0.014);            // the chin
+  z += 0.006 * (p.chin ?? 1) * G2(x, y, 0, -0.106, 0.027, 0.015);            // the chin
   return z;
 }
 // where the surface is, for a direction d from the centre of the skull
 function shapePoint(d, p) {
   let x = SK.hw * d.x, y = SK.cy + SK.hh * d.y, z = SK.cz + SK.hd * d.z;
   const low = smooth(-0.02, -0.14, y);
-  x *= 1 - 0.3 * low;                                               // the lower head narrows to the jaw and the neck
+  x *= 1 - 0.22 * low;                                               // the lower head narrows to the jaw and the neck
   if (d.z > 0) z = SK.cz + (z - SK.cz) * (0.72 - 0.3 * low);        // in front the skull sits back behind the face
   z -= 0.012 * smooth(0.05, 0.15, y) * Math.max(0, d.z);             // the forehead slopes back into the crown
   if (d.z > 0) z = smax(z, faceZ(x, y, p), 0.014);
@@ -399,7 +399,7 @@ export function headLook(spec) {
   const style = styleOf(spec), p00 = P[style], fem = spec.face?.fem, male = spec.face?.male;
   // a man's face: a heavier brow, a stronger nose, a wider jaw, a squarer chin
   const p0 = male && p00.sculpt ? { ...p00, brow: (p00.brow ?? 1) * 1.5, nose: (p00.nose ?? 1) * 1.08, jawW: (p00.jawW ?? 1) * 1.06, chin: (p00.chin ?? 1) * 1.35, chinPoint: (p00.chinPoint ?? 1) * 0.85, socket: (p00.socket ?? 1) * 1.15, eyeK: (p00.eyeK ?? 1) * 0.96 } : p00;
-  const p = fem && p0.sculpt ? { ...p0, nose: (p0.nose ?? 1) * 0.82, brow: (p0.brow ?? 1) * 0.4, jawW: (p0.jawW ?? 1) * 0.9, chin: (p0.chin ?? 1) * 0.7, chinPoint: (p0.chinPoint ?? 1) * 1.2, mouthW: (p0.mouthW ?? 1) * 0.9, eyeK: (p0.eyeK ?? 1) * 1.05 } : p0;
+  const p = fem && p0.sculpt ? { ...p0, nose: (p0.nose ?? 1) * 0.82, brow: (p0.brow ?? 1) * 0.4, jawW: (p0.jawW ?? 1) * 0.9, chin: (p0.chin ?? 1) * 0.7, chinPoint: (p0.chinPoint ?? 1) * 1.05, mouthW: (p0.mouthW ?? 1) * 0.9, eyeK: (p0.eyeK ?? 1) * 1.05 } : p0;
   const face = p.sculpt ? makeUp(spec, style) : paintOld(spec, style);
   const skinCol = skinOf(spec, style);
   const toonM = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
