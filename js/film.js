@@ -29,7 +29,7 @@ const $ = (id) => document.getElementById(id);
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const params = new URLSearchParams(location.search);
 const EP = /^[a-z0-9]+$/.test(params.get('ep') || '') ? params.get('ep') : 'ep1';
-const BRICK = params.get('look') === 'brick'; // the same episode, filmed in bricks: minifigures in brick-built places
+const BRICK = params.get('look') !== 'puppet'; // filmed in bricks by default (minifigures in brick-built places); ?look=puppet for the glove puppets
 const story = (await import(`./story/${EP}.js?v=15`)).default, rt = createRuntime(story);
 LOOK.real = !!story.look?.real; // a live-action look: real materials, a real lens
 const clock = makeClock({ ...story, warp: rt.warp }), LEN = clock.filmLen; // LEN: the film's length (slow motion and hit-stops included)
@@ -190,15 +190,15 @@ window.addEventListener('resize', () => { layout(); frame(state.t); });
 // ---------------------------------------------------------------- the player
 const state = { t: Math.max(0, Math.min(LEN, +(params.get('t') || 0))), playing: false, wall: 0, from: 0 };
 const UI = {
-  zh: { play: '▶ 開演', replay: '↺ 再演一場', sub: `台灣布袋戲風格的 3D 動畫短片．${Math.floor(LEN / 60)} 分 ${Math.round(LEN % 60)} 秒`, lang: 'EN', hint: '空白鍵 播放／暫停．← → 快轉．播放中拖曳畫面可以轉視角' },
-  en: { play: '▶ Begin', replay: '↺ Again', sub: `A 3D short in the style of Taiwanese glove puppetry · ${Math.floor(LEN / 60)}:${String(Math.round(LEN % 60)).padStart(2, '0')}`, lang: '中', hint: 'Space play / pause · ← → skip · drag the picture to look around' },
+  zh: { play: '▶ 開演', replay: '↺ 再演一場', sub: `${BRICK ? '積木版．' : ''}台灣布袋戲風格的 3D 動畫短片．${Math.floor(LEN / 60)} 分 ${Math.round(LEN % 60)} 秒`, lang: 'EN', hint: '空白鍵 播放／暫停．← → 快轉．播放中拖曳畫面可以轉視角' },
+  en: { play: '▶ Begin', replay: '↺ Again', sub: `${BRICK ? 'In bricks · ' : ''}A 3D short in the style of Taiwanese glove puppetry · ${Math.floor(LEN / 60)}:${String(Math.round(LEN % 60)).padStart(2, '0')}`, lang: '中', hint: 'Space play / pause · ← → skip · drag the picture to look around' },
 };
 function texts() {
   const u = UI[lang]; document.documentElement.lang = lang === 'zh' ? 'zh-Hant' : 'en';
   $('go').textContent = state.t >= LEN - 0.01 ? u.replay : u.play; $('blurb').textContent = u.sub; $('lang').textContent = u.lang; $('hint').textContent = u.hint;
   $('st').innerHTML = `<b>${story.title[lang][0]}</b><i>${story.title[lang][1]}</i>`;
-  $('eps').innerHTML = EPISODES.map((e) => `<a href="?ep=${e.id}${lang === 'en' ? '&lang=en' : ''}${BRICK ? '&look=brick' : ''}" class="${e.id === EP ? 'on' : ''}">${e[lang]}<small>${e.len}</small></a>`).join('')
-    + `<a class="look" href="?ep=${EP}${lang === 'en' ? '&lang=en' : ''}${BRICK ? '' : '&look=brick'}">${BRICK ? (lang === 'zh' ? '🎭 看原版' : '🎭 Original') : (lang === 'zh' ? '🧱 積木版' : '🧱 In bricks')}</a>`;
+  $('eps').innerHTML = EPISODES.map((e) => `<a href="?ep=${e.id}${lang === 'en' ? '&lang=en' : ''}${BRICK ? '' : '&look=puppet'}" class="${e.id === EP ? 'on' : ''}">${e[lang]}<small>${e.len}</small></a>`).join('')
+    + `<a class="look" href="?ep=${EP}${lang === 'en' ? '&lang=en' : ''}${BRICK ? '&look=puppet' : ''}">${BRICK ? (lang === 'zh' ? '🎭 看原版' : '🎭 Original') : (lang === 'zh' ? '🧱 積木版' : '🧱 In bricks')}</a>`;
 }
 function play() {
   if (state.t >= LEN - 0.01) state.t = 0;
@@ -220,7 +220,7 @@ function loop() {
 $('scrub').max = String(LEN);
 $('go').onclick = play;
 // the episode menu in the bar: any episode, at any time (it opens playing, if the browser lets it)
-function epMenu() { $('epmenu').innerHTML = EPISODES.map((e) => `<a href="?ep=${e.id}${lang === 'en' ? '&lang=en' : ''}${BRICK ? '&look=brick' : ''}&play=1" class="${e.id === EP ? 'on' : ''}"><span>${e[lang]}</span><small>${e.len}</small></a>`).join(''); }
+function epMenu() { $('epmenu').innerHTML = EPISODES.map((e) => `<a href="?ep=${e.id}${lang === 'en' ? '&lang=en' : ''}${BRICK ? '' : '&look=puppet'}&play=1" class="${e.id === EP ? 'on' : ''}"><span>${e[lang]}</span><small>${e.len}</small></a>`).join(''); }
 $('epbtn').onclick = (e) => { e.stopPropagation(); epMenu(); $('epmenu').hidden = !$('epmenu').hidden; };
 document.addEventListener('click', (e) => { if (!$('epmenu').hidden && !$('epmenu').contains(e.target) && e.target !== $('epbtn')) $('epmenu').hidden = true; });
 $('pp').onclick = () => (state.playing ? pause() : play());
