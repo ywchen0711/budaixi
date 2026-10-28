@@ -5,7 +5,7 @@
 // throws, leaps and landings, being hit, falling. Everything is worked out from the time alone, so any frame stands on
 // its own: the clips are set to their times and weights, and the mixer is applied, never run.
 import * as THREE from '../../lib/three.module.min.js';
-import { buildHuman, humanClips } from '../models/human.js?v=12';
+import { buildHuman, humanClips } from '../models/human.js?v=14';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const cl = (v, a = -1, b = 1) => Math.max(a, Math.min(b, v));
@@ -62,6 +62,7 @@ export function humanActor(scene, A, C, rt) {
       else if (a.do === 'fall') ev(a.t, 'Death01', { hold: mine.some((b) => b.do === 'die'), fin: 0.1 });
       else if (a.do === 'jump' || a.do === 'drop') { ev(a.t - 0.5, 'NinjaJump_Start', { fin: 0.1, fout: 0.15 }); if (a.land !== 0) ev(a.t1 - 0.1, 'NinjaJump_Land', { fin: 0.05 }); }
       else if (a.do === 'missile') ev(a.t - 0.38, 'OverhandThrow');
+      else if (a.do === 'lookat' && a.t1 - a.t > 2.8 && Math.sin(a.t * 12.9898 + A.i) * 43758.5453 % 1 > 0.35) ev(a.t + 0.9, 'Yes', { ts: 1.6, fin: 0.3, fout: 0.4 }); // listening: a nod
     }
     // when another's blade meets this one's, it blocks
     for (const B of rt.actors) for (const a of B.track) if (a.do === 'blow' && a.target === A.id && a.result === 'clash') ev(a.t - 0.38, armed ? 'Sword_Block' : 'Idle_Shield_Break', { fout: 0.3 });

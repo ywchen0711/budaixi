@@ -1,10 +1,10 @@
 // A story at work: given a script (js/story/*.js), where every actor is, which way it faces and how it is posed at
 // any moment, and the whole list of timed cues (effects and sounds) its actions set off. Pure arithmetic: the film
 // draws from it, and tools/cues.mjs hands the same cues to the sound mix.
-import { ACT } from './actions.js?v=12';
-import { S, cl } from './util.js?v=12';
-import { planFeet } from '../feet.js?v=12';
-import { CHARACTERS } from '../cast/characters.js?v=12';
+import { ACT } from './actions.js?v=14';
+import { S, cl } from './util.js?v=14';
+import { planFeet } from '../feet.js?v=14';
+import { CHARACTERS } from '../cast/characters.js?v=14';
 
 const wrap = (a) => { while (a > Math.PI) a -= Math.PI * 2; while (a < -Math.PI) a += Math.PI * 2; return a; };
 const lerpAngle = (a, b, k) => a + wrap(b - a) * k;

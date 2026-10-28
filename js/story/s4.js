@@ -4,8 +4,8 @@
 // the Sword Formation of the Void, and with a new Netherworld palm puts Ling on his knees. Yin Jiuxiao arrives and the
 // Demon Lord, strangely, goes. In the confusion the token of the Void School goes missing. In the Pavilion, two of
 // the three seals lie in one man's hand.
-import { episode } from './compose.js?v=12';
-import { poemOf } from './world.js?v=12';
+import { episode } from './compose.js?v=14';
+import { poemOf } from './world.js?v=14';
 
 const E = episode({
   id: 's4', plaque: '魔影重臨',

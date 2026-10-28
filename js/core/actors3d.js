@@ -4,11 +4,11 @@
 // the sword's tassel swings. All of it is run once over the whole film at load, so any frame stands on its own.
 // Named points for the effects and the cameras: chest, head, eye, tipR, tipL, handR, handL, shoulderR, shoulderL, root, front
 import * as THREE from '../../lib/three.module.min.js';
-import { CHARACTERS } from '../cast/characters.js?v=12';
-import { buildPuppet } from '../models/puppet.js?v=12';
-import { faceOf, bodyOf } from '../models/looks.js?v=12';
-import { humanActor } from './humanActor.js?v=12';
-import { humanClips } from '../models/human.js?v=12';
+import { CHARACTERS } from '../cast/characters.js?v=14';
+import { buildPuppet } from '../models/puppet.js?v=14';
+import { faceOf, bodyOf } from '../models/looks.js?v=14';
+import { humanActor } from './humanActor.js?v=14';
+import { humanClips } from '../models/human.js?v=14';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const cl = (v, a = -1, b = 1) => Math.max(a, Math.min(b, v));
@@ -136,9 +136,9 @@ export function buildActors(scene, rt) {
   for (const A of rt.actors) {
     let C = CHARACTERS[A.who]; if (!C || C.kind !== 'puppet') continue;
     // in a story in the anime style, each character wears its own face and build from the 50 and the 20
-    if (look.style === 'anime' && C.anime) { const F = faceOf(C.anime.face), B = bodyOf(C.anime.body); C = { ...C, faceShape: F.shape, eyeShape: F.eye, body: B.body, scale: (C.scale || 1) * B.scale }; }
+    if ((look.human || look.style === 'anime') && C.anime) { const F = faceOf(C.anime.face), B = bodyOf(C.anime.body); C = { ...C, faceShape: F.shape, eyeShape: F.eye, body: B.body, scale: (C.scale || 1) * B.scale }; }
     const spec = { ...C, ...look, ...(A.look || {}) };
-    views[A.id] = look.style === 'anime' && humanClips().Idle_Loop ? humanActor(scene, A, spec, rt) : puppet(scene, A, spec, rt); // the series: real bodies, recorded motion
+    views[A.id] = (look.human || look.style === 'anime') && humanClips().Idle_Loop ? humanActor(scene, A, spec, rt) : puppet(scene, A, spec, rt); // the series: real bodies, recorded motion
   }
   return views;
 }

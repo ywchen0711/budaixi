@@ -6,10 +6,10 @@
 // spec (js/cast/characters.js): skin, face {brow, eye, lip, paint, mark}, hair {color, len, white}, crown {type, color,
 // gem}, robe {base, pattern, ink, trim, inner, sleeve}, cape, ribbons, weapons {R, L}, scale
 import * as THREE from '../../lib/three.module.min.js';
-import { TOON } from '../toon.js?v=12';
-import { headLook, addHead, lockAt } from './heads.js?v=12';
+import { TOON, shade } from '../toon.js?v=14';
+import { headLook, addHead, lockAt } from './heads.js?v=14';
 
-const toon = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
+const toon = (o) => shade(o);
 function canvasTex(w, h, paint) {
   const c = document.createElement('canvas'); c.width = w; c.height = h; paint(c.getContext('2d'), w, h);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;

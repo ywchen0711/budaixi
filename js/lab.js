@@ -1,8 +1,8 @@
 // styles.html: the same puppet in every head style, side by side, each in its own little view of one shared canvas.
 import * as THREE from '../lib/three.module.min.js';
-import { buildPuppet } from './models/puppet.js?v=12';
-import { STYLES } from './models/heads.js?v=12';
-import { CHARACTERS } from './cast/characters.js?v=12';
+import { buildPuppet } from './models/puppet.js?v=14';
+import { STYLES } from './models/heads.js?v=14';
+import { CHARACTERS } from './cast/characters.js?v=14';
 
 const $ = (id) => document.getElementById(id);
 const ORDER = ['paper', 'drama', 'pili', 'wood', 'opera', 'anime', 'film']; // F, after the drama still, next to how it was

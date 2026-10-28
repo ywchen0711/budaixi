@@ -8,8 +8,8 @@
 // Cue kinds: shot, missile, explosion, hit, ground, clash, flares, loose, fire, arc, sparks, smoke, flash, shake,
 // and sound-only kinds (whoosh, snd), which the director ignores.
 import * as THREE from '../../lib/three.module.min.js';
-import { missileModel } from '../models/weapons.js?v=12';
-import { H, S, imp } from './util.js?v=12';
+import { missileModel } from '../models/weapons.js?v=14';
+import { H, S, imp } from './util.js?v=14';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const FIXED = new Set(['explosion', 'hit', 'ground', 'clash', 'flares', 'sparks', 'fire', 'column', 'pod', 'qiburst', 'leaves', 'bamboo']);

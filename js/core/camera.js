@@ -8,7 +8,7 @@
 //   { mid: ['ron', 'hound'], off }           halfway between two actors
 //   { fixed: 'ron', time: 23.2, off }        where an actor was at a given moment (the camera stays put)
 import * as THREE from '../../lib/three.module.min.js';
-import { ss, cl } from './util.js?v=12';
+import { ss, cl } from './util.js?v=14';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 export function createCamera(story, rt, resolve) {
@@ -26,7 +26,8 @@ export function createCamera(story, rt, resolve) {
   return {
     shots,
     index: (t) => { const i = shots.findIndex((s) => t >= s.t && t < s.t1); return i < 0 ? shots.length - 1 : i; },
-    at(t) {
+    at(t) { return this.raw(t); },
+    raw(t) {
       const s = shots[this.index(t)], k = ss(cl((t - s.t) / (s.t1 - s.t)));
       let pos, look;
       if (s.vertigo) { // the dolly zoom: the camera pulls back (or in) while the lens narrows to keep the subject the same size
@@ -36,6 +37,7 @@ export function createCamera(story, rt, resolve) {
       if (s.orbit) { const c = point(s.orbit.c, t), a = s.orbit.a[0] + (s.orbit.a[1] - s.orbit.a[0]) * k; pos = c.clone().add(V(Math.cos(a) * s.orbit.r, s.orbit.h, Math.sin(a) * s.orbit.r)); look = c; }
       else { pos = along(s.pos, t, k); look = along(s.look, t, k); }
       const fov = Array.isArray(s.fov) ? s.fov[0] + (s.fov[1] - s.fov[0]) * k : s.fov || 40;
+      if (s.push) pos.lerp(look, s.push * cl((t - s.t) / (s.t1 - s.t))); // a slow push in through the shot
       // handheld: a slow drift and a little tremor, as if someone were holding it
       if (s.hand) { const h = s.hand; pos.add(V(Math.sin(t * 1.3) * 0.6 + Math.sin(t * 3.7) * 0.25, Math.sin(t * 1.7 + 1) * 0.4 + Math.sin(t * 4.3) * 0.2, Math.sin(t * 1.1 + 2) * 0.5).multiplyScalar(h * 0.12)); look.add(V(Math.sin(t * 2.3) * 0.5, Math.sin(t * 2.9 + 1) * 0.4, 0).multiplyScalar(h * 0.1)); }
       return { pos, look, fov, roll: s.roll || 0 };

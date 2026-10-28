@@ -11,16 +11,16 @@
 //   E.strike('luo', 'yin', { kind: 'wave', name: ['蓮華劍氣', 'Lotus Sword Light'], result: 'hit' });
 //   export default E.done();
 // Places are given in the location's own coordinates (its centre at 0, 0); angles in degrees.
-import { CHARACTERS } from '../cast/characters.js?v=12';
-import { bodyOf } from '../models/looks.js?v=12';
-import { MOVES } from './world.js?v=12';
+import { CHARACTERS } from '../cast/characters.js?v=14';
+import { bodyOf } from '../models/looks.js?v=14';
+import { MOVES } from './world.js?v=14';
 
 const LOC = {
   bamboo: { o: [0, 0], key: 'Dm', est: [[[-14, 1.8, 3], [-5, 1.3, 2]], [[6, 2.4, 0], [4, 1.4, 0]], 46], wide: [[-9, 2.2, 6], [2, 1.0, 0], 44], scenic: [[[-20, 1.2, -6], [-8, 1.4, -3]], [[4, 3.5, 2], [2, 4.5, 0]], 50] },
   cliff: { o: [300, 0], key: 'Dm', est: [[[-24, 4, 7], [-12, 2.2, 5]], [[2, 1, 0], [0, 1.2, 0]], 42], wide: [[-12, 2.6, 7], [0, 1.0, 0], 44], scenic: [[[-30, 6, 0], [-20, 3, 8]], [[40, 3, -10], [30, 4, -5]], 46] },
   hall: { o: [600, 0], key: 'Eb', est: [[[-16, 5.5, 9], [-10, 3.2, 6]], [[4, 2.0, 0], [3, 1.5, 0]], 50], wide: [[-9, 3.2, 5.5], [3, 1.2, 0], 48], scenic: [[[-24, 6, -14], [-18, 4, -10]], [[0, 4, 0], [2, 3, 0]], 46] },
   lotus: { o: [900, 0], key: 'G', est: [[[2, 3.0, 22], [1, 2.0, 13]], [[0, 1.8, 0], [0, 1.4, 0]], 46], wide: [[-3, 2.6, 9], [0, 1.1, 0], 46], scenic: [[[-20, 1.2, 12], [-14, 0.8, 8]], [[0, 2, 0], [0, 1.5, 0]], 50] },
-  temple: { o: [1200, 0], key: 'D', est: [[[-18, 7, 2], [-9, 3.5, 3]], [[16, 4.5, 0], [12, 3, 0]], 52], wide: [[-8, 3.0, 7], [4, 1.4, 0], 48], scenic: [[[0, 1.4, -14], [6, 2.0, -12]], [[21, 5, 0], [21, 5.5, 0]], 44] },
+  temple: { o: [1200, 0], key: 'D', est: [[[-18, 7, 2], [-9, 3.5, 3]], [[16, 4.5, 0], [12, 3, 0]], 52], wide: [[-8, 3.0, 7], [4, 1.4, 0], 48], scenic: [[[-3, 1.5, 1.5], [3, 2.2, 0.8]], [[21, 5, 0], [21, 5.5, 0]], 40] },
   abyss: { o: [1500, 0], key: 'Dm', est: [[[-20, 4, -10], [-9, 2.2, -4]], [[10, 3, 0], [8, 2.5, 0]], 50], wide: [[-10, 3.4, 6], [3, 1.4, 0], 50], scenic: [[[-16, 9, 12], [-10, 6, 8]], [[10, 4, 0], [10, 5, 0]], 48] },
 };
 const OBST = {
@@ -183,7 +183,7 @@ class Episode {
     const cam = o.cam || (fresh && to ? 'two' : o.close ? 'close' : !to ? 'mid' : C.n % 5 === 0 ? 'close' : 'ots');
     this.camOn(cam, id, to, t, d, C.side);
     // a cut to the one listening, in a long speech
-    if (to && d > 5.5 && o.react !== false) this.camOn('ots', to, id, t + d * 0.62, d * 0.38, C.side);
+    if (to && d > 4.0 && o.react !== false) this.camOn((Math.floor(t * 3.7) % 2) ? 'ots' : 'close', to, id, t + d * 0.6, d * 0.4, C.side); // the one listening (chosen by the time: the story's randomness is left as it was)
     this.gesture(id, o.act, t, d);
     if (to && this.shown(to)) this.A(to, { do: 'lookat', t: r3(t), t1: r3(t + d), to: id });
     const EMO = { angry: 'angry', shock: 'shock', laugh: 'laugh', think: 'think', bow: 'bow', fan: 'tease', whisk: 'calm', point: null, none: null };
@@ -193,6 +193,7 @@ class Episode {
     this.t = t + d; return this;
   }
   camOn(kind, id, to, t, d, side = 1) {
+    const n0 = this.shots.length;
     if (kind === 'two' && to) { const [ax, az] = this.pos[id], [bx, bz] = this.pos[to], dx = bx - ax, dz = bz - az, l = Math.hypot(dx, dz) || 1, px = -dz / l * side, pz = dx / l * side, dist = Math.max(3.2, l * 1.5);
       this.shot({ t, pos: { mid: [id, to], off: [r3(px * dist), 1.5, r3(pz * dist)] }, look: { mid: [id, to], off: [0, 1.3, 0] }, fov: 38 }); }
     else if (kind === 'ots' && to) { const [ax, az] = this.pos[id], [bx, bz] = this.pos[to], dx = ax - bx, dz = az - bz, l = Math.hypot(dx, dz) || 1, ux = dx / l, uz = dz / l, px = -uz * side, pz = ux * side;
@@ -200,7 +201,9 @@ class Episode {
     else if (kind === 'close') this.shot({ t, pos: { actor: id, part: 'head', local: true, off: [0.1 * side, 0.06, 0.95 * this.size(id)] }, look: { actor: id, part: 'head', local: true, off: [0, 0.03, 0] }, fov: 28 });
     else if (kind === 'low') { const k = this.size(id) ** 1.5; this.shot({ t, pos: { at: id, off: this.rel(id, [1.6 * side * k, 0.35, 1.8 * k]) }, look: { actor: id, part: 'head', off: [0, 0.1, 0] }, fov: 36 }); }
     else if (kind === 'wide') { const [p, l, f] = LOC[this.loc].wide, O = this.O(); this.shot({ t, pos: [r3(O[0] + p[0]), p[1], r3(O[1] + p[2])], look: [r3(O[0] + l[0]), l[1], r3(O[1] + l[2])], fov: f }); }
-    else { const k = this.size(id); this.shot({ t, pos: { at: id, off: this.rel(id, [0.9 * side * k, 1.35 * k, 2.3 * k]) }, look: { actor: id, part: 'head', off: [0, -0.12, 0] }, fov: 32 }); } // a medium shot from in front
+    else { const k = this.size(id); this.shot({ t, pos: { at: id, off: this.rel(id, [0.8 * side * k, 1.5 * k, 1.9 * k]) }, look: { actor: id, part: 'head', off: [0, -0.1, 0] }, fov: 30 }); } // a medium shot from in front
+    // as in a drama: the camera never quite still — a slow push in, a breath of handheld
+    for (let i = n0; i < this.shots.length; i++) { const S = this.shots[i]; if (!S.orbit && !S.vertigo && !Array.isArray(S.pos?.[0])) { S.push ??= kind === 'close' ? 0.06 : 0.1; S.hand ??= 0.15; } }
   }
   // what the hands do while speaking
   gesture(id, act, t, d) {
@@ -287,7 +290,7 @@ class Episode {
   }
   exit(id, o = {}) {
     const t = this.t, how = o.how || 'leap', [lx, lz] = this.local(id);
-    if (how === 'leap') { this.A(id, { do: 'jump', t: r3(t + 0.3), t1: r3(t + 1.4), h: 4, d: [r3(o.d?.[0] ?? -2), r3(o.d?.[1] ?? 0)], land: 0 }, { do: 'flip', t: r3(t + 0.35), t1: r3(t + 1.2) }); this.hide(id, t + 1.2); this.shot({ t, pos: { at: id, off: this.rel(id, [2.4, 0.5, 2.6]) }, look: { at: id, off: [0, 2.6, 0] }, fov: 50 }); this.t = t + 1.6; }
+    if (how === 'leap') { this.A(id, { do: 'jump', t: r3(t + 0.3), t1: r3(t + 1.4), h: 4, d: [r3(o.d?.[0] ?? -2), r3(o.d?.[1] ?? 0)], land: 0 }, { do: 'flip', t: r3(t + 0.35), t1: r3(t + 1.2) }); this.hide(id, t + 1.2); this.shot({ t, pos: { at: id, off: this.rel(id, [2.4, 0.5, 2.6]) }, look: { at: id, off: [0, 2.6, 0] }, fov: 50 }); this.camOn('wide', id, null, t + 1.2, 0.4); this.t = t + 1.6; } // gone: back to the place
     else if (how === 'fade') { const p = this.pos[id]; this.cues.push({ t: r3(t + 0.6), kind: 'qiburst', at: [p[0], 0.8, p[1]], k: 0.9, col: o.col || CHARACTERS[this.who[id]]?.qi }); this.hide(id, t + 0.7); this.t = t + 1.4; }
     else { this.goto(id, lx + (o.d?.[0] ?? -6), lz + (o.d?.[1] ?? 0), t, t + 4); this.hide(id, t + 4); this.t = t + (o.wait === false ? 0 : 3); }
     return this;
@@ -531,7 +534,7 @@ class Episode {
     for (let i = 0; i + 1 < lines.length; i++) if (lines[i][1] > lines[i + 1][0] - 0.05) lines[i][1] = r3(lines[i + 1][0] - 0.05);
     const shots = this.shots.sort((x, y) => x.t - y.t);
     return {
-      id: this.m.id, LEN, title: this.m.title, end, endFor: 5, hitstopK: 1.1, look: this.m.look || { style: 'anime' },
+      id: this.m.id, LEN, title: this.m.title, end, endFor: 5, hitstopK: 1.1, look: this.m.look || { style: 'drama', real: true, human: true },
       warp: this.warp.sort((x, y) => x[0] - y[0]).filter((w, i, W) => i === 0 || w[0] >= W[i - 1][1]), blacks: this.blacks, cards: this.cards, scenes: this.scenes,
       set: { kinds: [...new Set(['stage', ...this.scenes.map((s) => s[2])])], curtain: [1.2, 3.6], stageUntil: 4.4, plaque: this.m.plaque || '天機策', couplet: this.m.couplet || ['一策天機藏萬象', '半笑江湖定風雲'], sky: this.sky, rain: this.rain.length ? this.rain : undefined, ...(this.m.set || {}), embers: 0, fires: [], columns: [] },
       actors, shots,

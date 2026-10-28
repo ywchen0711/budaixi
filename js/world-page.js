@@ -1,10 +1,10 @@
 // world.html: the world of 《天機策》 — its lore, places, people (each with a portrait drawn once in the browser, in
 // the series' anime style and the character's own face and build) and the ten episodes.
 import * as THREE from '../lib/three.module.min.js';
-import { WORLD } from './story/world.js?v=12';
-import { CHARACTERS } from './cast/characters.js?v=12';
-import { loadHumans, humanStill } from './models/human.js?v=12';
-import { faceOf, bodyOf } from './models/looks.js?v=12';
+import { WORLD } from './story/world.js?v=14';
+import { CHARACTERS } from './cast/characters.js?v=14';
+import { loadHumans, humanStill } from './models/human.js?v=14';
+import { faceOf, bodyOf } from './models/looks.js?v=14';
 
 const $ = (id) => document.getElementById(id);
 let lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'zh';

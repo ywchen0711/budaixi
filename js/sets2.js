@@ -6,8 +6,8 @@
 // and rain over a place for a stretch of time (set.rain = [{ at: [x, z], t: [t0, t1] }, ...]).
 // The ground where the actors stand is y = 0 at each of them.
 import * as THREE from '../lib/three.module.min.js';
-import { TOON } from './toon.js?v=12';
-const mat = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
+import { TOON, shade } from './toon.js?v=14';
+const mat = (o) => shade(o);
 export const HALL = new THREE.Vector3(600, 0, 0), LOTUS = new THREE.Vector3(900, 0, 0), TEMPLE = new THREE.Vector3(1200, 0, 0), ABYSS = new THREE.Vector3(1500, 0, 0);
 export const SKY2 = {
   dusk: { sun: [-0.8, 0.12, 0.4], top: '#1a2040', mid: '#5a3a5a', hor: '#f08848', low: '#2a1a20', glow: '#ff9850', disc: '#ffe0a0', cloud: '#7a4048', stars: 0.1, sunCol: '#ffb070', sunI: 2.6, hemiSky: '#8a6a8a', hemiGround: '#2a1a18', hemiI: 1.4, rimI: 0.6, fog: '#6a4a58', windows: 1, lamps: 0.8 },
@@ -24,7 +24,7 @@ function canvasTex(w, h, paint, repeat = true) {
 // a group at a place; add() puts meshes in it in its own coordinates
 function place(scene, at) {
   const G = new THREE.Group(); G.position.copy(at); scene.add(G);
-  const add = (geo, m, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, cast = true) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.rotation.set(rx, ry, rz); o.castShadow = cast; o.receiveShadow = true; G.add(o); return o; };
+  const add = (geo, m, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, cast = true) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.rotation.set(rx, ry, rz); o.castShadow = cast; o.receiveShadow = true; o.userData.solid = cast && geo.type !== 'PlaneGeometry' && geo.type !== 'CircleGeometry'; G.add(o); return o; };
   const light = (col, i, x, y, z) => { const l = new THREE.PointLight(col, i, 0, 2); l.position.set(x, y, z); G.add(l); return l; };
   return { G, add, light };
 }

@@ -5,9 +5,9 @@
 //   cliff   a mountain top at x = 300: a plateau of rock over a sea of clouds, an old pine, peaks far off, the moon
 //   hall, lotus, temple, abyss (js/sets2.js) at x = 600, 900, 1200, 1500; and rain (set.rain)
 import * as THREE from '../lib/three.module.min.js';
-import { TOON } from './toon.js?v=12';
-import { SETS2, SKY2 } from './sets2.js?v=12';
-const mat = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
+import { TOON, shade } from './toon.js?v=14';
+import { SETS2, SKY2 } from './sets2.js?v=14';
+const mat = (o) => shade(o);
 
 export const FOG = '#1a2234';
 export const CLIFF = new THREE.Vector3(300, 0, 0);
@@ -39,7 +39,7 @@ function canvasTex(w, h, paint, repeat = true) {
   const c = document.createElement('canvas'); c.width = w; c.height = h; paint(c.getContext('2d'), w, h);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
 }
-const add = (scene, geo, mat, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, cast = true) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); m.castShadow = cast; m.receiveShadow = true; scene.add(m); return m; };
+const add = (scene, geo, mat, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, cast = true) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); m.castShadow = cast; m.receiveShadow = true; m.userData.solid = cast && geo.type !== 'PlaneGeometry'; scene.add(m); return m; };
 
 // ---------------------------------------------------------------- the sky dome: gradient, a glowing moon, stars, bands of cloud
 function sky(scene) {
@@ -99,7 +99,7 @@ function bamboo(scene, o) {
     stalks.setMatrixAt(n++, m4.compose(v, q, sc));
     for (let j = 0; j < 3 && nl < 2600; j++) { const y = h * (0.55 + R() * 0.45); e.set(R() * 6.3, R() * 6.3, R() * 6.3); q.setFromEuler(e); sc.setScalar(0.8 + R() * 0.9); v.set(x + Math.sin(lean) * y + (R() - 0.5) * 0.6, y, z + (R() - 0.5) * 0.6); leaves.setMatrixAt(nl++, m4.compose(v, q, sc)); }
   }
-  stalks.count = n; leaves.count = nl; scene.add(stalks); scene.add(leaves);
+  stalks.count = n; leaves.count = nl; stalks.userData.solid = true; scene.add(stalks); scene.add(leaves);
   // a few stalks right at the clearing's edge, to be cut in the fight (their ids are noted for the director)
   // stone lanterns with a glow inside, rocks, low mist
   const stone = mat({ color: '#6a6a64' }), paper = new THREE.MeshBasicMaterial({ color: '#ffcf80' });

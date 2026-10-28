@@ -5,7 +5,7 @@
 //   headLook(spec) -> materials (skin, face, hair) for buildPuppet; addHead(head, spec, look) builds it on the neck
 // The style: spec.style, else ?style= in the address, else DEFAULT_STYLE. styles.html shows them side by side.
 import * as THREE from '../../lib/three.module.min.js';
-import { TOON } from '../toon.js?v=12';
+import { TOON, shade, LOOK } from '../toon.js?v=14';
 
 export const STYLES = {
   paper: { zh: '原本的樣子', en: 'As it was', about: { zh: '畫在球上的臉，色塊明暗', en: 'a face painted on a ball, toon bands' } },
@@ -419,7 +419,7 @@ export function headLook(spec) {
   const p = fem && pS.sculpt ? { ...pS, nose: (pS.nose ?? 1) * 0.82, brow: (pS.brow ?? 1) * 0.4, jawW: (pS.jawW ?? 1) * 0.9, chin: (pS.chin ?? 1) * 0.7, chinPoint: (pS.chinPoint ?? 1) * 1.05, mouthW: (pS.mouthW ?? 1) * 0.9, eyeK: (pS.eyeK ?? 1) * 1.05 } : pS;
   const face = p.sculpt ? makeUp(spec, style, p) : paintOld(spec, style);
   const skinCol = skinOf(spec, style);
-  const toonM = (o) => new THREE.MeshToonMaterial({ gradientMap: TOON, ...o });
+  const toonM = (o) => shade(o);
   const mk = (o) => {
     if (p.skin === 'cel') return new THREE.MeshToonMaterial({ gradientMap: CEL, emissive: '#ffffff', emissiveIntensity: 0.22, ...o, ...(o.map ? { emissiveMap: o.map } : { emissive: o.color }) });
     if (style === 'paper') return toonM(o);
@@ -437,7 +437,7 @@ export function headLook(spec) {
   const hair = style === 'paper' || style === 'anime' ? toonM({ map: hairMap, side: THREE.DoubleSide })
     : new THREE.MeshPhysicalMaterial({ map: hairMap, roughness: 0.55, sheen: 0.5, sheenColor: new THREE.Color(hairCol).lerp(new THREE.Color('#ffffff'), 0.5), sheenRoughness: 0.35, clearcoat: style === 'wood' ? 0.5 : 0, side: THREE.DoubleSide });
   const skin = mk({ color: skinCol }), faceM = mk({ map: face });
-  if (p.sculpt && p.skin !== 'cel' && p.skin !== 'lacquer') { // skin glows a little from within: lift it to sit with the silk beside it
+  if (p.sculpt && p.skin !== 'cel' && p.skin !== 'lacquer' && !LOOK.real) { // skin glows a little from within: lift it to sit with the silk beside it
     faceM.emissive = new THREE.Color('#ffffff'); faceM.emissiveMap = face; faceM.emissiveIntensity = 0.2;
     skin.emissive = new THREE.Color(skinCol); skin.emissiveIntensity = 0.2;
   }

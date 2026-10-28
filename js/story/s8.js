@@ -4,8 +4,8 @@
 // from the dead, and puppet doubles so like a man they fool everyone, except that they grow cold too fast. The real
 // Huiming lies buried at the Mirror Lake by her own hand. On the Peak, Wei tests "Huiming" with his blade; the left
 // hand gives him away; the mask comes off. In the Netherworld the Emperor gives his order: let Yin open the book.
-import { episode } from './compose.js?v=12';
-import { poemOf } from './world.js?v=12';
+import { episode } from './compose.js?v=14';
+import { poemOf } from './world.js?v=14';
 
 const E = episode({
   id: 's8', plaque: '鏡中真相',

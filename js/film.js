@@ -6,24 +6,28 @@
 //   the camera (core/camera.js)     for the shot
 // Nothing in here belongs to one story.
 import * as THREE from '../lib/three.module.min.js';
-import { buildSet, FOG, skyAt } from './sets.js?v=12';
-import { makeClock } from './core/time.js?v=12';
-import { EPISODES } from './story/index.js?v=12';
-import { FX } from './fx.js?v=12';
-import { createRuntime } from './core/runtime.js?v=12';
-import { buildActors } from './core/actors3d.js?v=12';
-import { loadHumans } from './models/human.js?v=12';
-import { createDirector } from './core/director.js?v=12';
-import { createCamera } from './core/camera.js?v=12';
-import { nameOf, CHARACTERS } from './cast/characters.js?v=12';
-import { seg } from './core/util.js?v=12';
-import * as score from './score.js?v=12';
+import { buildSet, FOG, skyAt } from './sets.js?v=14';
+import { makeClock } from './core/time.js?v=14';
+import { EPISODES } from './story/index.js?v=14';
+import { FX } from './fx.js?v=14';
+import { createRuntime } from './core/runtime.js?v=14';
+import { buildActors } from './core/actors3d.js?v=14';
+import { loadHumans } from './models/human.js?v=14';
+import { createDirector } from './core/director.js?v=14';
+import { createCamera } from './core/camera.js?v=14';
+import { createClearShot } from './core/clearShot.js?v=14';
+import { createLens } from './lens.js?v=14';
+import { LOOK } from './toon.js?v=14';
+import { nameOf, CHARACTERS } from './cast/characters.js?v=14';
+import { seg } from './core/util.js?v=14';
+import * as score from './score.js?v=14';
 
 const $ = (id) => document.getElementById(id);
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const params = new URLSearchParams(location.search);
 const EP = /^[a-z0-9]+$/.test(params.get('ep') || '') ? params.get('ep') : 'ep1';
-const story = (await import(`./story/${EP}.js?v=12`)).default, rt = createRuntime(story);
+const story = (await import(`./story/${EP}.js?v=14`)).default, rt = createRuntime(story);
+LOOK.real = !!story.look?.real; // a live-action look: real materials, a real lens
 const clock = makeClock({ ...story, warp: rt.warp }), LEN = clock.filmLen; // LEN: the film's length (slow motion and hit-stops included)
 let lang = params.get('lang') === 'en' ? 'en' : (() => { try { return localStorage.getItem('budaixi.lang') || 'zh'; } catch (e) { return 'zh'; } })();
 
@@ -49,11 +53,12 @@ const SET = buildSet(scene, story.set);
 const fx = new FX(scene);
 
 // ---------------------------------------------------------------- the story and its actors
-if (story.look?.style === 'anime') { try { await loadHumans(); } catch (e) { console.warn('no human bodies', e); } } // the series' bodies and their recorded motion
+if (story.look?.human || story.look?.style === 'anime') { try { await loadHumans(); } catch (e) { console.warn('no human bodies', e); } } // the series' bodies and their recorded motion
 const views = buildActors(scene, rt);
 for (const v of Object.values(views)) v.bake(); // footwork and springs, once for the whole film
 const director = createDirector({ scene, fx, rt, views });
-const cam = createCamera(story, rt, director.resolve);
+const cam = createCamera(story, rt, director.resolve), clear = createClearShot(scene, rt, cam);
+const lens = LOOK.real && !params.has('nolens') ? createLens(renderer, scene, camera) : null;
 // what each actor watches: whoever it was told to look at, else whoever it faces
 function watched(A, s) {
   const id = s.lookTo || A.face; const v = views[id]; if (!v || rt.state(id, s.t ?? 0).hidden) return null; // nobody watches what is not there
@@ -81,7 +86,7 @@ function frame(tf) {
   scene.fog.color.copy(sky.fog); for (const c of [fx.smoke, fx.glow]) c.uni.uFogC.value.copy(sky.fog);
   SET.update(t, sky);
   poseAll(t); talk(tf);
-  const c = debugCam ? debugCam(t) : cam.at(t);
+  const c = debugCam ? debugCam(t) : clear.at(t);
   const flashes = director.render(t, c.look);
   // light from the fires and the brightest flashes
   fireLights.forEach((l, i) => { l.intensity = 5 + Math.sin(t * 23 + i) * 1.2 + Math.sin(t * 37 + i) * 0.8; });
@@ -98,7 +103,7 @@ function frame(tf) {
   sun.target.position.copy(focus); sun.position.copy(focus).addScaledVector(sky.sun, 30);
   scene.userData.sky.position.copy(camera.position);
   fx.end(camera, renderer.domElement.height, FOG_NEAR, FOG_FAR);
-  renderer.render(scene, camera);
+  if (lens) lens.render(camera.position.distanceTo(c.look), c.fov, t); else renderer.render(scene, camera);
   overlays(t, sc.flash, tf);
 }
 
@@ -138,7 +143,7 @@ function layout() {
   let w = W, h = W / ar; if (h > Hh) { h = Hh; w = h * ar; }
   const f = $('frame'); f.style.width = w + 'px'; f.style.height = h + 'px'; f.style.left = (W - w) / 2 + 'px'; f.style.top = (Hh - h) / 2 + 'px';
   f.style.fontSize = Math.max(11, h / 30) + 'px';
-  renderer.setSize(w, h, false); canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  renderer.setSize(w, h, false); canvas.style.width = w + 'px'; canvas.style.height = h + 'px'; lens?.setSize(w, h);
   camera.aspect = w / h;
 }
 window.addEventListener('resize', () => { layout(); frame(state.t); });
@@ -199,7 +204,7 @@ if (params.has('play') && (navigator.userActivation?.hasBeenActive || new (windo
 if (state.t > 0) $('start').hidden = true;
 // for tests and screenshots
 window.FILM = {
-  score, scene, THREE, rt, views, story, LEN, state, clock,
+  score, scene, THREE, rt, views, story, LEN, state, clock, clear, camera,
   frame: (t) => { state.t = t; frame(t); bar(); },
   cam: (f) => { debugCam = f ? (t) => { const o = f(t, rt); return { pos: V(...o.pos), look: V(...o.look), fov: o.fov || 35, roll: 0 }; } : null; },
   setLang: (l) => { lang = l; texts(); },

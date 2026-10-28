@@ -5,7 +5,7 @@
 //   pose(s, t, a, W)    how it poses the actor (s.pose = the engine's pose parameters, plus s.jets, s.rod, s.hp, ...)
 //   cues(a, W)          what it sets off: effects and sounds, as timed cues (see core/runtime.js and core/director.js)
 // W gives the time-bound world: W.pos(id, t) another actor's place, W.T the story's beats, W.self the actor.
-import { cl, seg, ss, S, bump, imp, lerp, ease, shape, spline, H } from './util.js?v=12';
+import { cl, seg, ss, S, bump, imp, lerp, ease, shape, spline, H } from './util.js?v=14';
 
 const REST = { s: -0.5, e: -0.9 };
 const mixArm = (a, b, k) => ({ s: a.s + (b.s - a.s) * k, e: a.e + (b.e - a.e) * k });

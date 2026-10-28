@@ -8,8 +8,8 @@
 import * as THREE from '../../lib/three.module.min.js';
 import { GLTFLoader } from '../../lib/addons/GLTFLoader.js';
 import { clone as skClone } from '../../lib/addons/SkeletonUtils.js';
-import { buildPuppet, silkTex } from './puppet.js?v=12';
-import { TOON } from '../toon.js?v=12';
+import { buildPuppet, silkTex } from './puppet.js?v=14';
+import { shade } from '../toon.js?v=14';
 
 let LIB = null;
 export async function loadHumans(base = '') {
@@ -40,7 +40,7 @@ export function buildHuman(spec) {
   // ---------------------------------------------------------------- the body (all its parts): skin, trousers and boots by vertex colour; no head of its own
   const skin = new THREE.Color(P.look.skin.color), trou = new THREE.Color(R.skirtBase || R.base || '#2a2428'), boot = new THREE.Color(R.boots || '#18141a'), neck = bp('neck_01'), robeC = new THREE.Color(R.base || '#e8e8e8');
   const MP = [], MN = []; // the body's own surface, before anything is drawn in: for measuring the clothes
-  const bodyMat = new THREE.MeshToonMaterial({ gradientMap: TOON, vertexColors: true });
+  const bodyMat = shade({ vertexColors: true });
   for (const bm of bodies) {
     const geo = bm.geometry = bm.geometry.clone(), pos = geo.attributes.position, si = geo.attributes.skinIndex, sw = geo.attributes.skinWeight, bones = bm.skeleton.bones;
     const dom = (i) => { let m = 0, k = 0; for (let j = 0; j < 4; j++) { const w = sw.getComponent(i, j); if (w > m) { m = w; k = si.getComponent(i, j); } } return bones[k].name; };
