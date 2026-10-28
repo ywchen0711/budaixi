@@ -5,7 +5,7 @@
 // throws, leaps and landings, being hit, falling. Everything is worked out from the time alone, so any frame stands on
 // its own: the clips are set to their times and weights, and the mixer is applied, never run.
 import * as THREE from '../../lib/three.module.min.js';
-import { buildHuman, humanClips } from '../models/human.js?v=14';
+import { buildHuman, humanClips } from '../models/human.js?v=15';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const cl = (v, a = -1, b = 1) => Math.max(a, Math.min(b, v));

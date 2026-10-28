@@ -3,8 +3,8 @@
 // Netherworld's death out of Ling — and lets fall that Huiming went to the Mirror Lake before the council and was
 // never seen to come back. At dusk Ye Wuji comes for the old monk and meets the Seal of the Great Sun. That night,
 // Wuya — or someone wearing his face — kills the elder of the Void School in front of witnesses.
-import { episode } from './compose.js?v=14';
-import { poemOf } from './world.js?v=14';
+import { episode } from './compose.js?v=15';
+import { poemOf } from './world.js?v=15';
 
 const E = episode({
   id: 's5', plaque: '佛者一掌',

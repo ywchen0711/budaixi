@@ -8,8 +8,8 @@
 import * as THREE from '../../lib/three.module.min.js';
 import { GLTFLoader } from '../../lib/addons/GLTFLoader.js';
 import { clone as skClone } from '../../lib/addons/SkeletonUtils.js';
-import { buildPuppet, silkTex } from './puppet.js?v=14';
-import { shade } from '../toon.js?v=14';
+import { buildPuppet, silkTex } from './puppet.js?v=15';
+import { shade } from '../toon.js?v=15';
 
 let LIB = null;
 export async function loadHumans(base = '') {

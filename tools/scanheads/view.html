@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#222}</style>
+<script type="importmap">{"imports":{"three":"./three.module.js","three/addons/":"./jsm/"}}</script></head><body>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from '/conv/jsm/loaders/GLTFLoader.js';
+const q = new URLSearchParams(location.search);
+const W = 1200, H = 600, r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); r.setSize(W, H); document.body.appendChild(r.domElement);
+r.outputColorSpace = THREE.SRGBColorSpace; r.toneMapping = THREE.ACESFilmicToneMapping; r.setScissorTest(true);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#3a3530');
+scene.add(new THREE.HemisphereLight('#fff6ea', '#403028', 1.0)); const d = new THREE.DirectionalLight('#fff4e8', 2.6); d.position.set(1, 1.5, 2); scene.add(d);
+const g = await new GLTFLoader().loadAsync('/conv/' + (q.get('d') || 'out') + '/' + q.get('n') + '.glb'); const root = g.scene; scene.add(root);
+const hairTex = (() => { const c = document.createElement('canvas'); c.width = 512; c.height = 512; const x = c.getContext('2d'); x.fillStyle = '#211915'; x.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 2600; i++) { const px = Math.random() * 512, l = Math.random(); x.strokeStyle = `rgba(${50 + l * 70},${40 + l * 55},${34 + l * 46},${0.18 + Math.random() * 0.22})`; x.lineWidth = 1 + Math.random() * 2.2; x.beginPath(); x.moveTo(px, -10); x.bezierCurveTo(px + 10, 170, px - 10, 340, px + 4, 522); x.stroke(); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2, 1); t.anisotropy = 8; return t; })();
+const hairM = new THREE.MeshPhysicalMaterial({ map: hairTex, roughness: 0.5, sheen: 0.5, sheenColor: '#6a5e58', sheenRoughness: 0.35, transparent: true });
+hairM.onBeforeCompile = (sh) => { // the hairline: strands of different lengths, so the edge is soft
+  sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float _edge; varying float vEdge; varying vec2 vHU;').replace('#include <uv_vertex>', '#include <uv_vertex>\nvEdge = _edge; vHU = uv;');
+  sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vEdge; varying vec2 vHU; float hh(float x){ return fract(sin(x * 91.7) * 43758.5453); }')
+    .replace('#include <alphatest_fragment>', 'float strand = hh(floor(vHU.x * 900.0)); diffuseColor.a *= smoothstep(0.001, 0.006 + 0.003 * strand, vEdge);\n#include <alphatest_fragment>'); };
+let face = null; root.traverse((o) => { if (o.name === 'cap') o.material = hairM; if (o.name === 'face') face = o; });
+face.material.roughness = 0.5; if (q.get('nocap')) root.traverse((o) => { if (o.name === 'cap') o.visible = false; }); if (q.get('ds')) face.material.side = THREE.DoubleSide;
+for (const kv of (q.get('m') || '').split(',').filter(Boolean)) { const [k, v] = kv.split('='); root.traverse((o) => { if (o.morphTargetDictionary && o.morphTargetDictionary[k] != null) o.morphTargetInfluences[o.morphTargetDictionary[k]] = +v; }); }
+const cam = new THREE.PerspectiveCamera(22, 1, 0.05, 20);
+[[0, 0, 400], [0.7, 400, 400], [Math.PI, 800, 400]].forEach(([yaw, x, w]) => { cam.position.set(Math.sin(yaw) * 0.85, 0.11, Math.cos(yaw) * 0.85); cam.lookAt(0, 0.09, 0.02); r.setViewport(x, 0, w, 600); r.setScissor(x, 0, w, 600); cam.aspect = w / 600; cam.updateProjectionMatrix(); r.render(scene, cam); });
+window.DONE = true;
+</script></body></html>

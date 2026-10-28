@@ -6,7 +6,7 @@
 // and rain over a place for a stretch of time (set.rain = [{ at: [x, z], t: [t0, t1] }, ...]).
 // The ground where the actors stand is y = 0 at each of them.
 import * as THREE from '../lib/three.module.min.js';
-import { TOON, shade } from './toon.js?v=14';
+import { TOON, shade } from './toon.js?v=15';
 const mat = (o) => shade(o);
 export const HALL = new THREE.Vector3(600, 0, 0), LOTUS = new THREE.Vector3(900, 0, 0), TEMPLE = new THREE.Vector3(1200, 0, 0), ABYSS = new THREE.Vector3(1500, 0, 0);
 export const SKY2 = {

@@ -5,8 +5,8 @@
 //   cliff   a mountain top at x = 300: a plateau of rock over a sea of clouds, an old pine, peaks far off, the moon
 //   hall, lotus, temple, abyss (js/sets2.js) at x = 600, 900, 1200, 1500; and rain (set.rain)
 import * as THREE from '../lib/three.module.min.js';
-import { TOON, shade } from './toon.js?v=14';
-import { SETS2, SKY2 } from './sets2.js?v=14';
+import { TOON, shade } from './toon.js?v=15';
+import { SETS2, SKY2 } from './sets2.js?v=15';
 const mat = (o) => shade(o);
 
 export const FOG = '#1a2234';

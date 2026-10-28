@@ -11,9 +11,9 @@
 //   E.strike('luo', 'yin', { kind: 'wave', name: ['蓮華劍氣', 'Lotus Sword Light'], result: 'hit' });
 //   export default E.done();
 // Places are given in the location's own coordinates (its centre at 0, 0); angles in degrees.
-import { CHARACTERS } from '../cast/characters.js?v=14';
-import { bodyOf } from '../models/looks.js?v=14';
-import { MOVES } from './world.js?v=14';
+import { CHARACTERS } from '../cast/characters.js?v=15';
+import { bodyOf } from '../models/looks.js?v=15';
+import { MOVES } from './world.js?v=15';
 
 const LOC = {
   bamboo: { o: [0, 0], key: 'Dm', est: [[[-14, 1.8, 3], [-5, 1.3, 2]], [[6, 2.4, 0], [4, 1.4, 0]], 46], wide: [[-9, 2.2, 6], [2, 1.0, 0], 44], scenic: [[[-20, 1.2, -6], [-8, 1.4, -3]], [[4, 3.5, 2], [2, 4.5, 0]], 50] },

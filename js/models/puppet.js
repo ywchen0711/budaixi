@@ -6,8 +6,8 @@
 // spec (js/cast/characters.js): skin, face {brow, eye, lip, paint, mark}, hair {color, len, white}, crown {type, color,
 // gem}, robe {base, pattern, ink, trim, inner, sleeve}, cape, ribbons, weapons {R, L}, scale
 import * as THREE from '../../lib/three.module.min.js';
-import { TOON, shade } from '../toon.js?v=14';
-import { headLook, addHead, lockAt } from './heads.js?v=14';
+import { TOON, shade } from '../toon.js?v=15';
+import { headLook, addHead, lockAt } from './heads.js?v=15';
 
 const toon = (o) => shade(o);
 function canvasTex(w, h, paint) {
@@ -242,10 +242,10 @@ export function buildPuppet(spec0) {
   const LK = lockAt(look), segL = look.p.sculpt ? 0.06 : 0.12, lockN = Math.max(2, Math.round((H.lockLen || 0.24) / segL));
   const lockM = H.locks ? new THREE.MeshPhysicalMaterial({ map: strands(H.locks), roughness: 0.5, sheen: 0.6, sheenColor: '#ffffff', side: THREE.DoubleSide }) : M.hair;
   // each side lock can be several finer strands, a little apart and of different lengths, so it reads as hair
-  const NS = look.p.sculpt ? H.lockStrands || 1 : 1, forelocks = [];
+  const NS = look.scan ? Math.max(6, H.lockStrands || 1) : look.p.sculpt ? H.lockStrands || 1 : 1, forelocks = []; // a real face: fine strands, not a ribbon
   if (!H.none) for (const s of [-1, 1]) for (let j = 0; j < NS; j++) {
     const o = NS > 1 ? (j - (NS - 1) / 2) / (NS - 1) : 0, n = Math.max(2, lockN - (j % 2) * Math.round(lockN * 0.2));
-    forelocks.push(chain(head, s * (LK[0] + Math.abs(o) * 0.004), LK[1] - Math.abs(o) * 0.006, LK[2] + o * 0.026, n, segL, (H.lockW || 0.035) / Math.sqrt(NS), lockM, look.p.sculpt ? 0.95 : 0.9, look.p.sculpt ? 'tube' : 'flat'));
+    forelocks.push(chain(head, s * (LK[0] + Math.abs(o) * 0.004), LK[1] - Math.abs(o) * 0.006, LK[2] + o * 0.026, n, segL, (H.lockW || 0.035) * (look.scan ? 0.6 : 1) / Math.sqrt(NS), lockM, look.p.sculpt ? 0.95 : 0.9, look.p.sculpt ? 'tube' : 'flat'));
   }
   // long locks are laid forward over the front of the shoulders, so they hang down the chest, not through it
   // down beside the jaw to the shoulder, forward over it, then down the chest

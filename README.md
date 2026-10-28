@@ -64,6 +64,7 @@ To remake an episode's sound: `node tools/cues.mjs s1 > tools/cues_s1.json`, `py
 | `js/story/ep1.js` | **the episode**: its beats, the set and skies, the puppets' tracks of moves, camera shots, words, name cards, the music cue sheet |
 | `js/cast/characters.js` | **the cast**: names and titles, faces (eyes, brows, painted masks), hair, crowns, robes and their embroidery, weapons, voices |
 | `js/models/puppet.js` | the glove puppet: painted face, silk robe with pattern and trim, wide sleeves that hang on their own joint, skirt, hair, ribbons, cape, swords, sabres, daggers, claws |
+| `js/models/scan.js`, `models/heads/` | **real faces** for 天機策's live-action look: each character's head is cut from scanned, photo-textured people (Microsoft Rocketbox avatars, MIT licence, `models/heads/LICENSE-Rocketbox.md`), often two faces blended into a new one; the skin keeps its photo texture and normal map, the hair is recoloured and given a cap fitted to the skull, and the face's own blend shapes make the mouth shapes of speech, blink, smile and frown. Baked by `tools/scanheads` |
 | `js/core/actors3d.js` | poses the puppets: springs on every joint, follow-through in sleeves, hair, skirts and tassels, the puppeteer's bob, spins and flips, parries that reach for the blade |
 | `js/core/actions.js` | the move library: walk, glide, jump, drop, blow, react, qi (inner power), wave (a crescent of sword energy), palm, spin, flip, plunge, sever, fall… |
 | `js/core/director.js` | cues to effects: auras, sword trails, energy crescents, palm blasts, bursts of power, falling leaves, cut bamboo |
@@ -77,5 +78,5 @@ To remake the soundtrack:
     python tools/voices.py cues_ep1.json
     python -P tools/mix.py RAW KN VSCO VCSL cues_ep1.json
 
-All recordings are CC0: Kenney's impact and sci-fi sounds, Kaiju Night's designed effects, the Versilian Studios
+The faces: `tools/scanheads/README.md`. All recordings are CC0: Kenney's impact and sci-fi sounds, Kaiju Night's designed effects, the Versilian Studios
 Chamber Orchestra 2 and the Versilian Community Sample Library. Voices: Microsoft Edge neural voices (edge-tts).

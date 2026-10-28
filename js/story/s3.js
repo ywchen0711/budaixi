@@ -3,8 +3,8 @@
 // the Yin-Yang Gentleman appears with Yan Feishuang his prisoner: fight each other for my amusement, he says, or she
 // dies. They fight, and mean it — almost. Three moves in, both turn on him. Gu Hong cuts Yan free; the Gentleman
 // laughs and goes. Afterwards the two rivals take each other's measure. In the Netherworld a dead man opens his eyes.
-import { episode } from './compose.js?v=14';
-import { poemOf } from './world.js?v=14';
+import { episode } from './compose.js?v=15';
+import { poemOf } from './world.js?v=15';
 
 const E = episode({
   id: 's3', plaque: '陰陽一笑',

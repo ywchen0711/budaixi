@@ -4,8 +4,8 @@
 // death was his own, the red lotus cinnabar he planted, the blank book Qian Bu'er's work. Yin Jiuxiao shows his true
 // heart and falls. Then the sky over the Pavilion turns violet and the Netherworld Emperor himself comes up into the
 // world, and takes both halves away.
-import { episode } from './compose.js?v=14';
-import { poemOf } from './world.js?v=14';
+import { episode } from './compose.js?v=15';
+import { poemOf } from './world.js?v=15';
 
 const E = episode({
   id: 's9', plaque: '天機逆轉',

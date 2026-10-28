@@ -4,8 +4,8 @@
 // with his blade; Luo Wuchen comes down on a wind of lotus petals and proposes it be sealed by all three. The toast
 // is drunk — and Huiming falls dead, poisoned, the cup from Yan's own table. Everyone turns on her; Ling holds them off
 // while she gets away; only Luo sees that the poison was never in the wine. That night, by the body, a silver mask.
-import { episode } from './compose.js?v=14';
-import { poemOf } from './world.js?v=14';
+import { episode } from './compose.js?v=15';
+import { poemOf } from './world.js?v=15';
 
 const E = episode({
   id: 's1', plaque: '蓮出江湖',

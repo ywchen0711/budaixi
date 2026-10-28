@@ -1,0 +1,176 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"./three.module.js","three/addons/":"./jsm/"}}</script></head><body>
+<script type="module">
+// Cuts the head out of a Rocketbox avatar: the face (head material), the eyelashes, the morphs we use;
+// a hair cap fitted to the skull; textures repainted under the cap and shrunk. Result: a GLB, base64 in window.OUT.
+import * as THREE from 'three';
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+import { TGALoader } from 'three/addons/loaders/TGALoader.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+// welds vertices that share position, normal and uv (three's own mergeVertices drops morphs in r160)
+function mergeVertices(G, tol) {
+  const pa = G.attributes.position, names = Object.keys(G.attributes), key = new Map(), keep = [], remap = new Int32Array(pa.count), q = (v) => Math.round(v / tol);
+  for (let i = 0; i < pa.count; i++) { let k = ''; for (const n of names) { const a = G.attributes[n]; for (let c = 0; c < a.itemSize; c++) k += q(a.array[i * a.itemSize + c] * (n === 'position' ? 1 : 100)) + ','; }
+    if (!key.has(k)) { key.set(k, keep.length); keep.push(i); } remap[i] = key.get(k); }
+  const out = new THREE.BufferGeometry(), pick = (a) => { const r = new a.array.constructor(keep.length * a.itemSize); keep.forEach((i, j) => { for (let c = 0; c < a.itemSize; c++) r[j * a.itemSize + c] = a.array[i * a.itemSize + c]; }); return new THREE.BufferAttribute(r, a.itemSize, a.normalized); };
+  for (const n of names) out.setAttribute(n, pick(G.attributes[n]));
+  for (const n in G.morphAttributes) out.morphAttributes[n] = G.morphAttributes[n].map(pick);
+  out.morphTargetsRelative = G.morphTargetsRelative;
+  const ix = G.index ? Array.from(G.index.array) : Array.from({ length: pa.count }, (_, i) => i); out.setIndex(ix.map((i) => remap[i])); return out;
+}
+const q = new URLSearchParams(location.search), name = q.get('n'), id = q.get('id'), TS = +(q.get('ts') || 1024);
+const KEEP = ['AA_VI_01_PP', 'AA_VI_02_FF', 'AA_VI_03_TH', 'AA_VI_06_CH', 'AA_VI_07_SS', 'AA_VI_10_aa', 'AA_VI_11_E', 'AA_VI_12_I', 'AA_VI_13_O', 'AA_VI_14_U',
+  'AK_09_EyeBlinkLeft', 'AK_10_EyeBlinkRight', 'AK_44_MouthSmileLeft', 'AK_45_MouthSmileRight', 'AK_03_BrowInnerUp', 'AK_01_BrowDownLeft', 'AK_02_BrowDownRight',
+  'AK_30_MouthFrownLeft', 'AK_31_MouthFrownRight', 'AK_25_JawOpen', 'AK_19_EyeSquintLeft', 'AK_20_EyeSquintRight', 'AK_50_NoseSneerLeft', 'AK_51_NoseSneerRight'];
+const SHORT = { AA_VI_01_PP: 'PP', AA_VI_02_FF: 'FF', AA_VI_03_TH: 'TH', AA_VI_06_CH: 'CH', AA_VI_07_SS: 'SS', AA_VI_10_aa: 'aa', AA_VI_11_E: 'E', AA_VI_12_I: 'I', AA_VI_13_O: 'O', AA_VI_14_U: 'U',
+  AK_09_EyeBlinkLeft: 'blinkL', AK_10_EyeBlinkRight: 'blinkR', AK_44_MouthSmileLeft: 'smileL', AK_45_MouthSmileRight: 'smileR', AK_03_BrowInnerUp: 'browUp', AK_01_BrowDownLeft: 'browDownL', AK_02_BrowDownRight: 'browDownR',
+  AK_30_MouthFrownLeft: 'frownL', AK_31_MouthFrownRight: 'frownR', AK_25_JawOpen: 'jaw', AK_19_EyeSquintLeft: 'squintL', AK_20_EyeSquintRight: 'squintR', AK_50_NoseSneerLeft: 'sneerL', AK_51_NoseSneerRight: 'sneerR' };
+try {
+const obj = await new FBXLoader().loadAsync(`../fbx/${name}.fbx`); obj.updateMatrixWorld(true);
+let mesh = null; obj.traverse((o) => { if (o.isSkinnedMesh && o.morphTargetDictionary && (!mesh || o.geometry.attributes.position.count > mesh.geometry.attributes.position.count)) mesh = o; });
+const sk = mesh.skeleton, bw = (n) => sk.bones.find((b) => b.name === n).getWorldPosition(new THREE.Vector3());
+const headSet = new Set(); sk.bones.find((b) => b.name === 'Bip01_Head').traverse((b) => { if (b.isBone) headSet.add(sk.bones.indexOf(b)); });
+const H0 = bw('Bip01_Head'), eL = bw('Bip01_LEye'), eR = bw('Bip01_REye'), eyeY = (eL.y + eR.y) / 2, eyeZ = (eL.z + eR.z) / 2;
+const g = mesh.geometry, pos = g.attributes.position, uv = g.attributes.uv, si = g.attributes.skinIndex, sw = g.attributes.skinWeight, N = pos.count;
+const M = mesh.matrixWorld, R3 = new THREE.Matrix3().setFromMatrix4(M);
+const P = []; for (let i = 0; i < N; i++) P.push(new THREE.Vector3().fromBufferAttribute(pos, i).applyMatrix4(M));
+const hw = new Float32Array(N); for (let i = 0; i < N; i++) for (let j = 0; j < 4; j++) if (headSet.has(si.getComponent(i, j))) hw[i] += sw.getComponent(i, j);
+// ---- a blend with another face (same unwrap): its shape at each point of the skin found by the uv, its skin by the pixel
+const MIXN = q.get('mix') || null, MW = +(q.get('w') || 0.5); let mixCol = null, mixNor = null;
+if (MIXN) {
+  const o2 = await new FBXLoader().loadAsync(`../fbx/${MIXN}.fbx`); o2.updateMatrixWorld(true); let m2 = null; o2.traverse((o) => { if (o.isSkinnedMesh && o.morphTargetDictionary && (!m2 || o.geometry.attributes.position.count > m2.geometry.attributes.position.count)) m2 = o; });
+  const g2 = m2.geometry, p2 = g2.attributes.position, u2 = g2.attributes.uv, H2 = m2.skeleton.bones.find((b) => b.name === 'Bip01_Head').getWorldPosition(new THREE.Vector3());
+  const mats2 = (Array.isArray(m2.material) ? m2.material : [m2.material]).map((x) => x.name), isHead2 = new Uint8Array(p2.count), ix2 = g2.index ? g2.index.array : null;
+  for (const gr of g2.groups) if (/head/.test(mats2[gr.materialIndex])) for (let t = gr.start; t < gr.start + gr.count; t++) isHead2[ix2 ? ix2[t] : t] = 1;
+  const M2w = m2.matrixWorld, side2 = (i) => (new THREE.Vector3().fromBufferAttribute(p2, i).applyMatrix4(M2w).x - H2.x) > 0 ? 1 : 0;
+  const G = 256, grid = new Map(); for (let i = 0; i < p2.count; i++) if (isHead2[i]) { const k = side2(i) + ':' + Math.floor(u2.getX(i) * G) + ',' + Math.floor(u2.getY(i) * G); if (!grid.has(k)) grid.set(k, []); grid.get(k).push(i); }
+  const near = (u, v, sd) => { let best = -1, bd = 1e9; const cx = Math.floor(u * G), cy = Math.floor(v * G); for (let dx = -2; dx <= 2; dx++) for (let dy = -2; dy <= 2; dy++) for (const i of grid.get(sd + ':' + (cx + dx) + ',' + (cy + dy)) || []) { const d = (u2.getX(i) - u) ** 2 + (u2.getY(i) - v) ** 2; if (d < bd) { bd = d; best = i; } } return bd < (3 / G) ** 2 ? best : -1; };
+  const M2 = m2.matrixWorld; let hit = 0;
+  for (let i = 0; i < N; i++) { if (hw[i] <= 0.01) continue; const j = near(uv.getX(i), uv.getY(i), P[i].x - H0.x > 0 ? 1 : 0); if (j < 0) continue; hit++;
+    const b = new THREE.Vector3().fromBufferAttribute(p2, j).applyMatrix4(M2).sub(H2).add(H0); P[i].lerp(b, MW * Math.min(1, hw[i] * 1.5)); }
+  window.MIXHIT = hit;
+  const TLm = new TGALoader(); [mixCol, mixNor] = await Promise.all([TLm.loadAsync(`../tex/${MIXN}.tga`), TLm.loadAsync(`../nor/${MIXN}.tga`).catch(() => null)]);
+}
+const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+const kind = (gi) => { const n = mats[gi]?.name || ''; return /head/.test(n) ? 'head' : /opacity/.test(n) ? 'opac' : 'body'; };
+const idx = g.index ? g.index.array : Array.from({ length: N }, (_, i) => i);
+const faces = [], lash = [];
+for (const gr of g.groups) { const k = kind(gr.materialIndex); for (let t = gr.start; t < gr.start + gr.count; t += 3) { const a = idx[t], b = idx[t + 1], c = idx[t + 2];
+  if (k === 'head' && hw[a] > 0.35 && hw[b] > 0.35 && hw[c] > 0.35) faces.push([a, b, c]); else if (k === 'body' && hw[a] > 0.9 && hw[b] > 0.9 && hw[c] > 0.9) { window.BODYH = (window.BODYH || 0) + 1; }
+  else if (k === 'opac') { const m = P[a].clone().add(P[b]).add(P[c]).divideScalar(3); if (Math.min(m.distanceTo(eL), m.distanceTo(eR)) < 3.2 && m.y < eyeY + 1.6) lash.push([a, b, c]); } } }
+// below the jaw is the body's neck: cut the head off a little under the chin (and whatever collar or hood an avatar wore)
+{ let chinY = 1e9; for (const t of faces) for (const v of t) if (P[v].z > eyeZ - 2 && Math.abs(P[v].x - H0.x) < 3) chinY = Math.min(chinY, P[v].y);
+  const keep = faces.filter((t) => t.every((v) => P[v].y > chinY - 1.2)); faces.length = 0; faces.push(...keep); }
+// triangles wound the wrong way (hidden under the avatars' hair cards): turned to face out, as their normals do
+{ const nA = g.attributes.normal; let flipped = 0; for (const t of faces) { const [a, b, c] = t, n = new THREE.Vector3().subVectors(P[b], P[a]).cross(new THREE.Vector3().subVectors(P[c], P[a]));
+    const vn = new THREE.Vector3(); for (const v of t) vn.add(new THREE.Vector3().fromBufferAttribute(nA, v).applyMatrix3(R3)); if (n.dot(vn) < 0) { t[1] = c; t[2] = b; flipped++; } } window.FLIPPED = flipped; }
+// small holes in the scalp (the avatars hide them under their hair cards): found by position and filled with a fan
+{ const keyOf = new Map(), rep = new Map(), kk = (v) => { const p = P[v]; return Math.round(p.x * 6) + "," + Math.round(p.y * 6) + "," + Math.round(p.z * 6); };
+  for (const t of faces) for (const v of t) { const k = kk(v); if (!rep.has(k)) rep.set(k, v); keyOf.set(v, k); }
+  const cnt = new Map(); for (const t of faces) for (let e = 0; e < 3; e++) { const a = keyOf.get(t[e]), b = keyOf.get(t[(e + 1) % 3]); if (a === b) continue; const u = a < b ? a + '|' + b : b + '|' + a; cnt.set(u, (cnt.get(u) || 0) + 1); }
+  const next = new Map(); for (const t of faces) for (let e = 0; e < 3; e++) { const a = keyOf.get(t[e]), b = keyOf.get(t[(e + 1) % 3]); if (a === b) continue; const u = a < b ? a + '|' + b : b + '|' + a; if (cnt.get(u) === 1) next.set(b, a); }
+  const seen = new Set(); let filled = 0;
+  for (const st of next.keys()) { if (seen.has(st)) continue; const loop = []; let k = st; while (k && !seen.has(k)) { seen.add(k); loop.push(k); k = next.get(k); }
+    if (k !== st || loop.length < 3) continue; let per = 0; for (let i = 0; i < loop.length; i++) per += P[rep.get(loop[i])].distanceTo(P[rep.get(loop[(i + 1) % loop.length])]);
+    { const c = loop.reduce((acc, k2) => acc.add(P[rep.get(k2)]), new THREE.Vector3()).divideScalar(loop.length).sub(H0); (window.LOOPS = window.LOOPS || []).push([loop.length, +per.toFixed(1), c.toArray().map((x) => +x.toFixed(1))]); }
+    { const c = loop.reduce((acc, k2) => acc.add(P[rep.get(k2)]), new THREE.Vector3()).divideScalar(loop.length); if (Math.min(c.distanceTo(eL), c.distanceTo(eR)) < 3.5) continue; } // the eyes are open, not holes
+    if (per > 14) continue; for (let i = 1; i + 1 < loop.length; i++) faces.push([rep.get(loop[0]), rep.get(loop[i]), rep.get(loop[i + 1])]); filled++; }
+  window.FILLED = filled; }
+// a new mesh in the head bone's frame, in metres
+const S = 0.01, mk = (tris) => {
+  const map = new Map(), vp = [], vu = [], vn = [], ix = []; for (const t of tris) for (const v of t) { if (!map.has(v)) { map.set(v, map.size); const p = P[v].clone().sub(H0).multiplyScalar(S); vp.push(p.x, p.y, p.z); vu.push(uv.getX(v), uv.getY(v)); const n = new THREE.Vector3().fromBufferAttribute(g.attributes.normal, v).applyMatrix3(R3).normalize(); vn.push(n.x, n.y, n.z); } ix.push(map.get(v)); }
+  const G = new THREE.BufferGeometry(); G.setAttribute('position', new THREE.Float32BufferAttribute(vp, 3)); G.setAttribute('uv', new THREE.Float32BufferAttribute(vu, 2)); G.setAttribute('normal', new THREE.Float32BufferAttribute(vn, 3)); G.setIndex(ix);
+  return { G, map };
+};
+const F = mk(faces), Lm = mk(lash);
+// the morphs, for the face and the lashes (blinks move the lashes)
+const dict = mesh.morphTargetDictionary, mA = g.morphAttributes.position;
+for (const part of [F, Lm]) { const arr = [], names = []; for (const k of KEEP) { const key = Object.keys(dict).find((x) => x.endsWith('.' + k) || x === k); if (key == null) continue; const src = mA[dict[key]], d = new Float32Array(part.map.size * 3);
+  for (const [v, j] of part.map) { const t = new THREE.Vector3().fromBufferAttribute(src, v).applyMatrix3(R3).multiplyScalar(S); d.set([t.x, t.y, t.z], j * 3); }
+  arr.push(new THREE.Float32BufferAttribute(d, 3)); names.push(SHORT[k]); }
+  part.G.morphAttributes.position = arr; part.G.morphTargetsRelative = true; part.names = names; if (part.map.size) part.G = mergeVertices(part.G, 1e-5); }
+// ---- the hair cap: the scalp, from the hairline up and back, lifted off the skin
+const rel = (p) => ({ y: (p.y - eyeY) * S, z: (p.z - eyeZ) * S, x: (p.x - H0.x) * S });
+const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+const mix = (a, b, t) => a + (b - a) * t;
+const TL0 = new TGALoader(), colT = await TL0.loadAsync(`../tex/${name}.tga`), CD = colT.image.data, CW = colT.image.width, CH = colT.image.height;
+const texAt = (v) => { const u = uv.getX(v), w = uv.getY(v), px = Math.min(CW - 3, Math.max(2, Math.round(u * CW))), py = Math.min(CH - 3, Math.max(2, Math.round((q.get('flip') ? 1 - w : w) * CH))); const ss = [];
+  for (let dy = -12; dy <= 12; dy += 4) for (let dx = -12; dx <= 12; dx += 4) { const k = ((py + dy) * CW + px + dx) * 4; ss.push([CD[k] / 255, CD[k + 1] / 255, CD[k + 2] / 255]); } ss.sort((a, b) => a[0] + a[1] + a[2] - b[0] - b[1] - b[2]); return ss[ss.length >> 1]; };
+const hairline = (r) => { // how high the hair starts: the forehead in front, up over the ears at the sides, down to the nape behind
+  const ax = Math.abs(r.x), front = 0.066 - 0.022 * sm(0.02, 0.062, ax), side = sm(0.05, 0.07, ax);
+  const t1 = sm(-0.025, -0.06, r.z), t2 = sm(-0.105, -0.135, r.z);
+  const hc = mix(front, -0.085, sm(-0.02, -0.13, r.z)), hs = mix(mix(front, 0.024, t1), -0.085, t2);
+  return mix(hc, hs, side); };
+const dh0 = (v) => { const r = rel(P[v]); return r.y - hairline(r); };
+// the skin's own colour: the middle of the face below the hairline
+const skinC = (() => { const cs = []; for (const t of faces) { const v = t[0], r = rel(P[v]); if (r.z > -0.02 && r.y < 0.0 && r.y > -0.07 && Math.abs(r.x) > 0.02 && Math.abs(r.x) < 0.05) cs.push(texAt(v)); } const med = (k) => cs.map((c) => c[k]).sort((a, b) => a - b)[cs.length >> 1]; return [med(0), med(1), med(2)]; })();
+const lum = (c) => 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2];
+// how much a vertex looks like the old hair (darker than the skin, or another colour): -1 skin .. +1 hair; only above the brows and away from the face
+const hairness = (v) => { const r = rel(P[v]); if (r.y < -0.09 || (r.z > -0.035 && r.y < 0.045)) return -1; const c = texAt(v), Ls = lum(skinC), L = lum(c); return Math.max(-1, Math.min(1, (0.6 * Ls - L) / (0.12 * Ls))); };
+// the hair: a smooth line on the skull (never over the ears), the triangles cut exactly along it
+const isEar = (r) => Math.abs(r.x) > 0.058 && r.z < -0.035 && r.z > -0.115 && r.y < 0.028 && r.y > -0.06;
+// the new hair goes where the old hair was painted (never over the ears or the face)
+const allowed = (r) => !isEar(r) && (r.y > 0.032 || r.z < -0.045 || (Math.abs(r.x) > 0.052 && r.y > -0.035 && r.z < -0.01));
+const side = []; for (const t of faces) for (const v of t) { const ax = Math.abs(P[v].x - H0.x) * S; if (ax > 0.006 && ax < 0.025) side.push(v); }
+const beside = (v) => { let best = v, bd = 1e9; for (const u of side) { const d = (P[u].y - P[v].y) ** 2 + (P[u].z - P[v].z) ** 2 + 0.2 * (Math.abs(P[u].x - H0.x) - 1.2) ** 2; if (d < bd) { bd = d; best = u; } } return best; };
+const HM = new Map(); const dhOf = (v) => { if (HM.has(v)) return HM.get(v); const r = rel(P[v]); const w = Math.abs(r.x) < 0.006 ? beside(v) : v; const d = allowed(r) ? hairness(w) * 0.01 : -0.01; HM.set(v, d); return d; };
+const capP = [], capE = []; // positions (head frame, m) and the distance in from the hairline
+const hp = (v) => P[v].clone().sub(H0).multiplyScalar(S);
+for (const t of faces) { const f = t.map(dhOf); if (f.every((x) => x <= 0)) continue; const pts = [];
+  for (let k = 0; k < 3; k++) { const a = t[k], b = t[(k + 1) % 3], fa = f[k], fb = f[(k + 1) % 3];
+    if (fa > 0) pts.push([hp(a), fa]);
+    if ((fa > 0) !== (fb > 0)) { const u = fa / (fa - fb); pts.push([hp(a).lerp(hp(b), u), 0]); } }
+  for (let k = 1; k + 1 < pts.length; k++) for (const [p0, e] of [pts[0], pts[k], pts[k + 1]]) { capP.push(p0.x, p0.y, p0.z); capE.push(e); } }
+const C = { G: new THREE.BufferGeometry() }; C.G.setAttribute('position', new THREE.Float32BufferAttribute(capP, 3)); C.G.setAttribute('_edge', new THREE.Float32BufferAttribute(capE, 1));
+{ C.G = mergeVertices(C.G, 2e-4); C.G.computeVertexNormals(); const cp = C.G.attributes.position, nrm = C.G.attributes.normal, ed = C.G.attributes._edge, n = cp.count, uvs = new Float32Array(n * 2);
+  const c0 = (eyeY - H0.y) * S + 0.02; // the centre the strands comb back around
+  for (let j = 0; j < n; j++) { const lift = 0.0005 + 0.007 * sm(0.0, 0.01, ed.getX(j)); cp.setXYZ(j, cp.getX(j) + nrm.getX(j) * lift, cp.getY(j) + nrm.getY(j) * lift, cp.getZ(j) + nrm.getZ(j) * lift);
+    const x = cp.getX(j), y = cp.getY(j) - c0, z = cp.getZ(j); uvs[j * 2] = 0.5 + Math.atan2(x, Math.hypot(y, z)) / Math.PI; uvs[j * 2 + 1] = Math.atan2(-z, y) / Math.PI * 0.5 + 0.5; }
+  C.G.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2)); C.G.computeVertexNormals(); }
+const capT = faces.filter((t) => t.some((v) => dhOf(v) > -0.012) || t.some((v) => hairness(v) > 0));
+const inHair = (v) => dhOf(v) > 0.006;
+// ---- textures: the face, with the old hair under the cap painted over in a dark scalp colour; the normal map
+const TL = TL0; const load = async (n) => { try { return await TL.loadAsync(`../${n}`); } catch (e) { return null; } };
+const [col, nor] = await Promise.all([load(`tex/${name}.tga`), load(`nor/${name}.tga`)]);
+const toCanvas = (t, paint, other) => { const im = t.image, c = document.createElement('canvas'); c.width = c.height = TS; const x = c.getContext('2d');
+  const src = document.createElement('canvas'); src.width = im.width; src.height = im.height; const sx = src.getContext('2d'); const id0 = sx.createImageData(im.width, im.height);
+  for (let i = 0; i < im.data.length / 4; i++) { id0.data[i * 4] = im.data[i * 4]; id0.data[i * 4 + 1] = im.data[i * 4 + 1]; id0.data[i * 4 + 2] = im.data[i * 4 + 2]; id0.data[i * 4 + 3] = 255; }
+  sx.putImageData(id0, 0, 0); x.drawImage(src, 0, 0, TS, TS);
+  if (other) { const im2 = other.image, s2 = document.createElement('canvas'); s2.width = im2.width; s2.height = im2.height; const x2 = s2.getContext('2d'), d2 = x2.createImageData(im2.width, im2.height);
+    for (let i = 0; i < im2.data.length / 4; i++) { d2.data[i * 4] = im2.data[i * 4]; d2.data[i * 4 + 1] = im2.data[i * 4 + 1]; d2.data[i * 4 + 2] = im2.data[i * 4 + 2]; d2.data[i * 4 + 3] = 255; }
+    x2.putImageData(d2, 0, 0); x.globalAlpha = MW; x.drawImage(s2, 0, 0, TS, TS); x.globalAlpha = 1; }
+  paint?.(x); return c; };
+const scalp = q.get('scalp') || '#1a1412';
+const hex = (c) => '#' + c.map((v) => Math.round(Math.min(1, v) * 255).toString(16).padStart(2, '0')).join('');
+const hairRGB = (q.get('hair') || '1c1614').match(/../g).map((h) => parseInt(h, 16));
+const colC = toCanvas(col, (x) => {
+  // the painted hair takes the character's colour (only in the hair's region: never the brows, the eyes, the face)
+  const reg = document.createElement('canvas'); reg.width = reg.height = TS; const rx = reg.getContext('2d'); rx.fillStyle = rx.strokeStyle = '#fff'; rx.lineWidth = 3;
+  for (const t of faces) { if (!t.every((v) => allowed(rel(P[v])))) continue; rx.beginPath(); t.forEach((v, k) => { const u = uv.getX(v) * TS, w = (q.get('flip') ? 1 - uv.getY(v) : uv.getY(v)) * TS; k ? rx.lineTo(u, w) : rx.moveTo(u, w); }); rx.closePath(); rx.fill(); rx.stroke(); }
+  const M = rx.getImageData(0, 0, TS, TS).data, im = x.getImageData(0, 0, TS, TS), d = im.data, sk = skinC.map((c) => c * 255), sl = lum(skinC) * 255;
+  const W8 = new Float32Array(TS * TS); for (let i = 0; i < TS * TS; i++) { if (!M[i * 4]) continue; const r = d[i * 4], g2 = d[i * 4 + 1], b2 = d[i * 4 + 2], L = 0.3 * r + 0.59 * g2 + 0.11 * b2;
+    W8[i] = Math.max(0, Math.min(1, (0.66 * sl - L) / (0.2 * sl))); }
+  { const tmp = new Float32Array(TS * TS), R = 5; for (let pass = 0; pass < 2; pass++) { const a = pass ? tmp : W8, o = pass ? W8 : tmp; for (let y = 0; y < TS; y++) { let acc = 0; for (let x0 = -R; x0 < TS + R; x0++) { const xi = x0 + R, xo = x0 - R - 1; if (xi < TS && xi >= 0) acc += a[pass ? xi * TS + y : y * TS + xi]; if (xo >= 0 && xo < TS) acc -= a[pass ? xo * TS + y : y * TS + xo]; if (x0 >= 0 && x0 < TS) o[pass ? x0 * TS + y : y * TS + x0] = acc / (2 * R + 1); } } } }
+  for (let i = 0; i < TS * TS; i++) { const w = W8[i]; if (w <= 0) continue; const L = (0.3 * d[i * 4] + 0.59 * d[i * 4 + 1] + 0.11 * d[i * 4 + 2]) / 255, k = 0.55 + 1.1 * L;
+    if (q.get('bald')) { const gr = 0.93 + 0.1 * ((i * 2654435761 >>> 0) % 1000) / 1000; for (let c = 0; c < 3; c++) d[i * 4 + c] = d[i * 4 + c] * (1 - w) + sk[c] * 0.99 * gr * w; } else for (let c = 0; c < 3; c++) d[i * 4 + c] = d[i * 4 + c] * (1 - w) + Math.min(255, hairRGB[c] * k) * w; }
+  x.putImageData(im, 0, 0); }, mixCol);
+const norC = nor ? toCanvas(nor, null, mixNor) : null;
+const tex = (c, srgb) => { const t = new THREE.CanvasTexture(c); t.flipY = false; t.userData.mimeType = 'image/jpeg'; t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace; return t; };
+// flipY false on export: gltf uv origin is top-left; our canvas is drawn upright, so flip the uvs
+if (q.get('flip')) for (const part of [F, Lm]) { const u = part.G.attributes.uv; for (let i = 0; i < u.count; i++) u.setY(i, 1 - u.getY(i)); }
+const faceM = new THREE.MeshStandardMaterial({ name: 'face', map: tex(colC, 1), normalMap: norC ? tex(norC) : null, roughness: 0.55 });
+const lashTexC = toCanvas(await load(`opa/${name}.tga`) || col);
+const lashM = new THREE.MeshStandardMaterial({ name: 'lash', color: '#000000', roughness: 0.8, transparent: true, opacity: 0.85 });
+const root = new THREE.Group(); root.name = 'scanhead';
+const mF = new THREE.Mesh(F.G, faceM); mF.name = 'face'; mF.morphTargetInfluences = F.names.map(() => 0); mF.morphTargetDictionary = Object.fromEntries(F.names.map((n, i) => [n, i])); root.add(mF);
+if (false && lash.length) { const mL = new THREE.Mesh(Lm.G, lashM); mL.name = 'lash'; mL.morphTargetInfluences = Lm.names.map(() => 0); mL.morphTargetDictionary = Object.fromEntries(Lm.names.map((n, i) => [n, i])); root.add(mL); }
+if (!q.get('bald')) { const mC = new THREE.Mesh(C.G, new THREE.MeshStandardMaterial({ name: 'cap' })); mC.name = 'cap'; root.add(mC); }
+// landmarks in the head frame
+const all = F.G.attributes.position; let minY = 1e9, maxY = -1e9, maxZ = -1e9; for (let i = 0; i < all.count; i++) { minY = Math.min(minY, all.getY(i)); maxY = Math.max(maxY, all.getY(i)); maxZ = Math.max(maxZ, all.getZ(i)); }
+root.userData = { chin: minY, crown: maxY, nose: maxZ, eyeL: eL.clone().sub(H0).multiplyScalar(S).toArray(), eyeR: eR.clone().sub(H0).multiplyScalar(S).toArray(), mouth: bw('Bip01_MUpperLip').sub(H0).multiplyScalar(S).toArray(), id, name, morphs: F.names, skin: '#' + skinC.map((v) => Math.round(Math.min(1, v * 1.04) * 255).toString(16).padStart(2, '0')).join(''), bald: !!q.get('bald') };
+const glb = await new GLTFExporter().parseAsync(root, { binary: true });
+const b = new Uint8Array(glb); let s = ''; for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000));
+window.OUT = btoa(s); window.STATS = { flipped: window.FLIPPED, filled: window.FILLED, faces: faces.length, lash: lash.length, cap: capT.length, verts: F.map.size, morphs: F.names.length, ud: root.userData };
+} catch (e) { window.ERR = e.stack; }
+window.DONE = true;
+</script></body></html>

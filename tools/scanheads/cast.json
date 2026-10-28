@@ -1,0 +1,110 @@
+{
+ "ling": {
+  "base": "Business_Male_02",
+  "mix": "Medical_Female_01",
+  "w": 0.3,
+  "hair": "#e8ecf4"
+ },
+ "yan": {
+  "base": "Medical_Female_01",
+  "hair": "#141014"
+ },
+ "ye": {
+  "base": "Male_Adult_09",
+  "mix": "Male_Adult_06",
+  "w": 0.25,
+  "hair": "#0a0608"
+ },
+ "envoy": {
+  "base": "Male_Adult_10",
+  "hair": "#0a0a0c"
+ },
+ "wanderer": {
+  "base": "Male_Adult_10",
+  "mix": "Male_Adult_09",
+  "w": 0.4,
+  "hair": "#141012"
+ },
+ "lady": {
+  "base": "Female_Adult_11",
+  "hair": "#0c0a0c"
+ },
+ "luo": {
+  "base": "Male_Adult_09",
+  "mix": "Female_Adult_11",
+  "w": 0.25,
+  "hair": "#1e2a28"
+ },
+ "wuya": {
+  "base": "Business_Male_02",
+  "mix": "Male_Adult_10",
+  "w": 0.5,
+  "bald": true
+ },
+ "guhong": {
+  "base": "Male_Adult_09",
+  "mix": "Male_Adult_10",
+  "w": 0.5,
+  "hair": "#08080c"
+ },
+ "wei": {
+  "base": "Male_Adult_10",
+  "mix": "Male_Adult_15",
+  "w": 0.3,
+  "hair": "#2a0a10"
+ },
+ "qian": {
+  "base": "Male_Adult_10",
+  "mix": "Business_Male_06",
+  "w": 0.3,
+  "hair": "#1a1410"
+ },
+ "yin": {
+  "base": "Business_Male_02",
+  "mix": "Female_Adult_11",
+  "w": 0.3,
+  "hair": "#0a0a12"
+ },
+ "baihe": {
+  "base": "Business_Male_02",
+  "mix": "Business_Male_07",
+  "w": 0.25,
+  "hair": "#ecece8"
+ },
+ "jingwang": {
+  "base": "Male_Adult_09",
+  "mix": "Business_Male_02",
+  "w": 0.5,
+  "hair": "#c8ccd8"
+ },
+ "huiming": {
+  "base": "Business_Male_02",
+  "mix": "Medical_Female_01",
+  "w": 0.35,
+  "bald": true
+ },
+ "yinyang": {
+  "base": "Business_Male_02",
+  "mix": "Business_Female_03",
+  "w": 0.4,
+  "hair": "#f0f0f0"
+ },
+ "youming": {
+  "base": "Male_Adult_10",
+  "mix": "Male_Adult_06",
+  "w": 0.35,
+  "hair": "#2a1040"
+ },
+ "yue": {
+  "base": "Sports_Female_02",
+  "mix": "Medical_Female_01",
+  "w": 0.3,
+  "hair": "#0c0a10"
+ },
+ "elder": {
+  "base": "Business_Male_02",
+  "mix": "Construction_Male_01",
+  "w": 0.45,
+  "hair": "#c8c8c0"
+ }
+}

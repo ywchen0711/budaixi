@@ -3,8 +3,8 @@
 // Gu Hong holds the broken bridge against the Blood Lotus, and does not look back. Luo meets the fan, then the mirror;
 // then the palm of the Netherworld takes him from behind, and he goes into the water, and the white lotus turns red.
 // At dawn they mourn him. Yan opens his letter: give the manual to Yin Jiuxiao. Trust me. And she does.
-import { episode } from './compose.js?v=14';
-import { poemOf } from './world.js?v=14';
+import { episode } from './compose.js?v=15';
+import { poemOf } from './world.js?v=15';
 
 const E = episode({
   id: 's7', plaque: '蓮君之死',

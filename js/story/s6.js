@@ -4,7 +4,7 @@
 // into Yin Jiuxiao's hand. That night the Pavilion's master and the Mirror King plan Luo's death; Qian Bu'er hears it
 // all, and sneezes. Luo comes calling for tea, and walks out with him. At the lotus pond: "They want my life. Let
 // them have it."
-import { episode } from './compose.js?v=14';
+import { episode } from './compose.js?v=15';
 
 const E = episode({
   id: 's6', plaque: '借刀殺人',

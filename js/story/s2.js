@@ -3,8 +3,8 @@
 // paid twice. The envoys close in; then, out of the rain, Gu Hong, who never speaks, and his single line of a sword.
 // At the Lotus Heart Retreat Luo Wuchen tells them what the manual really is, and what he saw on Huiming's body. In the
 // Pavilion, Yin Jiuxiao and the Mirror King make their bargain. In the bamboo, Gu Hong has a word with Qian.
-import { episode } from './compose.js?v=14';
-import { poemOf } from './world.js?v=14';
+import { episode } from './compose.js?v=15';
+import { poemOf } from './world.js?v=15';
 
 const E = episode({
   id: 's2', plaque: '啞劍孤鴻',

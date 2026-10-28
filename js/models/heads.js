@@ -5,7 +5,8 @@
 //   headLook(spec) -> materials (skin, face, hair) for buildPuppet; addHead(head, spec, look) builds it on the neck
 // The style: spec.style, else ?style= in the address, else DEFAULT_STYLE. styles.html shows them side by side.
 import * as THREE from '../../lib/three.module.min.js';
-import { TOON, shade, LOOK } from '../toon.js?v=14';
+import { TOON, shade, LOOK } from '../toon.js?v=15';
+import { hasScan, scanInfo, scanHead, hairMaterial } from './scan.js?v=15';
 
 export const STYLES = {
   paper: { zh: '原本的樣子', en: 'As it was', about: { zh: '畫在球上的臉，色塊明暗', en: 'a face painted on a ball, toon bands' } },
@@ -411,12 +412,20 @@ function irisTex(F) {
 }
 
 // ---------------------------------------------------------------- materials, then the head
+const SCAN_PITCH = -0.3;
+const mkSkin = (c) => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.55, sheen: 0.35, sheenColor: '#ff9078', sheenRoughness: 0.55 });
 export function headLook(spec) {
   const style = styleOf(spec), p00 = P[style], fem = spec.face?.fem, male = spec.face?.male;
   // a man's face: a heavier brow, a stronger nose, a wider jaw, a squarer chin
   const p0 = male && p00.sculpt ? { ...p00, brow: (p00.brow ?? 1) * 1.5, nose: (p00.nose ?? 1) * 1.08, jawW: (p00.jawW ?? 1) * 1.06, chin: (p00.chin ?? 1) * 1.35, chinPoint: (p00.chinPoint ?? 1) * 0.85, socket: (p00.socket ?? 1) * 1.15, eyeK: (p00.eyeK ?? 1) * 0.96 } : p00;
   const pS = p0.sculpt && (spec.faceShape || spec.lod) ? { ...p0, ...(spec.faceShape || {}), lod: !!spec.lod } : p0;
   const p = fem && pS.sculpt ? { ...pS, nose: (pS.nose ?? 1) * 0.82, brow: (pS.brow ?? 1) * 0.4, jawW: (pS.jawW ?? 1) * 0.9, chin: (pS.chin ?? 1) * 0.7, chinPoint: (pS.chinPoint ?? 1) * 1.05, mouthW: (pS.mouthW ?? 1) * 0.9, eyeK: (pS.eyeK ?? 1) * 1.05 } : pS;
+  // a real face (js/models/scan.js), if the character has one baked and the film is in the live-action look
+  const scan = LOOK.real && p.sculpt && spec.scanId && hasScan(spec.scanId) ? spec.scanId : null;
+  if (scan) {
+    const hairCol = spec.hair?.color || '#101014', skin = mkSkin(new THREE.Color(scanInfo(scan).skin || '#e8c8b0').multiply(new THREE.Color(1.18, 1.14, 1.12)).lerp(new THREE.Color('#d8c0b0'), 0.25));
+    return { style, p, scan, skin, face: skin, hair: hairMaterial(hairCol) };
+  }
   const face = p.sculpt ? makeUp(spec, style, p) : paintOld(spec, style);
   const skinCol = skinOf(spec, style);
   const toonM = (o) => shade(o);
@@ -450,6 +459,18 @@ export function addHead(head, spec, look, mesh) {
     mesh(head, new THREE.SphereGeometry(R0, 32, 20), look.face, 0, 0.14, 0).scale.set(0.95, 1.15, 1.0);
     mesh(head, new THREE.SphereGeometry(0.143, 24, 14, Math.PI * 0.62, Math.PI * 1.76, 0, Math.PI * 0.62), look.hair, 0, 0.15, -0.004).scale.set(0.97, 1.13, 1.04);
     for (const s of [-1, 1]) mesh(head, new THREE.SphereGeometry(0.03, 8, 6), look.skin, s * 0.128, 0.13, -0.005).scale.set(0.4, 1, 0.7);
+    return;
+  }
+  if (look.scan) { // the real face, sized and placed to fill the same head: chin to crown, and as far forward
+    const S = scanHead(look.scan, spec.hair?.color || '#101014'), ud = S.ud, g = sculptGeo(p); g.computeBoundingBox(); const bb = g.boundingBox; g.dispose();
+    const k = (bb.max.y - bb.min.y) / (ud.crown - ud.chin) * 0.97; S.group.scale.setScalar(k);
+    const tune = (() => { try { const q = new URLSearchParams(location.search); return { p: +(q.get('hp') ?? 0), z: +(q.get('hz') ?? 0), y: +(q.get('hy') ?? 0) }; } catch (e) { return { p: 0, z: 0, y: 0 }; } })();
+    // the avatars' heads lean forward on their bones: stood up straight, then measured again
+    S.group.rotation.x = SCAN_PITCH + tune.p; S.group.scale.setScalar(k); S.group.updateMatrixWorld(true);
+    const fb = new THREE.Box3().setFromObject(S.face, true);
+    S.group.position.set(0, 0.14 + bb.min.y - fb.min.y + 0.004 + tune.y, bb.max.z - fb.max.z - 0.006 + tune.z); head.add(S.group);
+    mesh(head, new THREE.CylinderGeometry(0.046, 0.056, 0.13, 20, 1, true), look.skin, 0, 0.035, -0.014); // the neck, up under the jaw
+    look.mouth = S.mouth; look.mood = S.mood; look.real = S;
     return;
   }
   look.face.map.wrapS = look.face.map.wrapT = THREE.ClampToEdgeWrapping;

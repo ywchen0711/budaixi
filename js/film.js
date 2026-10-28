@@ -6,27 +6,28 @@
 //   the camera (core/camera.js)     for the shot
 // Nothing in here belongs to one story.
 import * as THREE from '../lib/three.module.min.js';
-import { buildSet, FOG, skyAt } from './sets.js?v=14';
-import { makeClock } from './core/time.js?v=14';
-import { EPISODES } from './story/index.js?v=14';
-import { FX } from './fx.js?v=14';
-import { createRuntime } from './core/runtime.js?v=14';
-import { buildActors } from './core/actors3d.js?v=14';
-import { loadHumans } from './models/human.js?v=14';
-import { createDirector } from './core/director.js?v=14';
-import { createCamera } from './core/camera.js?v=14';
-import { createClearShot } from './core/clearShot.js?v=14';
-import { createLens } from './lens.js?v=14';
-import { LOOK } from './toon.js?v=14';
-import { nameOf, CHARACTERS } from './cast/characters.js?v=14';
-import { seg } from './core/util.js?v=14';
-import * as score from './score.js?v=14';
+import { buildSet, FOG, skyAt } from './sets.js?v=15';
+import { makeClock } from './core/time.js?v=15';
+import { EPISODES } from './story/index.js?v=15';
+import { FX } from './fx.js?v=15';
+import { createRuntime } from './core/runtime.js?v=15';
+import { buildActors } from './core/actors3d.js?v=15';
+import { loadHumans } from './models/human.js?v=15';
+import { loadScans } from './models/scan.js?v=15';
+import { createDirector } from './core/director.js?v=15';
+import { createCamera } from './core/camera.js?v=15';
+import { createClearShot } from './core/clearShot.js?v=15';
+import { createLens } from './lens.js?v=15';
+import { LOOK } from './toon.js?v=15';
+import { nameOf, CHARACTERS } from './cast/characters.js?v=15';
+import { seg } from './core/util.js?v=15';
+import * as score from './score.js?v=15';
 
 const $ = (id) => document.getElementById(id);
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const params = new URLSearchParams(location.search);
 const EP = /^[a-z0-9]+$/.test(params.get('ep') || '') ? params.get('ep') : 'ep1';
-const story = (await import(`./story/${EP}.js?v=14`)).default, rt = createRuntime(story);
+const story = (await import(`./story/${EP}.js?v=15`)).default, rt = createRuntime(story);
 LOOK.real = !!story.look?.real; // a live-action look: real materials, a real lens
 const clock = makeClock({ ...story, warp: rt.warp }), LEN = clock.filmLen; // LEN: the film's length (slow motion and hit-stops included)
 let lang = params.get('lang') === 'en' ? 'en' : (() => { try { return localStorage.getItem('budaixi.lang') || 'zh'; } catch (e) { return 'zh'; } })();
@@ -54,6 +55,7 @@ const fx = new FX(scene);
 
 // ---------------------------------------------------------------- the story and its actors
 if (story.look?.human || story.look?.style === 'anime') { try { await loadHumans(); } catch (e) { console.warn('no human bodies', e); } } // the series' bodies and their recorded motion
+if (LOOK.real && !params.has('noscan')) await loadScans([...new Set(story.actors.map((A) => A.who))]); // the real faces, for those who have one
 const views = buildActors(scene, rt);
 for (const v of Object.values(views)) v.bake(); // footwork and springs, once for the whole film
 const director = createDirector({ scene, fx, rt, views });

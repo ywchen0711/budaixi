@@ -4,7 +4,7 @@
 // Three Teachings and Luo Wuchen meet the Emperor, and his Netherworld Ends the World throws them down — until the
 // Yin-Yang Gentleman, as he promised, steps onto whichever side is more fun to watch. Moonlight, Buddha light, sword
 // light and lotus light together seal the Emperor away. Dawn over the clouds; Luo burns the Stratagem.
-import { episode } from './compose.js?v=14';
+import { episode } from './compose.js?v=15';
 
 const E = episode({
   id: 's10', plaque: '萬劍歸蓮',

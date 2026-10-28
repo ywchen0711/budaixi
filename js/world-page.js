@@ -1,10 +1,12 @@
 // world.html: the world of 《天機策》 — its lore, places, people (each with a portrait drawn once in the browser, in
-// the series' anime style and the character's own face and build) and the ten episodes.
+// the series' live-action look: the character's own real face, js/models/scan.js, on its build) and the ten episodes.
 import * as THREE from '../lib/three.module.min.js';
-import { WORLD } from './story/world.js?v=14';
-import { CHARACTERS } from './cast/characters.js?v=14';
-import { loadHumans, humanStill } from './models/human.js?v=14';
-import { faceOf, bodyOf } from './models/looks.js?v=14';
+import { WORLD } from './story/world.js?v=15';
+import { CHARACTERS } from './cast/characters.js?v=15';
+import { loadHumans, humanStill } from './models/human.js?v=15';
+import { faceOf, bodyOf } from './models/looks.js?v=15';
+import { loadScans } from './models/scan.js?v=15';
+import { LOOK } from './toon.js?v=15';
 
 const $ = (id) => document.getElementById(id);
 let lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'zh';
@@ -33,22 +35,24 @@ document.querySelectorAll('[data-l]').forEach((b) => b.addEventListener('click',
 render();
 
 // the portraits: each puppet built once, drawn to a small canvas, kept as an image
-const R = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); R.outputColorSpace = THREE.SRGBColorSpace; R.setSize(184, 232, false);
+const PW = 184 * (new URLSearchParams(location.search).get('big') ? 2 : 1), PH = Math.round(PW * 232 / 184);
+const R = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.05; R.setSize(PW, PH, false);
 const scene = new THREE.Scene(); scene.background = new THREE.Color('#2a1618');
 scene.add(new THREE.HemisphereLight('#d8c8e8', '#3a2824', 1.3));
 const key = new THREE.DirectionalLight('#ffe8d0', 2.4); key.position.set(1.4, 2.6, 2.4); scene.add(key);
 const rim = new THREE.DirectionalLight('#ffffff', 1.1); rim.position.set(-1, 2, -2.5); scene.add(rim);
-const cam = new THREE.PerspectiveCamera(24, 184 / 232, 0.05, 30);
+const cam = new THREE.PerspectiveCamera(24, PW / PH, 0.05, 30);
 const ids = WORLD.factions.flatMap((f) => f.who);
-await loadHumans();
+LOOK.real = true; // real skin, real faces
+await Promise.all([loadHumans(), new URLSearchParams(location.search).has('noscan') ? null : loadScans(ids)]);
 (function next(i) {
   if (i >= ids.length) return;
   const id = ids[i], C0 = CHARACTERS[id], F = faceOf(C0.anime.face), B = bodyOf(C0.anime.body);
-  const spec = { ...C0, style: 'anime', faceShape: F.shape, eyeShape: F.eye, body: B.body, scale: (C0.scale || 1) * B.scale, lod: true };
+  const spec = { ...C0, style: 'drama', real: true, human: true, scanId: id, faceShape: F.shape, eyeShape: F.eye, body: B.body, scale: (C0.scale || 1) * B.scale, lod: true };
   const P = humanStill(spec, C0.weapons?.R ? 'Sword_Idle' : 'Idle_Loop', 0.6);
-  P.group.rotation.y = 0.35; scene.add(P.group); P.group.updateMatrixWorld(true);
+  P.group.rotation.y = +(new URLSearchParams(location.search).get('yaw') || 0.35); scene.add(P.group); P.group.updateMatrixWorld(true);
   const h = P.points.head(); cam.position.set(h.x + 0.25, h.y - 0.05, h.z + 1.7); cam.lookAt(h.x, h.y - 0.17, h.z);
-  R.render(scene, cam); portraits[id] = R.domElement.toDataURL('image/jpeg', 0.86);
+  R.render(scene, cam); window.PORTRAITS = portraits; portraits[id] = R.domElement.toDataURL('image/jpeg', 0.86);
   scene.remove(P.group); P.group.traverse((m) => { m.geometry?.dispose(); [].concat(m.material || []).forEach((x) => { x.map?.dispose(); x.dispose(); }); });
   const slot = document.querySelector(`[data-p="${id}"]`); if (slot) { const img = new Image(); img.src = portraits[id]; img.alt = ''; slot.replaceWith(img); }
   setTimeout(() => next(i + 1), 30);
