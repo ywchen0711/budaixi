@@ -22,11 +22,14 @@ import { LOOK } from './toon.js?v=15';
 import { nameOf, CHARACTERS } from './cast/characters.js?v=15';
 import { seg } from './core/util.js?v=15';
 import * as score from './score.js?v=15';
+import { buildBrickSet } from './brick/sets.js?v=1';
+import { buildBrickActors } from './brick/actor.js?v=1';
 
 const $ = (id) => document.getElementById(id);
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const params = new URLSearchParams(location.search);
 const EP = /^[a-z0-9]+$/.test(params.get('ep') || '') ? params.get('ep') : 'ep1';
+const BRICK = params.get('look') === 'brick'; // the same episode, filmed in bricks: minifigures in brick-built places
 const story = (await import(`./story/${EP}.js?v=15`)).default, rt = createRuntime(story);
 LOOK.real = !!story.look?.real; // a live-action look: real materials, a real lens
 const clock = makeClock({ ...story, warp: rt.warp }), LEN = clock.filmLen; // LEN: the film's length (slow motion and hit-stops included)
@@ -50,13 +53,13 @@ scene.add(sun); scene.add(sun.target);
 const rim = new THREE.DirectionalLight('#6a8ad8', 0.7); rim.position.set(-10, 6, -8); scene.add(rim); // cold light from the dark end of the street
 const fireLights = (story.set?.fires || []).map((f) => { const l = new THREE.PointLight('#ff7a30', 6 * (f.k ?? 1), 0, 2); l.position.set(f.at[0], f.at[1] + 0.8, f.at[2]); scene.add(l); return l; });
 const fxLights = [0, 1, 2].map(() => { const l = new THREE.PointLight('#ffb060', 0, 0, 2); scene.add(l); return l; });
-const SET = buildSet(scene, story.set);
+const SET = BRICK ? buildBrickSet(scene, story.set) : buildSet(scene, story.set);
 const fx = new FX(scene);
 
 // ---------------------------------------------------------------- the story and its actors
-if (story.look?.human || story.look?.style === 'anime') { try { await loadHumans(); } catch (e) { console.warn('no human bodies', e); } } // the series' bodies and their recorded motion
-if (LOOK.real && !params.has('noscan')) await loadScans([...new Set(story.actors.map((A) => A.who))]); // the real faces, for those who have one
-const views = buildActors(scene, rt);
+if (!BRICK && (story.look?.human || story.look?.style === 'anime')) { try { await loadHumans(); } catch (e) { console.warn('no human bodies', e); } } // the series' bodies and their recorded motion
+if (LOOK.real && !BRICK && !params.has('noscan')) await loadScans([...new Set(story.actors.map((A) => A.who))]); // the real faces, for those who have one
+const views = BRICK ? buildBrickActors(scene, rt) : buildActors(scene, rt);
 for (const v of Object.values(views)) v.bake(); // footwork and springs, once for the whole film
 const director = createDirector({ scene, fx, rt, views });
 const cam = createCamera(story, rt, director.resolve), clear = createClearShot(scene, rt, cam);
@@ -160,7 +163,8 @@ function texts() {
   const u = UI[lang]; document.documentElement.lang = lang === 'zh' ? 'zh-Hant' : 'en';
   $('go').textContent = state.t >= LEN - 0.01 ? u.replay : u.play; $('blurb').textContent = u.sub; $('lang').textContent = u.lang; $('hint').textContent = u.hint;
   $('st').innerHTML = `<b>${story.title[lang][0]}</b><i>${story.title[lang][1]}</i>`;
-  $('eps').innerHTML = EPISODES.map((e) => `<a href="?ep=${e.id}${lang === 'en' ? '&lang=en' : ''}" class="${e.id === EP ? 'on' : ''}">${e[lang]}<small>${e.len}</small></a>`).join('');
+  $('eps').innerHTML = EPISODES.map((e) => `<a href="?ep=${e.id}${lang === 'en' ? '&lang=en' : ''}${BRICK ? '&look=brick' : ''}" class="${e.id === EP ? 'on' : ''}">${e[lang]}<small>${e.len}</small></a>`).join('')
+    + `<a class="look" href="?ep=${EP}${lang === 'en' ? '&lang=en' : ''}${BRICK ? '' : '&look=brick'}">${BRICK ? (lang === 'zh' ? '🎭 看原版' : '🎭 Original') : (lang === 'zh' ? '🧱 積木版' : '🧱 In bricks')}</a>`;
 }
 function play() {
   if (state.t >= LEN - 0.01) state.t = 0;
@@ -182,7 +186,7 @@ function loop() {
 $('scrub').max = String(LEN);
 $('go').onclick = play;
 // the episode menu in the bar: any episode, at any time (it opens playing, if the browser lets it)
-function epMenu() { $('epmenu').innerHTML = EPISODES.map((e) => `<a href="?ep=${e.id}${lang === 'en' ? '&lang=en' : ''}&play=1" class="${e.id === EP ? 'on' : ''}"><span>${e[lang]}</span><small>${e.len}</small></a>`).join(''); }
+function epMenu() { $('epmenu').innerHTML = EPISODES.map((e) => `<a href="?ep=${e.id}${lang === 'en' ? '&lang=en' : ''}${BRICK ? '&look=brick' : ''}&play=1" class="${e.id === EP ? 'on' : ''}"><span>${e[lang]}</span><small>${e.len}</small></a>`).join(''); }
 $('epbtn').onclick = (e) => { e.stopPropagation(); epMenu(); $('epmenu').hidden = !$('epmenu').hidden; };
 document.addEventListener('click', (e) => { if (!$('epmenu').hidden && !$('epmenu').contains(e.target) && e.target !== $('epbtn')) $('epmenu').hidden = true; });
 $('pp').onclick = () => (state.playing ? pause() : play());
