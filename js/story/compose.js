@@ -331,7 +331,7 @@ class Episode {
       else this.shot({ t: t1, pos: { mid: [a, b], off: [r3(px * 3.6), 1.15, r3(pz * 3.6)] }, look: { mid: [a, b], off: [0, 1.25, 0] }, fov: 40, hand: 0.4 });
     };
     const blow = (who, tgt, tt, res, style, kk = k) => this.A(who, { do: 'blow', t: r3(tt), style: style || this.pick(['side', 'over', 'thrust', 'side', 'upper']), arm: 'R', result: res, target: tgt, against: 'tipR', close: false, k: kk });
-    const units = ['clash3', 'leap', 'wave', 'palm', 'pass', 'spin', 'circle', 'lock', 'clash3', 'leap'];
+    const units = ['clash3', 'leap', 'wave', 'palm', 'pass', 'spin', 'circle', 'lock', 'combo', 'heavy', 'roll', 'slide', 'fists', 'combo', 'roll'];
     let n = 0;
     while (t < t0 + d + bigs * 6 - 2.4) {
       const A_ = this.R() < 0.5 ? [a, b] : [b, a], [p, q] = A_, cp = p === a ? ca : cb;
@@ -377,6 +377,30 @@ class Episode {
         const [cx, cz] = centre, r = 1.1, a0 = Math.atan2(this.local(a)[1] - cz, this.local(a)[0] - cx), a1 = a0 + side * 1.3;
         put(a, cx + Math.cos(a1) * r, cz + Math.sin(a1) * r, t, t + 1.8); put(b, cx - Math.cos(a1) * r, cz - Math.sin(a1) * r, t, t + 1.8);
         [ux, uz] = [-Math.cos(a1), -Math.sin(a1)]; t += 2.0;
+      } else if (u === 'combo') { // a recorded three-cut combo; each cut met
+        this.A(p, { do: 'anim', t: r3(t + 0.2), clip: 'Sword_Regular_Combo' }); for (const h of [0.25, 0.73, 1.55]) this.A(p, { do: 'blow', t: r3(t + 0.2 + h), style: 'side', arm: 'R', result: 'clash', target: q, against: 'tipR', close: false, k, noAnim: true });
+        this.hit(t + 1.75, 0.9); this.shot({ t: t + 0.1, pos: { mid: [a, b], off: [r3(-uz * side * 3.0), 1.1, r3(ux * side * 3.0)] }, look: { mid: [a, b], off: [0, 1.2, 0] }, fov: 42, hand: 0.4 }); t += 3.0;
+      } else if (u === 'heavy') { // the heavy combo: four great cuts, the last thrown hardest
+        this.A(p, { do: 'anim', t: r3(t + 0.2), clip: 'Sword_Heavy_Combo' }); [0.38, 1.17, 1.82, 2.55].forEach((h, i) => this.A(p, { do: 'blow', t: r3(t + 0.2 + h), style: 'over', arm: 'R', result: 'clash', target: q, against: 'tipR', close: false, k: k * (i === 3 ? 1.5 : 1), noAnim: true }));
+        this.hit(t + 2.75, 1.3); this.music.push({ hit: 'gong', t: r3(t + 2.75), g: 0.5 });
+        const a0 = Math.atan2(-uz * side, ux * side); this.shot({ t: t + 0.1, orbit: { c: { mid: [a, b], off: [0, 1.2, 0] }, r: 3.4, h: 0.5, a: [r3(a0), r3(a0 + 1.4 * side)] }, fov: 44 }); t += 4.4;
+      } else if (u === 'roll') { // a great cut into the ground; the other rolls out from under it
+        const [qx, qz] = this.local(q), sx = -uz * side * 1.6, sz = ux * side * 1.6;
+        this.A(p, { do: 'blow', t: r3(t + 0.55), style: 'over', arm: 'R', result: 'ground', target: q, close: false, k: 1.2 });
+        this.A(q, { do: 'anim', t: r3(t + 0.2), clip: 'Roll' }); this.goto(q, qx + sx, qz + sz, t + 0.3, t + 1.4, { e: 'ss' });
+        this.shot({ t: t + 0.1, pos: { at: p, off: [r3(-ux * 2.2 + sx), 0.5, r3(-uz * 2.2 + sz)] }, look: { mid: [a, b], off: [0, 0.8, 0] }, fov: 46 }); this.face(q, p, t + 1.4); this.face(p, q, t + 1.0); t += 2.1;
+      } else if (u === 'slide') { // in low under the other's guard, sliding, and a rising cut on the way up
+        const [qx, qz] = this.local(q), [px, pz] = this.local(p), dx = qx - px, dz = qz - pz;
+        this.A(p, { do: 'anim', t: r3(t + 0.1), clip: 'Slide_Start' }, { do: 'anim', t: r3(t + 0.85), clip: 'Slide_Exit', fin: 0.05 }); put(p, px + dx * 0.75, pz + dz * 0.75, t + 0.15, t + 0.85, 'out');
+        this.A(p, { do: 'blow', t: r3(t + 1.35), style: 'upper', arm: 'R', result: 'clash', target: q, against: 'tipR', close: false, k: 1.2 });
+        this.shot({ t: t + 0.05, pos: { mid: [a, b], off: [r3(-uz * side * 2.8), 0.35, r3(ux * side * 2.8)] }, look: { mid: [a, b], off: [0, 0.7, 0] }, fov: 48 }); t += 2.2;
+      } else if (u === 'fists') { // blades locked, they fight with their free hands
+        this.A(p, { do: 'anim', t: r3(t + 0.1), clip: 'Punch_Jab' }); this.A(q, { do: 'react', t: r3(t + 0.33), part: 'head', k: 0.8 });
+        this.A(q, { do: 'anim', t: r3(t + 0.7), clip: 'Punch_Cross' }); this.A(p, { do: 'react', t: r3(t + 1.0), part: 'body', k: 0.9 });
+        this.A(p, { do: 'anim', t: r3(t + 1.35), clip: 'Melee_Hook' }); this.A(q, { do: 'react', t: r3(t + 1.6), part: 'body', k: 1.3 });
+        for (const [tt, w] of [[0.33, q], [1.0, p], [1.6, q]]) this.cues.push({ t: r3(t + tt), kind: 'hit', at: { actor: w, part: 'chest' }, k: 0.7 });
+        const [qx, qz] = this.local(q); this.goto(q, qx + ux * 0.9, qz + uz * 0.9, t + 1.6, t + 2.0, { e: 'out' });
+        this.shot({ t: t + 0.05, pos: { mid: [a, b], off: [r3(-uz * side * 2.2), 1.45, r3(ux * side * 2.2)] }, look: { mid: [a, b], off: [0, 1.4, 0] }, fov: 36, hand: 0.5 }); t += 2.3;
       } else if (u === 'lock') { blow(p, q, t + 0.4, 'clash', 'over'); this.A(p, { do: 'blow', t: r3(t + 0.45), style: 'thrust', result: 'clash', target: q, against: 'tipR', close: false, bind: 0.9, k }); this.cues.push({ t: r3(t + 0.5), t1: r3(t + 1.4), kind: 'sparks', every: 0.2, at: { actor: q, part: 'tipR' }, k: 0.5 }); this.shot({ t: t + 0.3, pos: { mid: [a, b], off: [r3(-uz * side * 1.4), 1.3, r3(ux * side * 1.4)] }, look: { mid: [a, b], off: [0, 1.3, 0] }, fov: 30 }); t += 1.9; }
       n++; if (n % 3 === 0) side = -side;
     }

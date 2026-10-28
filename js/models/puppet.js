@@ -17,7 +17,7 @@ function canvasTex(w, h, paint) {
 const rnd = (s) => () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
 
 // ---------------------------------------------------------------- silk: a base colour with an embroidered pattern
-function silkTex(R, seed) {
+export function silkTex(R, seed) {
   return canvasTex(256, 256, (g, W, H) => {
     g.fillStyle = R.base; g.fillRect(0, 0, W, H);
     const r = rnd(seed + 7); g.strokeStyle = R.ink || 'rgba(255,255,255,0.35)'; g.fillStyle = R.ink || 'rgba(255,255,255,0.35)'; g.lineWidth = 2;
@@ -366,5 +366,5 @@ export function buildPuppet(spec0) {
     ribbonsBody.forEach((r, i) => chainPose(r, sec.ribX || [0], (sec.ribZ || [0]).map((v) => v * (i ? 1 : -1))));
     for (const w of Object.values(weap)) w.tassels.forEach((q, i) => { q.rotation.x = (sec.tassel || 0) * (i + 1) * 0.6; });
   }
-  return { group: root, body, parts, points, weap, pose, M, mouth: (k) => look.mouth?.(k) };
+  return { group: root, body, parts, points, weap, pose, M, look, chains: { hair, forelocks, lockBase, ribbons, cape, ribbonsBody }, mouth: (k) => look.mouth?.(k) };
 }

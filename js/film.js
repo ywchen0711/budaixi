@@ -12,6 +12,7 @@ import { EPISODES } from './story/index.js?v=12';
 import { FX } from './fx.js?v=12';
 import { createRuntime } from './core/runtime.js?v=12';
 import { buildActors } from './core/actors3d.js?v=12';
+import { loadHumans } from './models/human.js?v=12';
 import { createDirector } from './core/director.js?v=12';
 import { createCamera } from './core/camera.js?v=12';
 import { nameOf, CHARACTERS } from './cast/characters.js?v=12';
@@ -48,6 +49,7 @@ const SET = buildSet(scene, story.set);
 const fx = new FX(scene);
 
 // ---------------------------------------------------------------- the story and its actors
+if (story.look?.style === 'anime') { try { await loadHumans(); } catch (e) { console.warn('no human bodies', e); } } // the series' bodies and their recorded motion
 const views = buildActors(scene, rt);
 for (const v of Object.values(views)) v.bake(); // footwork and springs, once for the whole film
 const director = createDirector({ scene, fx, rt, views });
