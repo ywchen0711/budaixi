@@ -1,7 +1,7 @@
 // creator.html: any of the 50 faces on any of the 20 builds, in the anime style, in any of the cast's costumes.
 // The big view is live (drag to turn it); the tiles are each drawn once, a few at a time, by a second renderer.
 import * as THREE from '../lib/three.module.min.js';
-import { buildPuppet } from './models/puppet.js?v=12';
+import { loadHumans, humanStill } from './models/human.js?v=12';
 import { faceOf, bodyOf } from './models/looks.js?v=12';
 import { CHARACTERS } from './cast/characters.js?v=12';
 
@@ -23,7 +23,8 @@ function lights(scene) {
   const floor = new THREE.Mesh(new THREE.CircleGeometry(1.4, 40), new THREE.MeshStandardMaterial({ color: '#2a1c18', roughness: 0.9 })); floor.rotation.x = -Math.PI / 2; scene.add(floor);
   scene.background = new THREE.Color('#2a1618');
 }
-const pose = (P) => P.pose({ R: { s: -0.35, e: -0.9, w: 0.2, a: 0.15 }, L: { s: -0.1, e: -0.5, w: 0, a: 0.1 } }, {});
+// a body standing at ease, or on guard if it carries a weapon (a recorded pose, held)
+const still = (spec) => humanStill(spec, spec.weapons?.R ? 'Sword_Idle' : 'Idle_Loop', 0.6);
 // where to put the camera for a shot of this puppet
 function frame(cam, P, shot, aspect) {
   P.group.updateMatrixWorld(true);
@@ -44,7 +45,7 @@ const cam = new THREE.PerspectiveCamera(26, 0.75, 0.05, 50);
 let P = null;
 function rebuild() {
   if (P) { scene.remove(P.group); dispose(P.group); }
-  P = buildPuppet(specOf(st.face, st.body, st.outfit)); pose(P); scene.add(P.group);
+  P = still(specOf(st.face, st.body, st.outfit)); scene.add(P.group);
   const F = faceOf(st.face), Bd = bodyOf(st.body);
   $('fn').textContent = `${F.n}. ${F.zh} ${F.en}`; $('bn').textContent = `${Bd.n}. ${Bd.zh} ${Bd.en}`;
   document.querySelectorAll('#faces .tile').forEach((t) => t.classList.toggle('on', +t.dataset.n === st.face));
@@ -58,7 +59,7 @@ canvas.addEventListener('pointerup', () => { drag = null; });
 function loop() {
   const w = canvas.clientWidth, h = canvas.clientHeight;
   if (canvas.width !== Math.round(w * renderer.getPixelRatio())) renderer.setSize(w, h, false);
-  if (P) { P.group.rotation.y = st.yaw; frame(cam, P, st.shot, w / h); renderer.render(scene, cam); }
+  if (P) { P.group.rotation.y = st.yaw; P.pose(performance.now() / 1000); frame(cam, P, st.shot, w / h); renderer.render(scene, cam); } // breathing: the recorded idle, playing
   requestAnimationFrame(loop);
 }
 
@@ -77,7 +78,7 @@ function tile(kind, n, label) {
 }
 function drawTile(j) {
   const spec = j.kind === 'face' ? specOf(j.n, 13, st.outfit, true) : specOf(st.face, j.n, st.outfit, true);
-  const T = buildPuppet(spec); pose(T); T.group.rotation.y = 0.3; tScene.add(T.group);
+  const T = still(spec); T.group.rotation.y = 0.3; tScene.add(T.group); T.group.updateMatrixWorld(true);
   const [w, h] = j.kind === 'face' ? [160, 160] : [150, 200];
   thumbR.setSize(w, h, false); frame(tCam, T, j.kind === 'face' ? 'tile' : 'full', w / h);
   thumbR.render(tScene, tCam);
@@ -99,5 +100,5 @@ document.querySelectorAll('[data-shot]').forEach((b) => b.addEventListener('clic
   st.shot = b.dataset.shot; document.querySelectorAll('[data-shot]').forEach((x) => x.classList.toggle('on', x === b));
 }));
 $('rnd').addEventListener('click', () => { st.face = 1 + Math.floor(Math.random() * 50); st.body = 1 + Math.floor(Math.random() * 20); rebuild(); });
-rebuild(); redrawTiles(); loop();
+await loadHumans(); rebuild(); redrawTiles(); loop();
 window.MAKER = { st, rebuild, set: (o) => { Object.assign(st, o); rebuild(); }, pending: () => queue.length };

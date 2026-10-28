@@ -3,7 +3,7 @@
 import * as THREE from '../lib/three.module.min.js';
 import { WORLD } from './story/world.js?v=12';
 import { CHARACTERS } from './cast/characters.js?v=12';
-import { buildPuppet } from './models/puppet.js?v=12';
+import { loadHumans, humanStill } from './models/human.js?v=12';
 import { faceOf, bodyOf } from './models/looks.js?v=12';
 
 const $ = (id) => document.getElementById(id);
@@ -40,11 +40,12 @@ const key = new THREE.DirectionalLight('#ffe8d0', 2.4); key.position.set(1.4, 2.
 const rim = new THREE.DirectionalLight('#ffffff', 1.1); rim.position.set(-1, 2, -2.5); scene.add(rim);
 const cam = new THREE.PerspectiveCamera(24, 184 / 232, 0.05, 30);
 const ids = WORLD.factions.flatMap((f) => f.who);
+await loadHumans();
 (function next(i) {
   if (i >= ids.length) return;
   const id = ids[i], C0 = CHARACTERS[id], F = faceOf(C0.anime.face), B = bodyOf(C0.anime.body);
-  const P = buildPuppet({ ...C0, style: 'anime', faceShape: F.shape, eyeShape: F.eye, body: B.body, scale: (C0.scale || 1) * B.scale, lod: true });
-  P.pose({ R: { s: -0.35, e: -0.9, w: 0.2, a: 0.15 }, L: { s: -0.1, e: -0.5, w: 0, a: 0.1 } }, {});
+  const spec = { ...C0, style: 'anime', faceShape: F.shape, eyeShape: F.eye, body: B.body, scale: (C0.scale || 1) * B.scale, lod: true };
+  const P = humanStill(spec, C0.weapons?.R ? 'Sword_Idle' : 'Idle_Loop', 0.6);
   P.group.rotation.y = 0.35; scene.add(P.group); P.group.updateMatrixWorld(true);
   const h = P.points.head(); cam.position.set(h.x + 0.25, h.y - 0.05, h.z + 1.7); cam.lookAt(h.x, h.y - 0.17, h.z);
   R.render(scene, cam); portraits[id] = R.domElement.toDataURL('image/jpeg', 0.86);

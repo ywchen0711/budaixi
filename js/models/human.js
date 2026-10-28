@@ -151,7 +151,7 @@ export function buildHuman(spec) {
     bone(boneName).attach(c); return c;
   };
   const head = P.parts.head; head.parent.remove(head);
-  const headFrame = attachAt('Head', V(0, bp('Head').y - 0.03, 0.012), head, 0.9);
+  const headFrame = attachAt('Head', V(0, bp('Head').y - 0.03, 0.012), head, 0.9 * (spec.body?.Hd || 1) ** 0.8); // a child's head is bigger for its body
   const weap = {};
   for (const [k, w] of Object.entries(P.weap)) { w.group.parent.remove(w.group); const hp = bp(k === 'R' ? 'hand_r' : 'hand_l'), dx = k === 'R' ? -0.075 : 0.075; attachAt(k === 'R' ? 'hand_r' : 'hand_l', V(hp.x + dx, hp.y - 0.02, hp.z + 0.01), w.group); weap['w' + k] = w; }
   const chestFrame = attachAt('spine_03', V(0, ySp3, 0), null);
@@ -168,5 +168,23 @@ export function buildHuman(spec) {
   const group = new THREE.Group(), inner = new THREE.Group(); group.add(inner); inner.add(root);
   const S = (spec.scale || 1) * (fem ? 0.96 : 1); root.scale.setScalar(S);
   const mixer = new THREE.AnimationMixer(root);
-  return { group, body: inner, root, mixer, sk, bone, headFrame, chestFrame, weap, M, P, chains: P.chains, mouth: (k) => P.mouth(k), scale: S, fem };
+  // the build (js/models/looks.js) on the skeleton, after the motion has been applied: shoulders and chest (S, G) on the
+  // upper spine, waist (W) on the lower, hips (Hp) on the pelvis; each undone again where the limbs and head begin, so
+  // only the trunk changes; the clothes, skinned to the same bones, follow
+  const Bd = { S: 1, W: 1, Hp: 1, G: 1, ...(spec.body || {}) }, nonDefault = ['S', 'W', 'Hp', 'G'].some((k) => Math.abs(Bd[k] - 1) > 0.01);
+  const build = () => {
+    if (!nonDefault) return;
+    const set = (n, x, z) => bone(n).scale.set(x, 1, z);
+    set('spine_01', Bd.W, Bd.G); set('spine_02', Bd.S / Bd.W, 1); set('spine_03', 1, 1);
+    for (const sd of ['l', 'r']) set('clavicle_' + sd, 1 / Bd.S, 1 / Bd.G);
+    set('neck_01', 1 / Bd.S, 1 / Bd.G); set('pelvis', Bd.Hp, Bd.G); for (const sd of ['l', 'r']) set('thigh_' + sd, 1 / Bd.Hp, 1 / Bd.G);
+  };
+  return { group, body: inner, root, mixer, sk, bone, headFrame, chestFrame, weap, M, P, chains: P.chains, mouth: (k) => P.mouth(k), scale: S, fem, build };
+}
+
+// a body standing in one recorded pose, for pictures (the creator, the world page): its clip at a moment
+export function humanStill(spec, clip = 'Idle_Loop', t = 0.6) {
+  const H = buildHuman(spec), c = LIB.clips[clip] || LIB.clips.Idle_Loop, a = H.mixer.clipAction(c); a.play(); a.time = Math.min(t, c.duration - 0.01); H.mixer.update(0); H.build(); H.group.updateMatrixWorld(true);
+  H.chains.forelocks?.forEach((f) => f.forEach((q, i) => q.rotation.set(H.chains.lockBase[i] ?? 0, 0, 0)));
+  return { group: H.group, H, points: { head: () => H.headFrame.localToWorld(new THREE.Vector3(0, 0.14, 0)) }, pose: (tt) => { a.time = tt % c.duration; H.mixer.update(0); H.build(); } };
 }

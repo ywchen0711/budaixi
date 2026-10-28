@@ -98,7 +98,7 @@ export function humanActor(scene, A, C, rt) {
       const setA = (id, tt, w) => { const a = act(id); if (!a) return; a.time = tt; a.weight += w; };
       setA(cur.id, loopT(act(cur.id), cur, t), bw * xf); if (prev && xf < 1) setA(prev.id, loopT(act(prev.id), prev, t), bw * (1 - xf));
       if (ov) setA(ov.id, Math.min(ov.dur, t - ov.t0) * ov.ts, ow);
-      H.mixer.update(0);
+      H.mixer.update(0); H.build();
       // the head turns to whoever it watches, and nods on its words
       const hd = H.bone('Head'), nk = H.bone('neck_01');
       if (other && !s.dead && (s.lookW ?? 0.85) > 0.01) {
