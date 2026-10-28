@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"><title>martial clips</title><style>body{margin:0;background:#222}</style></head><body>
+<script type="module">
+// a strip of each martial clip: five moments of it, the middle one the blow landing
+import * as THREE from '../../lib/three.module.min.js';
+import { loadHumans, humanStill } from '../../js/models/human.js?v=15';
+const q = new URLSearchParams(location.search), names = (q.get('c') || '').split(',');
+await loadHumans('../../');
+const W = 220, H = 300, R = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); R.setSize(W * 5, H * names.length); R.setScissorTest(true); document.body.appendChild(R.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#3a3530'); scene.add(new THREE.HemisphereLight('#fff', '#443', 2)); const d = new THREE.DirectionalLight('#fff', 2); d.position.set(2, 4, 3); scene.add(d);
+const grid = new THREE.GridHelper(6, 12, '#777', '#555'); scene.add(grid);
+const cam = new THREE.PerspectiveCamera(30, W / H, 0.1, 50), yaw = +(q.get('yaw') || 0.9);
+names.forEach((n, row) => {
+  const P = humanStill({ face: {}, robe: {}, style: 'paper' }, n, 0); scene.add(P.group);
+  if (q.get('bare')) { const keep = new Set(P.H.root.children.flatMap((c) => { const a = []; c.traverse((o) => { if (o.isSkinnedMesh && o.material?.vertexColors) a.push(o); }); return a; })); P.group.traverse((o) => { if (o.isMesh && !keep.has(o)) o.visible = false; }); }
+  if (q.get('bones')) { P.group.traverse((o) => { if (o.isMesh) o.visible = false; }); const hp = new THREE.SkeletonHelper(P.H.root); hp.material.linewidth = 3; scene.add(hp); P.helper = hp; } const c = P.H.mixer._actions[0]?.getClip(), dur = c?.duration || 1, hit = c?.hit ?? dur / 2;
+  [0.1, hit * 0.6, hit, hit + (dur - hit) * 0.4, dur - 0.05].forEach((t, k) => { P.pose(t); P.group.updateMatrixWorld(true);
+    cam.position.set(Math.sin(yaw) * 4.2, 1.2, Math.cos(yaw) * 4.2); cam.lookAt(0, 0.95, 0); R.setViewport(k * W, (names.length - 1 - row) * H, W, H); R.setScissor(k * W, (names.length - 1 - row) * H, W, H); R.render(scene, cam); });
+  scene.remove(P.group); if (P.helper) scene.remove(P.helper);
+});
+window.DONE = true;
+</script></body></html>

@@ -15,8 +15,10 @@ let LIB = null;
 export async function loadHumans(base = '') {
   if (LIB) return LIB;
   const L = new GLTFLoader();
-  const [a, b, f] = await Promise.all(['ual1', 'ual2', 'mannequin_f'].map((n) => L.loadAsync(`${base}models/${n}.glb`)));
+  const [a, b, f, m] = await Promise.all([...['ual1', 'ual2', 'mannequin_f'].map((n) => L.loadAsync(`${base}models/${n}.glb`)), fetch(`${base}models/martial.json?v=1`).then((r) => r.json()).catch(() => null)]);
   const clips = {}; for (const g of [a, b]) for (const c of g.animations) clips[c.name] = c;
+  // the martial arts: kicks, punches, blocks, palms and tai chi from the CMU motion capture database, retargeted (tools/martial)
+  for (const j of m?.clips || []) { const c = THREE.AnimationClip.parse(j); c.hit = j.hit; clips[c.name] = c; }
   LIB = { clips, male: a.scene, female: f.scene };
   return LIB;
 }
@@ -104,7 +106,7 @@ export function buildHuman(spec) {
   // ---- the skirt: from the waist to the ankles, flaring; each side follows its leg, the middle of the front and back between them
   const yKnee = bp('calf_l').y, skirtRings = [], hem = (fem ? 0.33 : 0.36) * (R.skirt || 1);
   for (let y = yPel + 0.03; y >= 0.07; y -= 0.035) {
-    const e = extent(Math.max(y, 0.55), legBones, 0.03) || { rx: 0.17, rz: 0.12, cz: 0 }, d = sm(yPel, 0.07, y), legw = sm(yPel, yPel - 0.35, y), calfw = sm(yKnee + 0.05, yKnee - 0.25, y) * 0.45;
+    const e = extent(Math.max(y, 0.55), legBones, 0.03) || { rx: 0.17, rz: 0.12, cz: 0 }, d = sm(yPel, 0.07, y), legw = 0.7 * sm(yPel, yPel - 0.35, y), calfw = sm(yKnee + 0.05, yKnee - 0.25, y) * 0.45;
     skirtRings.push({ y, rx: e.rx + 0.05 + (hem - e.rx) * d ** 1.1, rz: e.rz + 0.055 + (hem * 0.85 - e.rz) * d ** 1.1, cz: e.cz + 0.02 * d, w: (a, s) => {
       const side = sm(-0.35, 0.35, s), L = [[B('thigh_l'), legw * side * (1 - calfw)], [B('thigh_r'), legw * (1 - side) * (1 - calfw)], [B('calf_l'), legw * side * calfw], [B('calf_r'), legw * (1 - side) * calfw]];
       return [[B('pelvis'), 1 - legw], ...L];

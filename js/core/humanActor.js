@@ -17,6 +17,13 @@ const CUT = {
   thrust: [['Sword_Attack', 0.38], ['Sword_Dash', 0.33]], upper: [['Sword_Regular_C', 0.65], ['Sword_Regular_B', 0.27, 'Sword_Regular_B_Rec']], heavy: [['Sword_Heavy_Combo', 0.38]],
 };
 const FIST = [['Punch_Jab', 0.22], ['Punch_Cross', 0.3], ['Melee_Hook', 0.25, 'Melee_Hook_Rec']];
+// the bare-handed martial arts (recorded karate, kung fu and tai chi, models/martial.json): fists, feet, knees, palms;
+// each lands where the blow was set, its own wind-up before it
+const MART = ['Punch_Jab', 'Kick_Front_R', 'Punch_Cross', 'Kick_Round_L', 'Melee_Hook', 'Kick_Side_R', 'Punch_Lunge_R', 'Kick_Knee_R', 'Punch_Box_L', 'Kick_Round_R', 'Kick_Snap_R', 'Punch_Lunge_L', 'Kick_Front_L', 'Kick_Side_L', 'Punch_Box_R'];
+const KICK = ['Kick_Front_R', 'Kick_Round_R', 'Kick_Side_R', 'Kick_Round_L', 'Kick_Snap_R', 'Kick_Jump']; // a swordsman's foot, now and then
+const PALM = ['Palm_Push', 'Palm_Push2', 'Palm_Push3'], BLOCK = ['Block_Knife_R', 'Block_Low_R', 'Block_Knife_L'], QI = ['Qi_Gather_Loop', 'Qi_Cloud_Loop'];
+const HIT = { Punch_Jab: 0.22, Punch_Cross: 0.3, Melee_Hook: 0.25 }; // where the recorded UAL blows land (the martial ones carry theirs)
+const hash = (x) => { const v = Math.sin(x * 12.9898) * 43758.5453; return v - Math.floor(v); };
 const IDLE = { yin: 'Idle_FoldArms_Loop', wuya: 'Idle_FoldArms_Loop', guhong: 'Idle_FoldArms_Loop', youming: 'Idle_FoldArms_Loop', jingwang: 'Idle_Loop' };
 const spring = (x, w, z) => { const o = new Float32Array(x.length); let p = x[0], v = 0; const dt = 1 / HZ / 4; for (let i = 0; i < x.length; i++) for (let s = 0; s < 4; s++) { v += (w * w * (x[i] - p) - 2 * z * w * v) * dt; p += v * dt; o[i] = p; } return o; };
 
@@ -38,8 +45,8 @@ export function humanActor(scene, A, C, rt) {
       let id = IDLE[A.who] || 'Idle_Loop', ts = 1;
       const talk = talking.some(([a, b]) => t >= a - 0.1 && t <= b), guard = (s.pose.stance ?? 1) > 0.5 || s.pose.guard > 0.5;
       if (talk && !guard) id = 'Idle_Talking_Loop';
-      if (guard) id = armed ? 'Sword_Idle' : 'Spell_Simple_Idle_Loop';
-      if ((s.qi || 0) > 0.6 && lastSpeed < 0.4) id = 'Spell_Simple_Idle_Loop';
+      if (guard) id = armed ? 'Sword_Idle' : clips.Guard_Taichi_Loop ? 'Guard_Taichi_Loop' : 'Spell_Simple_Idle_Loop'; // bare hands: a tai chi stance
+      if ((s.qi || 0) > 0.6 && lastSpeed < 0.4) id = clips[QI[A.i % 2]] ? QI[A.i % 2] : 'Spell_Simple_Idle_Loop'; // gathering power: the circling of tai chi
       if (lastSpeed > 0.35 && p.y < 0.2) { if (lastSpeed < 2.0) { id = guard ? 'Walk_Loop' : 'Walk_Formal_Loop'; ts = cl(lastSpeed / 1.3, 0.6, 1.7); } else if (lastSpeed < 4) { id = 'Jog_Fwd_Loop'; ts = cl(lastSpeed / 3.2, 0.8, 1.5); } else { id = 'Sprint_Loop'; ts = cl(lastSpeed / 5.5, 0.8, 1.6); } }
       if (p.y > 0.3) id = 'NinjaJump_Idle_Loop';
       if ((s.kneel || 0) > 0.4) id = 'Crouch_Idle_Loop';
@@ -50,14 +57,24 @@ export function humanActor(scene, A, C, rt) {
     over = [];
     const ev = (t0, id, o = {}) => { const c = clips[id]; if (c) over.push({ t0, id, ts: o.ts || 1, dur: c.duration / (o.ts || 1), hold: !!o.hold, fin: o.fin ?? 0.1, fout: o.fout ?? 0.22 }); };
     const mine = A.track, n = { k: 0 };
+    const hitOf = (id) => clips[id]?.hit ?? HIT[id] ?? 0.25, h = (t) => hash(t + A.i * 7.31);
+    // a blow of the bare hands (or a foot), chosen by the moment so every viewing is the same
+    const bare = (t, part) => { const pool = MART.filter((id) => clips[id]); let id = pool[Math.floor(h(t) * pool.length)] || 'Punch_Jab'; if (part === 'head' && /Knee|Snap/.test(id)) id = 'Kick_Round_R'; return id; };
+    // the power rises into the hands as it begins
+    for (let i = 1; i < base.length; i++) if (QI.includes(base[i].id) && !QI.includes(base[i - 1].id) && clips.Qi_Raise) ev(base[i].t0 - 0.3, 'Qi_Raise', { fin: 0.3, fout: 0.5 });
     for (const a of mine) {
-      if (a.do === 'anim') ev(a.t, a.clip, { fin: a.fin ?? 0.12, ts: a.ts });
+      if (a.do === 'anim') {
+        if (HIT[a.clip] && clips.Kick_Front_R && h(a.t) < 0.6) { const id = bare(a.t); ev(a.t + HIT[a.clip] - hitOf(id), id, { fin: 0.1 }); } // a recorded jab or hook becomes any of the martial blows, landing on the same beat
+        else ev(a.t, a.clip, { fin: a.fin ?? 0.12, ts: a.ts });
+      }
       else if (a.do === 'blow') {
         if (a.noAnim) continue; // part of a recorded combo already playing
-        if (armed) { const st = a.style || 'side', V2 = CUT[st] || CUT.side, [id, hit, rec] = V2[Math.floor(a.t * 7.3) % V2.length]; ev(a.t - hit, id, { fin: 0.08 }); if (rec) ev(a.t, rec, { fin: 0.02 }); }
+        if (armed && a.result === 'hit' && clips.Kick_Front_R && h(a.t) < 0.3) { const id = KICK[Math.floor(h(a.t + 1) * KICK.length)]; ev(a.t - hitOf(id), id, { fin: 0.1 }); } // a kick between the cuts
+        else if (armed) { const st = a.style || 'side', V2 = CUT[st] || CUT.side, [id, hit, rec] = V2[Math.floor(a.t * 7.3) % V2.length]; ev(a.t - hit, id, { fin: 0.08 }); if (rec) ev(a.t, rec, { fin: 0.02 }); }
+        else if (clips.Kick_Front_R) { const id = bare(a.t, a.part); ev(a.t - hitOf(id), id, { fin: 0.1 }); }
         else { const [id, hit, rec] = FIST[n.k++ % FIST.length]; ev(a.t - hit, id); if (rec) ev(a.t, rec, { fin: 0.02 }); }
-      } else if (a.do === 'wave') { if (!mine.some((b) => b.do === 'blow' && Math.abs(b.t - a.t) < 0.2)) ev(a.t - (armed ? 0.65 : 0.18), armed ? 'Sword_Regular_C' : 'Spell_Simple_Shoot'); }
-      else if (a.do === 'palm') { ev(a.t - 0.7, 'Spell_Simple_Enter'); ev(a.t - 0.18, 'Spell_Simple_Shoot', { fin: 0.05 }); }
+      } else if (a.do === 'wave') { if (!mine.some((b) => b.do === 'blow' && Math.abs(b.t - a.t) < 0.2)) { const id = armed ? 'Sword_Regular_C' : clips.Palm_Push ? PALM[Math.floor(h(a.t) * 3)] : 'Spell_Simple_Shoot'; ev(a.t - (armed ? 0.65 : clips[id]?.hit ?? 0.18), id); } }
+      else if (a.do === 'palm') { if (clips.Palm_Push) { const id = PALM[Math.floor(h(a.t) * 3)]; ev(a.t - hitOf(id), id, { fin: 0.15 }); } else { ev(a.t - 0.7, 'Spell_Simple_Enter'); ev(a.t - 0.18, 'Spell_Simple_Shoot', { fin: 0.05 }); } } // the push of tai chi
       else if (a.do === 'react') ev(a.t, (a.k ?? 1) >= 1.5 ? 'Hit_Knockback' : a.part === 'head' ? 'Hit_Head' : 'Hit_Chest', { fin: 0.04 });
       else if (a.do === 'fall') ev(a.t, 'Death01', { hold: mine.some((b) => b.do === 'die'), fin: 0.1 });
       else if (a.do === 'jump' || a.do === 'drop') { ev(a.t - 0.5, 'NinjaJump_Start', { fin: 0.1, fout: 0.15 }); if (a.land !== 0) ev(a.t1 - 0.1, 'NinjaJump_Land', { fin: 0.05 }); }
@@ -65,7 +82,7 @@ export function humanActor(scene, A, C, rt) {
       else if (a.do === 'lookat' && a.t1 - a.t > 2.8 && Math.sin(a.t * 12.9898 + A.i) * 43758.5453 % 1 > 0.35) ev(a.t + 0.9, 'Yes', { ts: 1.6, fin: 0.3, fout: 0.4 }); // listening: a nod
     }
     // when another's blade meets this one's, it blocks
-    for (const B of rt.actors) for (const a of B.track) if (a.do === 'blow' && a.target === A.id && a.result === 'clash') ev(a.t - 0.38, armed ? 'Sword_Block' : 'Idle_Shield_Break', { fout: 0.3 });
+    for (const B of rt.actors) for (const a of B.track) if (a.do === 'blow' && a.target === A.id && a.result === 'clash') { const id = armed ? 'Sword_Block' : clips.Block_Knife_R ? BLOCK[Math.floor(hash(a.t + A.i) * 3)] : 'Idle_Shield_Break'; ev(a.t - (armed ? 0.38 : hitOf(id)), id, { fout: 0.3 }); }
     over.sort((x, y) => x.t0 - y.t0);
     // the hair streams behind the movement
     const vf = new Float32Array(N); for (let i = 1; i < N - 1; i++) { const y = rt.yaw(A.id, i / HZ), dx = pos[i + 1].x - pos[i - 1].x, dz = pos[i + 1].z - pos[i - 1].z; vf[i] = (dx * Math.sin(y) + dz * Math.cos(y)) * HZ / 2; }
@@ -82,7 +99,7 @@ export function humanActor(scene, A, C, rt) {
   return {
     kind: 'puppet', human: true, A, C, P: H, points, frames: { head: H.headFrame, chest: H.chestFrame, root: H.group }, weap: H.weap, m: { head: H.headFrame, torso: H.chestFrame },
     looseOf: (what) => (what === 'wR' ? H.weap.wR?.group : what === 'wL' ? H.weap.wL?.group : null),
-    bake, mouth: (k) => H.mouth(k),
+    bake, mouth: (k) => H.mouth(k), overlays: () => over, // (what it does on cue: for checking)
     pose(t, s, other) {
       const p = rt.pos(A.id, t);
       H.group.visible = !s.hidden; H.group.position.set(p.x, p.y - (s.sink || 0), p.z); H.group.rotation.y = rt.yaw(A.id, t) + (s.spin || 0);

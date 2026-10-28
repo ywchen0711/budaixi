@@ -334,7 +334,7 @@ class Episode {
       else this.shot({ t: t1, pos: { mid: [a, b], off: [r3(px * 3.6), 1.15, r3(pz * 3.6)] }, look: { mid: [a, b], off: [0, 1.25, 0] }, fov: 40, hand: 0.4 });
     };
     const blow = (who, tgt, tt, res, style, kk = k) => this.A(who, { do: 'blow', t: r3(tt), style: style || this.pick(['side', 'over', 'thrust', 'side', 'upper']), arm: 'R', result: res, target: tgt, against: 'tipR', close: false, k: kk });
-    const units = ['clash3', 'leap', 'wave', 'palm', 'pass', 'spin', 'circle', 'lock', 'combo', 'heavy', 'roll', 'slide', 'fists', 'combo', 'roll'];
+    const units = ['clash3', 'leap', 'wave', 'palm', 'pass', 'spin', 'circle', 'lock', 'combo', 'heavy', 'roll', 'slide', 'fists', 'combo', 'roll', 'kicks', 'kungfu', 'qigong', 'jumpkick', 'kicks', 'kungfu'];
     let n = 0;
     while (t < t0 + d + bigs * 6 - 2.4) {
       const A_ = this.R() < 0.5 ? [a, b] : [b, a], [p, q] = A_, cp = p === a ? ca : cb;
@@ -404,6 +404,40 @@ class Episode {
         for (const [tt, w] of [[0.33, q], [1.0, p], [1.6, q]]) this.cues.push({ t: r3(t + tt), kind: 'hit', at: { actor: w, part: 'chest' }, k: 0.7 });
         const [qx, qz] = this.local(q); this.goto(q, qx + ux * 0.9, qz + uz * 0.9, t + 1.6, t + 2.0, { e: 'out' });
         this.shot({ t: t + 0.05, pos: { mid: [a, b], off: [r3(-uz * side * 2.2), 1.45, r3(ux * side * 2.2)] }, look: { mid: [a, b], off: [0, 1.4, 0] }, fov: 36, hand: 0.5 }); t += 2.3;
+      } else if (u === 'kicks') { // feet: a front kick met low, a roundhouse met high, and a side kick that lands (recorded karate, models/martial.json)
+        this.A(p, { do: 'anim', t: r3(t + 0.1), clip: 'Kick_Front_R' }); this.A(q, { do: 'anim', t: r3(t + 0.25), clip: 'Block_Low_R' });
+        this.A(q, { do: 'anim', t: r3(t + 1.0), clip: 'Kick_Round_L' }); this.A(p, { do: 'anim', t: r3(t + 1.3), clip: 'Block_Knife_L' });
+        this.A(p, { do: 'anim', t: r3(t + 2.0), clip: 'Kick_Side_R' }); this.A(q, { do: 'react', t: r3(t + 3.0), part: 'body', k: 1.4 });
+        for (const [tt, w, kk] of [[0.95, q, 0.5], [2.0, p, 0.6], [3.0, q, 1.0]]) this.cues.push({ t: r3(t + tt), kind: 'hit', at: { actor: w, part: 'chest' }, k: kk });
+        this.cues.push({ t: r3(t + 3.0), kind: 'qiburst', at: { actor: q, part: 'chest' }, k: 0.6, col: cp }); this.hit(t + 3.0, 1.0);
+        const [qx, qz] = this.local(q), [px, pz] = this.local(p), l = Math.hypot(qx - px, qz - pz) || 1; this.goto(q, qx + (qx - px) / l * 1.3, qz + (qz - pz) / l * 1.3, t + 3.0, t + 3.5, { e: 'out' });
+        this.shot({ t: t + 0.05, pos: { mid: [a, b], off: [r3(-uz * side * 3.8), 0.85, r3(ux * side * 3.8)] }, look: { mid: [a, b], off: [0, 1.0, 0] }, fov: 44 });
+        this.shot({ t: t + 1.9, pos: { mid: [a, b], off: [r3(-uz * side * 2.6 - ux * 1.2), 0.6, r3(ux * side * 2.6 - uz * 1.2)] }, look: { mid: [a, b], off: [0, 1.0, 0] }, fov: 48 }); t += 3.7;
+        const [qx2, qz2] = this.local(q), [px2, pz2] = this.local(p); put(q, (qx2 * 2 + px2) / 3, (qz2 * 2 + pz2) / 3, t - 0.3, t + 0.2);
+      } else if (u === 'kungfu') { // fist, fist and knee: a lunge punch turned aside, a counter to the head, a knee as they close
+        this.A(p, { do: 'anim', t: r3(t + 0.1), clip: 'Punch_Lunge_R' }); this.A(q, { do: 'anim', t: r3(t + 0.25), clip: 'Block_Knife_R' });
+        this.A(q, { do: 'anim', t: r3(t + 1.0), clip: 'Punch_Box_L' }); this.A(p, { do: 'react', t: r3(t + 1.5), part: 'head', k: 0.8 });
+        this.A(p, { do: 'anim', t: r3(t + 1.75), clip: 'Kick_Knee_R' }); this.A(q, { do: 'react', t: r3(t + 2.45), part: 'body', k: 1.2 });
+        for (const [tt, w, kk] of [[0.95, q, 0.5], [1.5, p, 0.7], [2.45, q, 0.9]]) this.cues.push({ t: r3(t + tt), kind: 'hit', at: { actor: w, part: 'chest' }, k: kk });
+        this.hit(t + 2.45, 0.9); const [qx, qz] = this.local(q); this.goto(q, qx + ux * 0.8, qz + uz * 0.8, t + 2.45, t + 2.9, { e: 'out' });
+        this.shot({ t: t + 0.05, pos: { mid: [a, b], off: [r3(-uz * side * 2.4), 1.3, r3(ux * side * 2.4)] }, look: { mid: [a, b], off: [0, 1.2, 0] }, fov: 38, hand: 0.5 }); t += 3.1;
+      } else if (u === 'qigong') { // both gather their power, palms meet, the air between them bursts
+        const cq = p === a ? cb : ca;
+        this.A(p, { do: 'qi', t: r3(t), t1: r3(t + 1.9), k: 0.9, col: cp }); this.A(q, { do: 'qi', t: r3(t + 0.1), t1: r3(t + 1.9), k: 0.9, col: cq });
+        this.A(p, { do: 'palm', t: r3(t + 1.9), target: q, col: cp, k: 0.7 * k, both: true }); this.A(q, { do: 'palm', t: r3(t + 1.92), target: p, col: cq, k: 0.7 * k, both: true });
+        const P = this.pos[p], Q = this.pos[q]; this.cues.push({ t: r3(t + 1.95), kind: 'qiburst', at: [r3((P[0] + Q[0]) / 2), 1.2, r3((P[1] + Q[1]) / 2)], k: 1.4, col: '#ffffff' }); this.cues.push({ t: r3(t + 1.95), kind: 'shake', k: 0.12 });
+        this.hit(t + 1.95, 1.2); this.music.push({ hit: 'gong', t: r3(t + 1.95), g: 0.4 });
+        const [qx, qz] = this.local(q), [px, pz] = this.local(p), l = Math.hypot(qx - px, qz - pz) || 1;
+        put(q, qx + (qx - px) / l * 0.9, qz + (qz - pz) / l * 0.9, t + 1.95, t + 2.5, 'out'); put(p, px - (qx - px) / l * 0.9, pz - (qz - pz) / l * 0.9, t + 1.95, t + 2.5, 'out');
+        const a0 = Math.atan2(-uz * side, ux * side); this.shot({ t: t + 0.05, orbit: { c: { mid: [a, b], off: [0, 1.2, 0] }, r: 3.6, h: 0.6, a: [r3(a0), r3(a0 + 0.9 * side)] }, fov: 42 });
+        t += 3.0; const [qx2, qz2] = this.local(q), [px2, pz2] = this.local(p); put(q, (qx2 * 3 + px2) / 4, (qz2 * 3 + pz2) / 4, t - 0.4, t + 0.1); put(p, (px2 * 3 + qx2) / 4, (pz2 * 3 + qz2) / 4, t - 0.4, t + 0.1);
+      } else if (u === 'jumpkick') { // up off the ground, a flying kick that lands
+        this.A(p, { do: 'anim', t: r3(t + 0.1), clip: 'Kick_Jump' }); this.A(q, { do: 'react', t: r3(t + 1.35), part: 'head', k: 1.5 });
+        this.cues.push({ t: r3(t + 1.35), kind: 'hit', at: { actor: q, part: 'chest' }, k: 1.0 }); this.cues.push({ t: r3(t + 1.35), kind: 'qiburst', at: { actor: q, part: 'chest' }, k: 0.7, col: cp });
+        this.hit(t + 1.35, 1.2); this.warp.push([r3(t + 1.15), r3(t + 1.45), 0.35]);
+        const [qx, qz] = this.local(q), [px, pz] = this.local(p), l = Math.hypot(qx - px, qz - pz) || 1; this.goto(q, qx + (qx - px) / l * 1.8, qz + (qz - pz) / l * 1.8, t + 1.35, t + 1.9, { e: 'out' });
+        this.shot({ t: t + 0.05, pos: { mid: [a, b], off: [r3(-uz * side * 3.4), 0.4, r3(ux * side * 3.4)] }, look: { mid: [a, b], off: [0, 1.4, 0] }, fov: 50 }); t += 2.6;
+        const [qx2, qz2] = this.local(q), [px2, pz2] = this.local(p); put(p, (px2 + qx2) / 2 - (qx2 - px2) / l * 0.6, (pz2 + qz2) / 2 - (qz2 - pz2) / l * 0.6, t - 0.5, t);
       } else if (u === 'lock') { blow(p, q, t + 0.4, 'clash', 'over'); this.A(p, { do: 'blow', t: r3(t + 0.45), style: 'thrust', result: 'clash', target: q, against: 'tipR', close: false, bind: 0.9, k }); this.cues.push({ t: r3(t + 0.5), t1: r3(t + 1.4), kind: 'sparks', every: 0.2, at: { actor: q, part: 'tipR' }, k: 0.5 }); this.shot({ t: t + 0.3, pos: { mid: [a, b], off: [r3(-uz * side * 1.4), 1.3, r3(ux * side * 1.4)] }, look: { mid: [a, b], off: [0, 1.3, 0] }, fov: 30 }); t += 1.9; }
       n++; if (n % 3 === 0) side = -side;
     }
