@@ -174,6 +174,10 @@ function loop() {
 }
 $('scrub').max = String(LEN);
 $('go').onclick = play;
+// the episode menu in the bar: any episode, at any time (it opens playing, if the browser lets it)
+function epMenu() { $('epmenu').innerHTML = EPISODES.map((e) => `<a href="?ep=${e.id}${lang === 'en' ? '&lang=en' : ''}&play=1" class="${e.id === EP ? 'on' : ''}"><span>${e[lang]}</span><small>${e.len}</small></a>`).join(''); }
+$('epbtn').onclick = (e) => { e.stopPropagation(); epMenu(); $('epmenu').hidden = !$('epmenu').hidden; };
+document.addEventListener('click', (e) => { if (!$('epmenu').hidden && !$('epmenu').contains(e.target) && e.target !== $('epbtn')) $('epmenu').hidden = true; });
 $('pp').onclick = () => (state.playing ? pause() : play());
 $('scrub').oninput = (e) => seek(+e.target.value);
 $('lang').onclick = () => { lang = lang === 'zh' ? 'en' : 'zh'; try { localStorage.setItem('budaixi.lang', lang); } catch (e) { /* ignore */ } texts(); frame(state.t); score.setSource(soundOf()); score.load(); if (state.playing) seek(state.t); };
@@ -190,6 +194,8 @@ const soundOf = () => `audio/${story.id}.${lang}.mp3?v=1`; // a soundtrack per l
 score.setSource(soundOf());
 layout(); texts(); frame(state.t); bar(); loop(); score.load();
 $('loading').remove(); $('go').hidden = false;
+// opened from the episode menu: start at once if the browser allows sound without a click, else wait on the start screen
+if (params.has('play') && (navigator.userActivation?.hasBeenActive || new (window.AudioContext || window.webkitAudioContext)().state === 'running')) play();
 if (state.t > 0) $('start').hidden = true;
 // for tests and screenshots
 window.FILM = {

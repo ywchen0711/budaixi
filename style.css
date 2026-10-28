@@ -45,3 +45,9 @@ body.playing:not(.awake) #bar { opacity: 0; }
 #card b { font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 3.2em; letter-spacing: 0.15em; }
 #card small { font-family: 'Noto Serif TC', serif; font-size: 1.2em; color: var(--gold); letter-spacing: 0.3em; margin-top: 0.6em; }
 #card.h { flex-direction: column; align-items: flex-end; } #card.h b { font-size: 2.4em; letter-spacing: 0.05em; } #card.h small { margin: 0; letter-spacing: 0.1em; }
+#epmenu { position: fixed; right: 16px; bottom: 64px; z-index: 11; max-height: 70vh; overflow-y: auto; width: min(360px, calc(100vw - 32px)); background: rgba(20, 10, 12, 0.95); border: 1px solid rgba(232, 192, 96, 0.5); border-radius: 12px; padding: 8px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); }
+#epmenu a { display: flex; justify-content: space-between; gap: 10px; color: var(--ink); text-decoration: none; padding: 9px 12px; border-radius: 8px; font-size: 15px; }
+#epmenu a:hover { background: rgba(255, 255, 255, 0.1); }
+#epmenu a.on { color: var(--gold); background: rgba(154, 20, 24, 0.45); }
+#epmenu a small { opacity: 0.6; white-space: nowrap; }
+body.playing:not(.awake) #epmenu:not(:hover) { opacity: 0; pointer-events: none; }
