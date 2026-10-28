@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=15">
+  <style>#frame { touch-action: none; } #cam { position: absolute; top: 3%; left: 2%; z-index: 5; border: 0; border-radius: 10px; padding: 7px 12px; background: rgba(20,16,28,.65); color: #fff; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }</style>
 </head>
 <body>
   <div id="frame">
@@ -21,6 +22,7 @@
     <div id="card"></div>
     <div id="sub"></div>
     <div id="fade"></div>
+    <button id="cam" hidden>🎬 回到導演鏡頭</button>
     <div id="start">
       <div id="st"></div>
       <p id="blurb"></p>
@@ -41,6 +43,6 @@
     <button id="fs" aria-label="full screen">⛶</button>
   </div>
   <script src="/hub.js" defer data-pos="top-right"></script>
-  <script type="module" src="js/film.js?v=16"></script>
+  <script type="module" src="js/film.js?v=17"></script>
 </body>
 </html>

@@ -91,7 +91,7 @@ function frame(tf) {
   scene.fog.color.copy(sky.fog); for (const c of [fx.smoke, fx.glow]) c.uni.uFogC.value.copy(sky.fog);
   SET.update(t, sky);
   poseAll(t); talk(tf);
-  const c = debugCam ? debugCam(t) : clear.at(t);
+  const c = debugCam ? debugCam(t) : freeCam(clear.at(t));
   const flashes = director.render(t, c.look);
   // light from the fires and the brightest flashes
   fireLights.forEach((l, i) => { l.intensity = 5 + Math.sin(t * 23 + i) * 1.2 + Math.sin(t * 37 + i) * 0.8; });
@@ -110,6 +110,40 @@ function frame(tf) {
   fx.end(camera, renderer.domElement.height, FOG_NEAR, FOG_FAR);
   if (lens) lens.render(camera.position.distanceTo(c.look), c.fov, t); else renderer.render(scene, camera);
   overlays(t, sc.flash, tf);
+}
+
+// ---------------------------------------------------------------- the viewer's own camera
+// Drag the picture to turn round the scene, wheel or pinch to come closer, double-click (or C) to give the camera back
+// to the director. It circles what the director is looking at, and follows it, gently.
+const free = { on: false, yaw: 0, pitch: 0.2, dist: 6, fov: 40, target: null, look: null, ptrs: new Map(), pinch: 0, last: 0 };
+function takeCam() {
+  if (free.on || !free.look) return; const off = camera.position.clone().sub(free.look);
+  free.target = free.look.clone(); free.dist = Math.max(1.5, off.length()); free.yaw = Math.atan2(off.x, off.z); free.pitch = Math.asin(Math.max(-0.99, Math.min(0.99, off.y / free.dist))); free.fov = camera.fov; free.on = true; $('cam').hidden = false;
+}
+function giveBack() { free.on = false; $('cam').hidden = true; if (!state.playing) frame(state.t); }
+function freeCam(c) {
+  free.look = c.look; if (!free.on) return c;
+  const now = performance.now(), dt = Math.min(0.1, (now - (free.last || now)) / 1000); free.last = now;
+  free.target.lerp(c.look, 1 - Math.exp(-dt * 2));
+  const cp = Math.cos(free.pitch), pos = free.target.clone().add(V(Math.sin(free.yaw) * cp, Math.sin(free.pitch), Math.cos(free.yaw) * cp).multiplyScalar(free.dist));
+  pos.y = Math.max(0.2, pos.y);
+  return { ...c, pos, look: free.target.clone(), fov: free.fov, roll: 0 };
+}
+{
+  const el = $('frame'), ok = (e) => !e.target.closest('#start, #bar, #epmenu, button, input, a');
+  const redraw = () => { if (!state.playing) frame(state.t); };
+  el.addEventListener('pointerdown', (e) => { if (!ok(e)) return; free.ptrs.set(e.pointerId, [e.clientX, e.clientY]); el.setPointerCapture(e.pointerId); takeCam(); if (free.ptrs.size === 2) { const [a, b] = [...free.ptrs.values()]; free.pinch = Math.hypot(a[0] - b[0], a[1] - b[1]); } });
+  el.addEventListener('pointermove', (e) => {
+    const p = free.ptrs.get(e.pointerId); if (!p) return; const dx = e.clientX - p[0], dy = e.clientY - p[1]; free.ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+    if (free.ptrs.size === 1) { free.yaw -= dx * 0.008; free.pitch = Math.max(-0.05, Math.min(1.4, free.pitch + dy * 0.006)); }
+    else if (free.ptrs.size === 2) { const [a, b] = [...free.ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (free.pinch) free.dist = Math.max(1.2, Math.min(40, free.dist * free.pinch / d)); free.pinch = d; }
+    redraw();
+  });
+  const up = (e) => { free.ptrs.delete(e.pointerId); free.pinch = 0; };
+  el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  el.addEventListener('wheel', (e) => { if (!ok(e) || !$('start').hidden) return; e.preventDefault(); takeCam(); free.dist = Math.max(1.2, Math.min(40, free.dist * Math.exp(e.deltaY * 0.0012))); redraw(); }, { passive: false });
+  el.addEventListener('dblclick', (e) => { if (ok(e)) giveBack(); });
+  window.addEventListener('keydown', (e) => { if (e.code === 'KeyC' && $('start').hidden) (free.on ? giveBack() : (takeCam(), redraw())); });
 }
 
 // ---------------------------------------------------------------- words and fades over the picture
@@ -156,8 +190,8 @@ window.addEventListener('resize', () => { layout(); frame(state.t); });
 // ---------------------------------------------------------------- the player
 const state = { t: Math.max(0, Math.min(LEN, +(params.get('t') || 0))), playing: false, wall: 0, from: 0 };
 const UI = {
-  zh: { play: '▶ 開演', replay: '↺ 再演一場', sub: `台灣布袋戲風格的 3D 動畫短片．${Math.floor(LEN / 60)} 分 ${Math.round(LEN % 60)} 秒`, lang: 'EN', hint: '空白鍵 播放／暫停．← → 快轉' },
-  en: { play: '▶ Begin', replay: '↺ Again', sub: `A 3D short in the style of Taiwanese glove puppetry · ${Math.floor(LEN / 60)}:${String(Math.round(LEN % 60)).padStart(2, '0')}`, lang: '中', hint: 'Space play / pause · ← → skip' },
+  zh: { play: '▶ 開演', replay: '↺ 再演一場', sub: `台灣布袋戲風格的 3D 動畫短片．${Math.floor(LEN / 60)} 分 ${Math.round(LEN % 60)} 秒`, lang: 'EN', hint: '空白鍵 播放／暫停．← → 快轉．播放中拖曳畫面可以轉視角' },
+  en: { play: '▶ Begin', replay: '↺ Again', sub: `A 3D short in the style of Taiwanese glove puppetry · ${Math.floor(LEN / 60)}:${String(Math.round(LEN % 60)).padStart(2, '0')}`, lang: '中', hint: 'Space play / pause · ← → skip · drag the picture to look around' },
 };
 function texts() {
   const u = UI[lang]; document.documentElement.lang = lang === 'zh' ? 'zh-Hant' : 'en';
@@ -209,8 +243,9 @@ $('loading').remove(); $('go').hidden = false;
 if (params.has('play') && (navigator.userActivation?.hasBeenActive || new (window.AudioContext || window.webkitAudioContext)().state === 'running')) play();
 if (state.t > 0) $('start').hidden = true;
 // for tests and screenshots
+$('cam').onclick = giveBack;
 window.FILM = {
-  score, scene, THREE, rt, views, story, LEN, state, clock, clear, camera,
+  free, takeCam, giveBack, score, scene, THREE, rt, views, story, LEN, state, clock, clear, camera,
   frame: (t) => { state.t = t; frame(t); bar(); },
   cam: (f) => { debugCam = f ? (t) => { const o = f(t, rt); return { pos: V(...o.pos), look: V(...o.look), fov: o.fov || 35, roll: 0 }; } : null; },
   setLang: (l) => { lang = l; texts(); },
